@@ -1,0 +1,13 @@
+glob:bin/
+glob:*.dat
+glob:pddata/ChangeLogStoreTest.pds
+glob:pddata/ChangeLogStoreTest1.pds
+glob:pddata/ChangeLogStoreTest2.pds
+glob:pddata/ChangeLogStoreTest3.pds
+glob:pddata/PDStoreTest.pds
+glob:pddata/CachedStoreTest.pds
+glob:pddata/test*.pds
+glob:pddata/PDStoreTest-*.pds
+glob:.metadata/*
+glob:.settings/*
+glob:pddata/*
