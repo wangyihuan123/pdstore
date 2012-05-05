@@ -21,18 +21,22 @@ public class ContentManagementSystem extends JFrame {
 		setTitle("Collaboration Content Management System");
 		setSize(1500,1000);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setVisible(true);
+		
 		
 		// set up history pane
-		JPanel historyPane = new JPanel();
+	
 		JPanel buttonPane = new JPanel(new GridLayout(1, 3));
+		JPanel buttonPane1 = new JPanel();
 		list = new JList();
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		list.setSelectedIndex(0);
+		list.setDragEnabled(true);
 		//list.setSize(new Dimension(200,500));
 		JScrollPane listScrollPane = new JScrollPane(list);
 		
 		//buttonPane.setMinimumSize(new Dimension(200,500));
-		listScrollPane.setMinimumSize(getPreferredSize());
-		historyPane.setMinimumSize(new Dimension(200,500));
+		//listScrollPane.setMinimumSize(new Dimension(200,500));
+		//historyPane.setMinimumSize(new Dimension(200,500));
 		//add history buttons
 				//up button
 				ImageIcon icon = createImageIcon("up");
@@ -75,33 +79,42 @@ public class ContentManagementSystem extends JFrame {
 				//this.deleteButton.addActionListener(deleteButton(editor, list));
 				//this.deleteButton.setActionCommand("Delete");
 				buttonPane.add(this.deleteButton);
-				historyPane.add(buttonPane,BorderLayout.NORTH);
-				//historyPane.add(listScrollPane,BorderLayout.CENTER);
+				
+				buttonPane1.add(buttonPane);
+				JSplitPane historyPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,buttonPane,listScrollPane);
+				historyPane.setOneTouchExpandable(true);
+				historyPane.setDividerSize(8);
 				
 				
-		
+		//set up function button pane
+				
+			JPanel functionalButtonPanel = new JPanel();
+		   // JLabel history = new JLabel("History");
+		    JButton add = new JButton("ADD");
+		    JButton delete = new JButton("DELETE");
+		    functionalButtonPanel.add(add);
+		    functionalButtonPanel.add(delete);
 		
 		//set up list pane
 		
 		
 		
 		JPanel jsp2 = new JPanel();
-		JPanel historyPanel = new JPanel();
-		JLabel history = new JLabel("History");
+	
 		
 		
 		JTextArea displayArea = new JTextArea();
-		displayArea.setMinimumSize(new Dimension(200,500));
+		//displayArea.setMinimumSize(new Dimension(200,500));
 		
 		displayArea.setText("test");
 		JPanel fileOrganiserPane = new JPanel();
 		JLabel l3 = new JLabel("file organiser");
 		
 		jsp2.add(displayArea);
-		jsp2.setMinimumSize(new Dimension(800,500));
+		//jsp2.setMinimumSize(new Dimension(800,500));
 		
 		fileOrganiserPane.add(l3);
-		historyPanel.add(history);
+		
 		JPanel editTextArea = new JPanel();
 		JLabel text = new JLabel("edit Text");
 		editTextArea.add(text);
@@ -112,7 +125,7 @@ public class ContentManagementSystem extends JFrame {
 		
 		//create split panes
 		
-		JSplitPane historySplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,historyPane,historyPanel);
+		JSplitPane historySplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,historyPane,functionalButtonPanel);
 		
 		historySplitPane.setDividerSize(8);
 		historySplitPane.setContinuousLayout(true);
@@ -165,6 +178,7 @@ public class ContentManagementSystem extends JFrame {
 	public static void main(String[] args){
 		
 		// Load DAL classes
+	
 		try {
 			Class.forName("cms.dal.PDCharacter");
 			Class.forName("cms.dal.PDDocument");
@@ -177,10 +191,12 @@ public class ContentManagementSystem extends JFrame {
 			e.printStackTrace();
 		}		
 		
+		
 		// Create the UIs
 		ContentManagementSystem cms1 = new ContentManagementSystem();
 		ContentManagementSystem cms2 = new ContentManagementSystem();
-		
+		cms1.setVisible(true);
+		cms2.setVisible(true);
 	}
 	
 }
