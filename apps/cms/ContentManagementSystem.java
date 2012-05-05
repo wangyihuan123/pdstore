@@ -10,10 +10,12 @@ import javax.swing.*;
 import diagrameditor.HistoryPanel;
 
 public class ContentManagementSystem extends JFrame {
+	
 	private JButton upButton;
 	private JButton downButton;
 	private JButton deleteButton;
 	public JList list;
+	
 	public ContentManagementSystem(){
 
 		setTitle("Collaboration Content Management System");
@@ -85,7 +87,7 @@ public class ContentManagementSystem extends JFrame {
 		
 		JPanel jsp2 = new JPanel();
 		JPanel historyPanel = new JPanel();
-		JLabel history = new JLabel("Hostory");
+		JLabel history = new JLabel("History");
 		
 		
 		JTextArea displayArea = new JTextArea();
@@ -129,10 +131,6 @@ public class ContentManagementSystem extends JFrame {
 		
 		splitPane.setContinuousLayout(false);
 	
-
-	 
-
-		
 		splitPane.setOneTouchExpandable(true);
 		
 		historySplitPane.setOneTouchExpandable(true);
@@ -144,18 +142,6 @@ public class ContentManagementSystem extends JFrame {
 		fileOrganiserSplitPane.setOneTouchExpandable(true);
 		
 		getContentPane().add(fileOrganiserSplitPane,BorderLayout.CENTER);
-	
-		
-		
-	}
-	
-	public static void main(String[] args){
-		
-		ContentManagementSystem ui = new ContentManagementSystem();
-		//ui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//ui.setVisible(true);
-		//ui.setSize(1500, 1000);
-		
 		
 	}
 	
@@ -174,10 +160,27 @@ public class ContentManagementSystem extends JFrame {
 			return new ImageIcon(imageURL);
 		}
 	}
+		
 	
-	
-	
-	
-	
+	public static void main(String[] args){
+		
+		// Load DAL classes
+		try {
+			Class.forName("cms.dal.PDCharacter");
+			Class.forName("cms.dal.PDDocument");
+			Class.forName("cms.dal.PDHistory");
+			Class.forName("cms.dal.PDOperation");
+			Class.forName("cms.dal.PDResource");
+			Class.forName("cms.dal.PDUser");
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}		
+		
+		// Create the UIs
+		ContentManagementSystem cms1 = new ContentManagementSystem();
+		ContentManagementSystem cms2 = new ContentManagementSystem();
+		
+	}
 	
 }
