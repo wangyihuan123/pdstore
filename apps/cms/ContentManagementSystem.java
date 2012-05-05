@@ -1,9 +1,16 @@
 package cms;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.*;
 
@@ -17,7 +24,7 @@ import pdstore.dal.PDWorkingCopy;
 
 import diagrameditor.HistoryPanel;
 
-public class ContentManagementSystem extends JFrame {
+public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -30,6 +37,9 @@ public class ContentManagementSystem extends JFrame {
 	private JButton downButton;
 	private JButton deleteButton;
 	public JList list;
+	private JLabel theLabel;
+    private JTextPane htmlTextArea;
+	JTextPane editTextArea;
 	
 	public ContentManagementSystem(String username, PDWorkingCopy wc, GUID historyID){
 
@@ -109,35 +119,64 @@ public class ContentManagementSystem extends JFrame {
 		//set up function button pane
 				
 			JPanel functionalButtonPanel = new JPanel();
+			functionalButtonPanel.setLayout( new GridBagLayout());
+			GridBagConstraints gbc = new GridBagConstraints ();
+
+			// next two lines will place the components top-to-bottom, rather than left-to-right
+			gbc.gridx = 0;
+			gbc.gridy = GridBagConstraints.RELATIVE;
+
 		   // JLabel history = new JLabel("History");
 		    JButton add = new JButton("ADD");
+		 
 		    JButton delete = new JButton("DELETE");
-		    functionalButtonPanel.add(add);
-		    functionalButtonPanel.add(delete);
+		    JButton move = new JButton("MOVE");
+		  
+		    functionalButtonPanel.add(add,gbc);
+		    functionalButtonPanel.add(delete,gbc);
+		    functionalButtonPanel.add(move,gbc);
+		//set up display area pane
 		
-		//set up list pane
+		JPanel displayAreaPanel = new JPanel();
+		//JPanel historyPanel = new JPanel();
+		//JLabel historyLabel = new JLabel("History");
 		
-		JPanel jsp2 = new JPanel();
-		JPanel historyPanel = new JPanel();
-		JLabel historyLabel = new JLabel("History");
 		
-		JTextArea displayArea = new JTextArea();
+		 
+		//htmlTextArea.setMinimumSize(new Dimension(500,500));
+	        
+	        
+	       
+	        
+	        
 		//displayArea.setMinimumSize(new Dimension(200,500));
+		  		
 		
-		displayArea.setText("test");
 		JPanel fileOrganiserPane = new JPanel();
 		JLabel l3 = new JLabel("file organiser");
 		
-		jsp2.add(displayArea);
+		//displayAreaPanel.add(htmlTextArea);
+		
+		
 		//jsp2.setMinimumSize(new Dimension(800,500));
 		
 		fileOrganiserPane.add(l3);
-		historyPanel.add(historyLabel);
+		//historyPanel.add(historyLabel);
 		//JPanel editTextArea = new JPanel();
-		JTextPane editTextArea = new JTextPane();
-		JLabel text = new JLabel("edit Text");
-		editTextArea.add(text);
+		 htmlTextArea = new JTextPane();
+		
+	    editTextArea = new JTextPane();
+		editTextArea.addKeyListener(this);
+		//JLabel text = new JLabel("edit Text");
+		//editTextArea.add(text);
+		htmlTextArea.setContentType("text/html");
+		editTextArea.setText("<span style='font-size: 20pt'>Big</span>");
 		//editTextArea.setMinimumSize(new Dimension(800,500));
+		htmlTextArea.setText(editTextArea.getText());
+		
+		
+		
+		
 		
 		//create split panes
 		
@@ -146,7 +185,7 @@ public class ContentManagementSystem extends JFrame {
 		historySplitPane.setDividerSize(8);
 		historySplitPane.setContinuousLayout(true);
 		    
-		JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,jsp2,editTextArea);
+		JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,htmlTextArea,editTextArea);
 		
 		editTextSplitPane.setDividerSize(8);
 		editTextSplitPane.setContinuousLayout(true);
@@ -185,6 +224,28 @@ public class ContentManagementSystem extends JFrame {
 		}
 	}
 		
+	
+	
+	 /** Handle the key typed event from the text field. */
+    public void keyTyped(KeyEvent e) {
+      
+    }
+     
+    /** Handle the key pressed event from the text field. */
+    public void keyPressed(KeyEvent e) {
+    	htmlTextArea.setText(editTextArea.getText());
+    }
+     
+    /** Handle the key released event from the text field. */
+    public void keyReleased(KeyEvent e) {
+        
+    }
+     
+    
+    
+	
+	 
+	 
 	
 	public static void main(String[] args){
 		
