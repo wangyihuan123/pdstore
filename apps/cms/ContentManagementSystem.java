@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.*;
 
@@ -21,6 +23,7 @@ import diagrameditor.HistoryPanel;
 public class ContentManagementSystem extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	protected static final String DOCUMENT_ROOT = System.getenv("HOME")+"/www";
 	
 	// PDStore
 	private static final boolean NETWORK_ACCESS = false;
@@ -35,6 +38,7 @@ public class ContentManagementSystem extends JFrame {
 	
 	public ContentManagementSystem(String username, GUID userID, PDWorkingCopy wc, GUID historyID){
 
+		checkDocumentRoot();
 		initPDObjects(username, userID, wc, historyID);
 		
 		setTitle(username+"'s CMS");
@@ -134,7 +138,7 @@ public class ContentManagementSystem extends JFrame {
 		fileOrganiserPane.add(l3);
 		historyPanel.add(historyLabel);
 		//JPanel editTextArea = new JPanel();
-		PDStoreTextPane editTextArea = new PDStoreTextPane(user);
+		PDStoreTextPane editTextArea = new PDStoreTextPane(wc, user);
 		JLabel text = new JLabel("edit Text");
 		editTextArea.add(text);
 		//editTextArea.setMinimumSize(new Dimension(800,500));
@@ -167,6 +171,17 @@ public class ContentManagementSystem extends JFrame {
 		
 		getContentPane().add(fileOrganiserSplitPane,BorderLayout.CENTER);
 		
+	}
+	
+	private void checkDocumentRoot(){
+		File root = new File(DOCUMENT_ROOT);
+		if (!root.isDirectory()){
+			try {
+				root.mkdir();
+			} catch (SecurityException sec) {
+				System.err.println("Unable to create document root '"+DOCUMENT_ROOT+"'");
+			}
+		}
 	}
 	
 	private void initPDObjects(String username, GUID userID, PDWorkingCopy wc, GUID historyID){
