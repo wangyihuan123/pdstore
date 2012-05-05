@@ -68,7 +68,7 @@ public class TextComponentDemo extends JFrame {
         if (styledDoc instanceof AbstractDocument) {
             doc = (AbstractDocument)styledDoc;
             System.out.println(doc.getDocumentProperties().toString());
-            //doc.setDocumentFilter(new DocumentSizeFilter(MAX_CHARACTERS));
+            doc.setDocumentFilter(new PDStoreDocumentFilter());
         } else {
             System.err.println("Text pane's document isn't an AbstractDocument!");
             System.exit(-1);
@@ -112,7 +112,7 @@ public class TextComponentDemo extends JFrame {
         //addBindings();
 
         //Put the initial text into the text pane.
-        initDocument();
+        //initDocument();
         textPane.setCaretPosition(0);
 
         //Start watching for undoable edits and caret changes.
@@ -300,14 +300,14 @@ public class TextComponentDemo extends JFrame {
     */
 
     protected void initDocument() {
-
+    	/*
         try {
-            // TODO: //change to read from template
-        	String start = "<html>\n</html>"; 
-        	doc.insertString(doc.getLength(), start, null);
+        	//String start = "<html>\n</html>"; 
+        	//doc.insertString(doc.getLength(), start, null);
         } catch (BadLocationException ble) {
             System.err.println("Couldn't insert initial text.");
         }
+        */
     }
 
     // DONT NEED THIS
@@ -433,6 +433,7 @@ public class TextComponentDemo extends JFrame {
     public static void main(String[] args) {
         //Schedule a job for the event dispatch thread:
         //creating and showing this application's GUI.
+    	PDStoreCMSModelCreator model = new PDStoreCMSModelCreator("DBFile");
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 //Turn off metal's use of bold fonts
