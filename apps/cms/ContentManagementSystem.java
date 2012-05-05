@@ -7,6 +7,8 @@ import java.awt.Insets;
 
 import javax.swing.*;
 
+import cms.dal.PDHistory;
+
 import pdstore.GUID;
 import pdstore.GUIDGen;
 import pdstore.PDStore;
@@ -18,21 +20,30 @@ import diagrameditor.HistoryPanel;
 public class ContentManagementSystem extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	
+	// PDStore
 	private static final boolean NETWORK_ACCESS = false;
+	PDHistory history;
+	
+	// UI
 	private JButton upButton;
 	private JButton downButton;
 	private JButton deleteButton;
 	public JList list;
 	
-	public ContentManagementSystem(String username, PDWorkingCopy wc, GUID history){
+	public ContentManagementSystem(String username, PDWorkingCopy wc, GUID historyID){
 
 		setTitle(username+"'s CMS");
 		setSize(1500,1000);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		// set up history pane
+		// get history
+		PDHistory.load(wc, historyID);
+		//...
+		
+		// set up and populate history pane
 		JPanel historyPane = new JPanel();
-		JPanel buttonPane = new JPanel(new GridLayout(1, 3));
+		JPanel buttonPane = new JPanel(new GridLayout(1, 3));		
 		list = new JList();
 		//list.setSize(new Dimension(200,500));
 		JScrollPane listScrollPane = new JScrollPane(list);
@@ -103,7 +114,8 @@ public class ContentManagementSystem extends JFrame {
 		
 		fileOrganiserPane.add(l3);
 		historyPanel.add(historyLabel);
-		JPanel editTextArea = new JPanel();
+		//JPanel editTextArea = new JPanel();
+		JTextPane editTextArea = new JTextPane();
 		JLabel text = new JLabel("edit Text");
 		editTextArea.add(text);
 		//editTextArea.setMinimumSize(new Dimension(800,500));
@@ -160,9 +172,10 @@ public class ContentManagementSystem extends JFrame {
 		PDStore store;
 		PDWorkingCopy wc1;
 		PDWorkingCopy wc2;
-		GUID history = GUIDGen.generateGUIDs(1).remove(0);
+		GUID historyID = GUIDGen.generateGUIDs(1).remove(0);
 		
-		// Load DAL classes
+		// Load DAL classes -- TODO: Is this really needed?
+		/*
 		try {
 			Class.forName("cms.dal.PDCharacter");
 			Class.forName("cms.dal.PDDocument");
@@ -174,6 +187,7 @@ public class ContentManagementSystem extends JFrame {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}	
+		*/
 	
 		
 		if (NETWORK_ACCESS) {
@@ -187,8 +201,8 @@ public class ContentManagementSystem extends JFrame {
 		}		
 		
 		// Create the UIs
-		ContentManagementSystem cms1 = new ContentManagementSystem("Bob", wc1, history);
-		ContentManagementSystem cms2 = new ContentManagementSystem("Alice", wc2, history);
+		ContentManagementSystem cms1 = new ContentManagementSystem("Bob", wc1, historyID);
+		ContentManagementSystem cms2 = new ContentManagementSystem("Alice", wc2, historyID);
 		cms1.setVisible(true);
 		cms2.setVisible(true);
 		
