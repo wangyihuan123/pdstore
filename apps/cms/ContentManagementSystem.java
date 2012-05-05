@@ -7,21 +7,28 @@ import java.awt.Insets;
 
 import javax.swing.*;
 
+import pdstore.GUID;
+import pdstore.GUIDGen;
+import pdstore.PDStore;
+import pdstore.dal.PDSimpleWorkingCopy;
+import pdstore.dal.PDWorkingCopy;
+
 import diagrameditor.HistoryPanel;
 
 public class ContentManagementSystem extends JFrame {
-	
+
+	private static final long serialVersionUID = 1L;
+	private static final boolean NETWORK_ACCESS = false;
 	private JButton upButton;
 	private JButton downButton;
 	private JButton deleteButton;
 	public JList list;
 	
-	public ContentManagementSystem(){
+	public ContentManagementSystem(String username, PDWorkingCopy wc, GUID history){
 
-		setTitle("Collaboration Content Management System");
+		setTitle(username+"'s CMS");
 		setSize(1500,1000);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setVisible(true);
 		
 		// set up history pane
 		JPanel historyPane = new JPanel();
@@ -77,18 +84,12 @@ public class ContentManagementSystem extends JFrame {
 				buttonPane.add(this.deleteButton);
 				historyPane.add(buttonPane,BorderLayout.NORTH);
 				//historyPane.add(listScrollPane,BorderLayout.CENTER);
-				
-				
-		
 		
 		//set up list pane
 		
-		
-		
 		JPanel jsp2 = new JPanel();
 		JPanel historyPanel = new JPanel();
-		JLabel history = new JLabel("History");
-		
+		JLabel historyLabel = new JLabel("History");
 		
 		JTextArea displayArea = new JTextArea();
 		displayArea.setMinimumSize(new Dimension(200,500));
@@ -101,14 +102,11 @@ public class ContentManagementSystem extends JFrame {
 		jsp2.setMinimumSize(new Dimension(800,500));
 		
 		fileOrganiserPane.add(l3);
-		historyPanel.add(history);
+		historyPanel.add(historyLabel);
 		JPanel editTextArea = new JPanel();
 		JLabel text = new JLabel("edit Text");
 		editTextArea.add(text);
 		//editTextArea.setMinimumSize(new Dimension(800,500));
-		
-		
-		
 		
 		//create split panes
 		
@@ -119,18 +117,13 @@ public class ContentManagementSystem extends JFrame {
 		    
 		JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,jsp2,editTextArea);
 		
-		
 		editTextSplitPane.setDividerSize(8);
 		editTextSplitPane.setContinuousLayout(true);
-		
-		
 		
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,historySplitPane,editTextSplitPane);
 		//JSplitPane fileOrganiserSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,splitPane,fileOrganiserPane);
 		
-		
 		splitPane.setContinuousLayout(false);
-	
 		splitPane.setOneTouchExpandable(true);
 		
 		historySplitPane.setOneTouchExpandable(true);
@@ -164,6 +157,11 @@ public class ContentManagementSystem extends JFrame {
 	
 	public static void main(String[] args){
 		
+		PDStore store;
+		PDWorkingCopy wc1;
+		PDWorkingCopy wc2;
+		GUID history = GUIDGen.generateGUIDs(1).remove(0);
+		
 		// Load DAL classes
 		try {
 			Class.forName("cms.dal.PDCharacter");
@@ -175,11 +173,24 @@ public class ContentManagementSystem extends JFrame {
 			
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		}	
+	
+		
+		if (NETWORK_ACCESS) {
+			store = PDStore.connectToServer(null);
+			wc1 = new PDSimpleWorkingCopy(store);
+			wc2 = new PDSimpleWorkingCopy(store);
+		} else {
+			store = new PDStore("ContentManagementSystem");
+			wc1 = new PDSimpleWorkingCopy(store);
+			wc2 = wc1;
 		}		
 		
 		// Create the UIs
-		ContentManagementSystem cms1 = new ContentManagementSystem();
-		ContentManagementSystem cms2 = new ContentManagementSystem();
+		ContentManagementSystem cms1 = new ContentManagementSystem("Bob", wc1, history);
+		ContentManagementSystem cms2 = new ContentManagementSystem("Alice", wc2, history);
+		cms1.setVisible(true);
+		cms2.setVisible(true);
 		
 	}
 	
