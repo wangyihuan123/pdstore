@@ -17,15 +17,20 @@ public class ContentManagementSystem extends JFrame {
 	public ContentManagementSystem(){
 
 		setTitle("Collaboration Content Management System");
-		//setSize(700,700);
+		setSize(1500,1000);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setVisible(true);
 		
 		// set up history pane
 		JPanel historyPane = new JPanel();
 		JPanel buttonPane = new JPanel(new GridLayout(1, 3));
 		list = new JList();
+		//list.setSize(new Dimension(200,500));
 		JScrollPane listScrollPane = new JScrollPane(list);
-		buttonPane.setMinimumSize(new Dimension(200,500));
 		
+		//buttonPane.setMinimumSize(new Dimension(200,500));
+		listScrollPane.setMinimumSize(getPreferredSize());
+		historyPane.setMinimumSize(new Dimension(200,500));
 		//add history buttons
 				//up button
 				ImageIcon icon = createImageIcon("up");
@@ -69,7 +74,7 @@ public class ContentManagementSystem extends JFrame {
 				//this.deleteButton.setActionCommand("Delete");
 				buttonPane.add(this.deleteButton);
 				historyPane.add(buttonPane,BorderLayout.NORTH);
-				historyPane.add(listScrollPane,BorderLayout.CENTER);
+				//historyPane.add(listScrollPane,BorderLayout.CENTER);
 				
 				
 		
@@ -147,9 +152,9 @@ public class ContentManagementSystem extends JFrame {
 	public static void main(String[] args){
 		
 		ContentManagementSystem ui = new ContentManagementSystem();
-		ui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		ui.setVisible(true);
-		ui.setSize(1500, 1000);
+		//ui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//ui.setVisible(true);
+		//ui.setSize(1500, 1000);
 		
 		
 	}
