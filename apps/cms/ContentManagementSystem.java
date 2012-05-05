@@ -7,14 +7,31 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Vector;
+
+
 import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.text.Position;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreePath;
+
+import apple.laf.JRSUIUtils.Tree;
 
 import cms.dal.PDHistory;
+import cms.dal.PDUser;
 
 import pdstore.GUID;
 import pdstore.GUIDGen;
@@ -27,10 +44,12 @@ import diagrameditor.HistoryPanel;
 public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 	private static final long serialVersionUID = 1L;
+	protected static final String DOCUMENT_ROOT = System.getenv("HOME")+"/www";
 	
 	// PDStore
 	private static final boolean NETWORK_ACCESS = false;
 	PDHistory history;
+	PDUser user;
 	
 	// UI
 	private JButton upButton;
@@ -40,16 +59,21 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	private JLabel theLabel;
     private JTextPane htmlTextArea;
 	JTextPane editTextArea;
-	
-	public ContentManagementSystem(String username, PDWorkingCopy wc, GUID historyID){
+	File dir = new File("/Users/eason36/www/");
+	 DefaultMutableTreeNode node;
+	  JTree tree;
+	  
+	 JSplitPane fileOrganiserSplitPane;
+	 // JSplitPane splitPane;
+	 JPanel fileOrganiserPane;
+	public ContentManagementSystem(String username, GUID userID, PDWorkingCopy wc, GUID historyID){
 
+		checkDocumentRoot();
+		initPDObjects(username, userID, wc, historyID);
+		
 		setTitle(username+"'s CMS");
-		setSize(1500,1000);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		// get history
-		PDHistory.load(wc, historyID);
-		//...
+		setSize(1000,1000);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
 		
 		// set up and populate history pane
 		//JPanel historyPane = new JPanel();
@@ -63,10 +87,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		//list.setSize(new Dimension(200,500));
 		JScrollPane listScrollPane = new JScrollPane(list);
 		
-		//buttonPane.setMinimumSize(new Dimension(200,500));
-		//listScrollPane.setMinimumSize(new Dimension(200,500));
-		//historyPane.setMinimumSize(new Dimension(200,500));
-		//add history buttons
+	
 				//up button
 				ImageIcon icon = createImageIcon("up");
 				
@@ -76,8 +97,10 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 					this.upButton.setMargin(new Insets(0, 0, 0, 0));
 				} else {
 					this.upButton = new JButton("UP");
+					
 				}
 				this.upButton.setToolTipText("Move the currently selected operation higher.");
+				
 				//this.upButton.addActionListener(upButton(editor, list));
 				//this.upButton.setActionCommand(upString);
 				buttonPane.add(this.upButton);
@@ -128,53 +151,78 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 		   // JLabel history = new JLabel("History");
 		    JButton add = new JButton("ADD");
-		 
+		    add.addActionListener(new ActionListener()  
+			{  
+				   public void actionPerformed(ActionEvent e)  
+				   {  
+				  File s = new File(node.toString()+ "/newfolder");
+				  s.mkdir();
+				  // refresh tree
+				  //DefaultMutableTreeNode top= new DefaultMutableTreeNode(s);
+				 
+				 
+				  DefaultTreeModel model = (DefaultTreeModel) tree.getModel(); 
+				  
+				// Find node to which new node is to be added
+				//  int startRow = 0;
+				  //String prefix = "J";
+				 // TreePath path = tree.getNextMatch(prefix, startRow, Position.Bias.Forward);
+				//  MutableTreeNode node = node;
+
+				// Create new node
+				  MutableTreeNode newNode = new DefaultMutableTreeNode("newfolder");
+
+				  // Insert new node as last child of node
+				  model.insertNodeInto(newNode, node, node.getChildCount());
+				  
+				  model.reload();
+				  fileOrganiserPane.repaint();
+				   }  
+				});
+		    
 		    JButton delete = new JButton("DELETE");
 		    JButton move = new JButton("MOVE");
 		  
 		    functionalButtonPanel.add(add,gbc);
 		    functionalButtonPanel.add(delete,gbc);
 		    functionalButtonPanel.add(move,gbc);
+		    
+		    
 		//set up display area pane
 		
 		JPanel displayAreaPanel = new JPanel();
-		//JPanel historyPanel = new JPanel();
-		//JLabel historyLabel = new JLabel("History");
+		htmlTextArea = new JTextPane();
 		
-		
-		 
-		//htmlTextArea.setMinimumSize(new Dimension(500,500));
-	        
-	        
-	       
-	        
-	        
-		//displayArea.setMinimumSize(new Dimension(200,500));
-		  		
-		
-		JPanel fileOrganiserPane = new JPanel();
-		JLabel l3 = new JLabel("file organiser");
-		
-		//displayAreaPanel.add(htmlTextArea);
-		
-		
-		//jsp2.setMinimumSize(new Dimension(800,500));
-		
-		fileOrganiserPane.add(l3);
-		//historyPanel.add(historyLabel);
-		//JPanel editTextArea = new JPanel();
-		 htmlTextArea = new JTextPane();
-		
-	    editTextArea = new JTextPane();
+		PDStoreTextPane editTextArea = new PDStoreTextPane(wc, user);
 		editTextArea.addKeyListener(this);
-		//JLabel text = new JLabel("edit Text");
-		//editTextArea.add(text);
+		
 		htmlTextArea.setContentType("text/html");
 		editTextArea.setText("<span style='font-size: 20pt'>Big</span>");
-		//editTextArea.setMinimumSize(new Dimension(800,500));
 		htmlTextArea.setText(editTextArea.getText());
 		
 		
+		// set up the folder tree view.
+		
+		 fileOrganiserPane = new JPanel();
+	
+
+		  
+		   tree = new JTree(addNodes(null, dir));
+		  
+
+		    // Add a listener
+		    tree.addTreeSelectionListener(new TreeSelectionListener() {
+		      public void valueChanged(TreeSelectionEvent e) {
+		         node = (DefaultMutableTreeNode) e
+		            .getPath().getLastPathComponent();
+		        System.out.println("You selected " + node);
+		      }
+		    });
+		    
+		    
+		    
+
+		   fileOrganiserPane.add(tree);
 		
 		
 		
@@ -190,8 +238,8 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		editTextSplitPane.setDividerSize(8);
 		editTextSplitPane.setContinuousLayout(true);
 		
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,historySplitPane,editTextSplitPane);
-		//JSplitPane fileOrganiserSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,splitPane,fileOrganiserPane);
+		JSplitPane	splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,historySplitPane,editTextSplitPane);
+		
 		
 		splitPane.setContinuousLayout(false);
 		splitPane.setOneTouchExpandable(true);
@@ -199,12 +247,35 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		historySplitPane.setOneTouchExpandable(true);
 		editTextSplitPane.setOneTouchExpandable(true);
 		
-		JSplitPane fileOrganiserSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,splitPane,fileOrganiserPane);
+		 fileOrganiserSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,splitPane,fileOrganiserPane);
 		
 		fileOrganiserSplitPane.setContinuousLayout(false);
 		fileOrganiserSplitPane.setOneTouchExpandable(true);
 		
+		//fileOrganiserSplitPane.repaint();
+		
 		getContentPane().add(fileOrganiserSplitPane,BorderLayout.CENTER);
+		
+	}
+	
+	private void checkDocumentRoot(){
+		File root = new File(DOCUMENT_ROOT);
+		if (!root.isDirectory()){
+			try {
+				root.mkdir();
+			} catch (SecurityException sec) {
+				System.err.println("Unable to create document root '"+DOCUMENT_ROOT+"'");
+			}
+		}
+	}
+	
+	private void initPDObjects(String username, GUID userID, PDWorkingCopy wc, GUID historyID){
+		// init PDHistory
+		history = PDHistory.load(wc, historyID);
+		
+		// init PDUser
+		user = PDUser.load(wc, userID);
+		user.setName(username);
 		
 	}
 	
@@ -240,7 +311,46 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
     public void keyReleased(KeyEvent e) {
         
     }
-     
+    
+    public void createTree(){
+    	
+    }
+    
+    
+    /** Add nodes from under "dir" into curTop. Highly recursive. */
+    DefaultMutableTreeNode addNodes(DefaultMutableTreeNode curTop, File dir) {
+      String curPath = dir.getPath();
+      DefaultMutableTreeNode curDir = new DefaultMutableTreeNode(curPath);
+      if (curTop != null) { // should only be null at root
+        curTop.add(curDir);
+      }
+      Vector ol = new Vector();
+      String[] tmp = dir.list();
+      for (int i = 0; i < tmp.length; i++)
+        ol.addElement(tmp[i]);
+      Collections.sort(ol, String.CASE_INSENSITIVE_ORDER);
+      File f;
+      Vector files = new Vector();
+      // Make two passes, one for Dirs and one for Files. This is #1.
+      for (int i = 0; i < ol.size(); i++) {
+        String thisObject = (String) ol.elementAt(i);
+        String newPath;
+        if (curPath.equals("."))
+          newPath = thisObject;
+        else
+          newPath = curPath + File.separator + thisObject;
+        if ((f = new File(newPath)).isDirectory())
+          addNodes(curDir, f);
+        else
+          files.addElement(thisObject);
+      }
+      // Pass two: for files.
+      for (int fnum = 0; fnum < files.size(); fnum++)
+        curDir.add(new DefaultMutableTreeNode(files.elementAt(fnum)));
+      return curDir;
+    }
+
+    
     
     
 	
@@ -248,29 +358,25 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	 
 	
 	public static void main(String[] args){
+
+		try {
+			Class.forName("cms.dal.PDHistory");
+			Class.forName("cms.dal.PDUser");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}		
 		
-		// Load DAL classes
+		// Setup PDStore cache
 		PDStore store;
 		PDWorkingCopy wc1;
 		PDWorkingCopy wc2;
+		
+		// Setup GUIDs
 		GUID historyID = GUIDGen.generateGUIDs(1).remove(0);
+		GUID userID1 = GUIDGen.generateGUIDs(1).remove(0);
+		GUID userID2 = GUIDGen.generateGUIDs(1).remove(0);
 		
-		// Load DAL classes -- TODO: Is this really needed?
-		/*
-		try {
-			Class.forName("cms.dal.PDCharacter");
-			Class.forName("cms.dal.PDDocument");
-			Class.forName("cms.dal.PDHistory");
-			Class.forName("cms.dal.PDOperation");
-			Class.forName("cms.dal.PDResource");
-			Class.forName("cms.dal.PDUser");
-			
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}	
-		*/
-	
-		
+		// Determine PDStore location
 		if (NETWORK_ACCESS) {
 			store = PDStore.connectToServer(null);
 			wc1 = new PDSimpleWorkingCopy(store);
@@ -280,11 +386,10 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 			wc1 = new PDSimpleWorkingCopy(store);
 			wc2 = wc1;
 		}		
-		
-		
+
 		// Create the UIs
-		ContentManagementSystem cms1 = new ContentManagementSystem("Bob", wc1, historyID);
-		ContentManagementSystem cms2 = new ContentManagementSystem("Alice", wc2, historyID);
+		ContentManagementSystem cms1 = new ContentManagementSystem("Bob", userID1, wc1, historyID);
+		ContentManagementSystem cms2 = new ContentManagementSystem("Alice", userID2, wc2, historyID);
 		cms1.setVisible(true);
 		cms2.setVisible(true);
 	}
