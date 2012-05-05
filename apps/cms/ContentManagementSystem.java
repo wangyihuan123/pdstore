@@ -8,6 +8,7 @@ import java.awt.Insets;
 import javax.swing.*;
 
 import cms.dal.PDHistory;
+import cms.dal.PDUser;
 
 import pdstore.GUID;
 import pdstore.GUIDGen;
@@ -24,6 +25,7 @@ public class ContentManagementSystem extends JFrame {
 	// PDStore
 	private static final boolean NETWORK_ACCESS = false;
 	PDHistory history;
+	PDUser user;
 	
 	// UI
 	private JButton upButton;
@@ -31,15 +33,13 @@ public class ContentManagementSystem extends JFrame {
 	private JButton deleteButton;
 	public JList list;
 	
-	public ContentManagementSystem(String username, PDWorkingCopy wc, GUID historyID){
+	public ContentManagementSystem(String username, GUID userID, PDWorkingCopy wc, GUID historyID){
 
+		initPDObjects(username, userID, wc, historyID);
+		
 		setTitle(username+"'s CMS");
-		setSize(1500,1000);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		// get history
-		PDHistory.load(wc, historyID);
-		//...
+		setSize(150,100);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
 		
 		// set up and populate history pane
 		//JPanel historyPane = new JPanel();
@@ -134,7 +134,7 @@ public class ContentManagementSystem extends JFrame {
 		fileOrganiserPane.add(l3);
 		historyPanel.add(historyLabel);
 		//JPanel editTextArea = new JPanel();
-		JTextPane editTextArea = new JTextPane();
+		PDStoreTextPane editTextArea = new PDStoreTextPane(user);
 		JLabel text = new JLabel("edit Text");
 		editTextArea.add(text);
 		//editTextArea.setMinimumSize(new Dimension(800,500));
@@ -169,6 +169,16 @@ public class ContentManagementSystem extends JFrame {
 		
 	}
 	
+	private void initPDObjects(String username, GUID userID, PDWorkingCopy wc, GUID historyID){
+		// init PDHistory
+		history = PDHistory.load(wc, historyID);
+		
+		// init PDUser
+		user = PDUser.load(wc, userID);
+		user.setName(username);
+		
+	}
+	
 	/**
 	 * Method to create an image
 	 * @param imageName
@@ -187,29 +197,25 @@ public class ContentManagementSystem extends JFrame {
 		
 	
 	public static void main(String[] args){
+
+		try {
+			Class.forName("cms.dal.PDHistory");
+			Class.forName("cms.dal.PDUser");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}		
 		
-		// Load DAL classes
+		// Setup PDStore cache
 		PDStore store;
 		PDWorkingCopy wc1;
 		PDWorkingCopy wc2;
+		
+		// Setup GUIDs
 		GUID historyID = GUIDGen.generateGUIDs(1).remove(0);
+		GUID userID1 = GUIDGen.generateGUIDs(1).remove(0);
+		GUID userID2 = GUIDGen.generateGUIDs(1).remove(0);
 		
-		// Load DAL classes -- TODO: Is this really needed?
-		/*
-		try {
-			Class.forName("cms.dal.PDCharacter");
-			Class.forName("cms.dal.PDDocument");
-			Class.forName("cms.dal.PDHistory");
-			Class.forName("cms.dal.PDOperation");
-			Class.forName("cms.dal.PDResource");
-			Class.forName("cms.dal.PDUser");
-			
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}	
-		*/
-	
-		
+		// Determine PDStore location
 		if (NETWORK_ACCESS) {
 			store = PDStore.connectToServer(null);
 			wc1 = new PDSimpleWorkingCopy(store);
@@ -219,11 +225,10 @@ public class ContentManagementSystem extends JFrame {
 			wc1 = new PDSimpleWorkingCopy(store);
 			wc2 = wc1;
 		}		
-		
-		
+
 		// Create the UIs
-		ContentManagementSystem cms1 = new ContentManagementSystem("Bob", wc1, historyID);
-		ContentManagementSystem cms2 = new ContentManagementSystem("Alice", wc2, historyID);
+		ContentManagementSystem cms1 = new ContentManagementSystem("Bob", userID1, wc1, historyID);
+		ContentManagementSystem cms2 = new ContentManagementSystem("Alice", userID2, wc2, historyID);
 		cms1.setVisible(true);
 		cms2.setVisible(true);
 	}

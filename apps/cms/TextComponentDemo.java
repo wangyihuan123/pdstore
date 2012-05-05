@@ -67,8 +67,8 @@ public class TextComponentDemo extends JFrame {
         StyledDocument styledDoc = textPane.getStyledDocument();
         if (styledDoc instanceof AbstractDocument) {
             doc = (AbstractDocument)styledDoc;
-            System.out.println(doc.getDocumentProperties().toString());
-            doc.setDocumentFilter(new PDStoreDocumentFilter());
+            //System.out.println(doc.getDocumentProperties().toString());
+            //doc.setDocumentFilter(new PDStoreDocumentFilter());
         } else {
             System.err.println("Text pane's document isn't an AbstractDocument!");
             System.exit(-1);
