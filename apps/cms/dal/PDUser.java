@@ -12,10 +12,10 @@ import pdstore.dal.*;
  */
 public class PDUser implements PDInstance {
 
-	public static final GUID typeId = new GUID("2e275f50965e11e18be2d8a25e8c53de"); 
+	public static final GUID typeId = new GUID("81768bc0969c11e1a634d8a25e8c53de"); 
 
-	public static final GUID roleCurrentResourceId = new GUID("2e275f57965e11e18be2d8a25e8c53de");
-	public static final GUID roleUsernameId = new GUID("2e275f56965e11e18be2d8a25e8c53de");
+	public static final GUID roleUsernameId = new GUID("81768bc5969c11e1a634d8a25e8c53de");
+	public static final GUID roleCurrentDocumentId = new GUID("81768bc6969c11e1a634d8a25e8c53de");
 
 	static {
 		register();
@@ -168,127 +168,6 @@ public class PDUser implements PDInstance {
 	
 
 	/**
-	 * Returns the instance connected to this instance through the role "CurrentResource".
-	 * @return the connected instance
-	 * @throws PDStoreException
-	 */
-	 public PDResource getCurrentResource() throws PDStoreException {
-	 	return (PDResource)pdWorkingCopy.getInstance(this, roleCurrentResourceId);
-	 }
-
-	/**
-	 * Returns the instance(s) connected to this instance through the role "CurrentResource".
-	 * @return the connected instance(s)
-	 * @throws PDStoreException
-	 */
-	 public Collection<PDResource> getCurrentResources() throws PDStoreException {
-	 	Set<PDResource> result = new HashSet<PDResource>();
-	 	GUID PDResourceTypeId = new GUID("2e275f51965e11e18be2d8a25e8c53de");
-		pdWorkingCopy.getInstances(this, roleCurrentResourceId, PDResource.class, PDResourceTypeId, result);
-	 	return result;
-	 }
-	 
-   /**
-	 * Connects this instance to the given instance using role "CurrentResource".
-	 * If the given instance is null, nothing happens.
-	 * @param currentResource the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void addCurrentResource(GUID currentResource) throws PDStoreException {
-
-			if (currentResource != null) {
-				
-				pdWorkingCopy.addLink(this.id, roleCurrentResourceId, currentResource);
-			}
-
-	}
-
-
-	/**
-	 * Connects this instance to the given instance using role "CurrentResource".
-	 * If the given instance is null, nothing happens.
-	 * @param currentResource the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void addCurrentResource(PDResource currentResource) throws PDStoreException {
-		if (currentResource != null) {
-			addCurrentResource(currentResource.getId());
-		}		
-	}
-	
-	/**
-	 * Connects this instance to the given instance using role "CurrentResource".
-	 * If the given collection of instances is null, nothing happens.
-	 * @param currentResource the Collection of instances to connect
-	 * @throws PDStoreException
-	 */
-	public void addCurrentResources(Collection<PDResource> currentResources) throws PDStoreException {
-		if (currentResources == null)
-			return;
-		
-		for (PDResource instance : currentResources)
-			addCurrentResource(instance);	
-	}
-
-	/**
-	 * Removes the link from this instance through role "CurrentResource".
-	 * @throws PDStoreException
-	 */
-	public void removeCurrentResource() throws PDStoreException {
-		pdWorkingCopy.removeLink(this.id, roleCurrentResourceId, 
-			pdWorkingCopy.getInstance(this, roleCurrentResourceId));
-	}
-
-	/**
-	 * Removes the link from this instance through role "CurrentResource" to the given instance, if the link exists.
-	 * If there is no such link, nothing happens.
-	 * If the given instance is null, nothing happens.
-	 * @throws PDStoreException
-	 */
-	public void removeCurrentResource(Object currentResource) throws PDStoreException {
-		if (currentResource == null)
-			return;
-		pdWorkingCopy.removeLink(this.id, roleCurrentResourceId, currentResource);
-	}
-
-	/**
-	 * Removes the links from this instance through role "CurrentResource" to the instances 
-	 * in the given Collection, if the links exist.
-	 * If there are no such links or the collection argument is null, nothing happens.
-	 * @throws PDStoreException
-	 */
-	public void removeCurrentResources(Collection<PDResource> currentResources) throws PDStoreException {
-		if (currentResources == null)
-			return;
-		
-		for (PDResource instance : currentResources)
-			pdWorkingCopy.removeLink(this.id, roleCurrentResourceId, instance);
-	}
-
-   /**
-	 * Connects this instance to the given instance using role "CurrentResource".
-	 * If there is already an instance connected to this instance through role "CurrentResource", the link will be overwritten.
-	 * If the given instance is null, an existing link is removed."
-	 * @param currentResource the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void setCurrentResource(GUID currentResource) throws PDStoreException {
-		pdWorkingCopy.setLink(this.id,  roleCurrentResourceId, currentResource);	
-	}
-	/**
-	 * Connects this instance to the given instance using role "CurrentResource".
-	 * If there is already an instance connected to this instance through role "CurrentResource", the link will be overwritten.
-	 * If the given instance is null, an existing link is removed."
-	 * @param currentResource the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void setCurrentResource(PDResource currentResource) throws PDStoreException {
-		setCurrentResource(currentResource.getId());
-	}
-
-
-
-	/**
 	 * Returns the instance connected to this instance through the role "Username".
 	 * @return the connected instance
 	 * @throws PDStoreException
@@ -371,4 +250,125 @@ public class PDUser implements PDInstance {
 	public void setUsername(String username) throws PDStoreException {
 		pdWorkingCopy.setLink(this.id,  roleUsernameId, username);	
 	}
+
+
+	/**
+	 * Returns the instance connected to this instance through the role "CurrentDocument".
+	 * @return the connected instance
+	 * @throws PDStoreException
+	 */
+	 public PDDocument getCurrentDocument() throws PDStoreException {
+	 	return (PDDocument)pdWorkingCopy.getInstance(this, roleCurrentDocumentId);
+	 }
+
+	/**
+	 * Returns the instance(s) connected to this instance through the role "CurrentDocument".
+	 * @return the connected instance(s)
+	 * @throws PDStoreException
+	 */
+	 public Collection<PDDocument> getCurrentDocuments() throws PDStoreException {
+	 	Set<PDDocument> result = new HashSet<PDDocument>();
+	 	GUID PDDocumentTypeId = new GUID("81768bc1969c11e1a634d8a25e8c53de");
+		pdWorkingCopy.getInstances(this, roleCurrentDocumentId, PDDocument.class, PDDocumentTypeId, result);
+	 	return result;
+	 }
+	 
+   /**
+	 * Connects this instance to the given instance using role "CurrentDocument".
+	 * If the given instance is null, nothing happens.
+	 * @param currentDocument the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void addCurrentDocument(GUID currentDocument) throws PDStoreException {
+
+			if (currentDocument != null) {
+				
+				pdWorkingCopy.addLink(this.id, roleCurrentDocumentId, currentDocument);
+			}
+
+	}
+
+
+	/**
+	 * Connects this instance to the given instance using role "CurrentDocument".
+	 * If the given instance is null, nothing happens.
+	 * @param currentDocument the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void addCurrentDocument(PDDocument currentDocument) throws PDStoreException {
+		if (currentDocument != null) {
+			addCurrentDocument(currentDocument.getId());
+		}		
+	}
+	
+	/**
+	 * Connects this instance to the given instance using role "CurrentDocument".
+	 * If the given collection of instances is null, nothing happens.
+	 * @param currentDocument the Collection of instances to connect
+	 * @throws PDStoreException
+	 */
+	public void addCurrentDocuments(Collection<PDDocument> currentDocuments) throws PDStoreException {
+		if (currentDocuments == null)
+			return;
+		
+		for (PDDocument instance : currentDocuments)
+			addCurrentDocument(instance);	
+	}
+
+	/**
+	 * Removes the link from this instance through role "CurrentDocument".
+	 * @throws PDStoreException
+	 */
+	public void removeCurrentDocument() throws PDStoreException {
+		pdWorkingCopy.removeLink(this.id, roleCurrentDocumentId, 
+			pdWorkingCopy.getInstance(this, roleCurrentDocumentId));
+	}
+
+	/**
+	 * Removes the link from this instance through role "CurrentDocument" to the given instance, if the link exists.
+	 * If there is no such link, nothing happens.
+	 * If the given instance is null, nothing happens.
+	 * @throws PDStoreException
+	 */
+	public void removeCurrentDocument(Object currentDocument) throws PDStoreException {
+		if (currentDocument == null)
+			return;
+		pdWorkingCopy.removeLink(this.id, roleCurrentDocumentId, currentDocument);
+	}
+
+	/**
+	 * Removes the links from this instance through role "CurrentDocument" to the instances 
+	 * in the given Collection, if the links exist.
+	 * If there are no such links or the collection argument is null, nothing happens.
+	 * @throws PDStoreException
+	 */
+	public void removeCurrentDocuments(Collection<PDDocument> currentDocuments) throws PDStoreException {
+		if (currentDocuments == null)
+			return;
+		
+		for (PDDocument instance : currentDocuments)
+			pdWorkingCopy.removeLink(this.id, roleCurrentDocumentId, instance);
+	}
+
+   /**
+	 * Connects this instance to the given instance using role "CurrentDocument".
+	 * If there is already an instance connected to this instance through role "CurrentDocument", the link will be overwritten.
+	 * If the given instance is null, an existing link is removed."
+	 * @param currentDocument the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void setCurrentDocument(GUID currentDocument) throws PDStoreException {
+		pdWorkingCopy.setLink(this.id,  roleCurrentDocumentId, currentDocument);	
+	}
+	/**
+	 * Connects this instance to the given instance using role "CurrentDocument".
+	 * If there is already an instance connected to this instance through role "CurrentDocument", the link will be overwritten.
+	 * If the given instance is null, an existing link is removed."
+	 * @param currentDocument the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void setCurrentDocument(PDDocument currentDocument) throws PDStoreException {
+		setCurrentDocument(currentDocument.getId());
+	}
+
 }

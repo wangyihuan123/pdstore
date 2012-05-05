@@ -17,8 +17,7 @@ public class PDStoreCMSModelCreator {
 	protected static final GUID CMS_MODELID = GUIDGen.generateGUIDs(1).remove(0);
 	
 	// Complex types
-	protected static final GUID USER_TYPEID = GUIDGen.generateGUIDs(1).remove(0);	
-	protected static final GUID RESOURCE_TYPEID = GUIDGen.generateGUIDs(1).remove(0);	
+	protected static final GUID USER_TYPEID = GUIDGen.generateGUIDs(1).remove(0);		
 	protected static final GUID DOCUMENT_TYPEID = GUIDGen.generateGUIDs(1).remove(0);
 	protected static final GUID CHARACTER_TYPEID = GUIDGen.generateGUIDs(1).remove(0);
 	protected static final GUID HISTORY_TYPEID = GUIDGen.generateGUIDs(1).remove(0);
@@ -28,11 +27,10 @@ public class PDStoreCMSModelCreator {
 	protected static final GUID USERNAME_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
 	protected static final GUID USER_RESOURCE_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
 	
-	// Resource roles
-	protected static final GUID RESOURCE_NAME_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
-	protected static final GUID RESOURCE_LOCATION_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
-	
 	// Document roles
+	protected static final GUID DOCUMENT_TYPE_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
+	protected static final GUID DOCUMENT_NAME_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
+	protected static final GUID DOCUMENT_LOCATION_ROLEID = GUIDGen.generateGUIDs(1).remove(0);	
 	protected static final GUID FISRT_CHAR_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
 	protected static final GUID LAST_CHAR_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
 	
@@ -60,20 +58,19 @@ public class PDStoreCMSModelCreator {
 		
 		// Create CMS types
 		store.createType(transaction, CMS_MODELID, USER_TYPEID, "User");
-		store.createType(transaction, CMS_MODELID, RESOURCE_TYPEID, "Resource");
 		store.createType(transaction, CMS_MODELID, DOCUMENT_TYPEID, "Document");
 		store.createType(transaction, CMS_MODELID, CHARACTER_TYPEID, "Character");
 		store.createType(transaction, CMS_MODELID, HISTORY_TYPEID, "History");
 		store.createType(transaction, CMS_MODELID, OPERATION_TYPEID, "Operation");
 		
 		// Create CMS roles
+		
 		store.createRelation(transaction, USER_TYPEID, null, "Username", USERNAME_ROLEID, PDStore.STRING_TYPEID);	
-		store.createRelation(transaction, USER_TYPEID, null, "CurrentResource", USER_RESOURCE_ROLEID, RESOURCE_TYPEID);
+		store.createRelation(transaction, USER_TYPEID, null, "CurrentDocument", USER_RESOURCE_ROLEID, DOCUMENT_TYPEID);
 		
-		store.createRelation(transaction, RESOURCE_TYPEID, null, "ResourceType", PDStore.HAS_TYPE_ROLEID, PDStore.TYPE_TYPEID);
-		store.createRelation(transaction, RESOURCE_TYPEID, null, "ResourceFileName", RESOURCE_NAME_ROLEID, PDStore.STRING_TYPEID);
-		store.createRelation(transaction, RESOURCE_TYPEID, null, "ResourceFileLocation", RESOURCE_LOCATION_ROLEID ,PDStore.STRING_TYPEID);
-		
+		store.createRelation(transaction, DOCUMENT_TYPEID, null, "DocumentType", DOCUMENT_TYPE_ROLEID, PDStore.STRING_TYPEID);
+		store.createRelation(transaction, DOCUMENT_TYPEID, null, "DocumentFileName", DOCUMENT_NAME_ROLEID, PDStore.STRING_TYPEID);
+		store.createRelation(transaction, DOCUMENT_TYPEID, null, "DocumentFileLocation", DOCUMENT_LOCATION_ROLEID ,PDStore.STRING_TYPEID);		
 		store.createRelation(transaction, DOCUMENT_TYPEID, null, "FirstChar", FISRT_CHAR_ROLEID ,CHARACTER_TYPEID);
 		store.createRelation(transaction, DOCUMENT_TYPEID, null, "LastChar", LAST_CHAR_ROLEID ,CHARACTER_TYPEID);
 		

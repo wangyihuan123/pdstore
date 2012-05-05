@@ -42,7 +42,7 @@ public class ContentManagementSystem extends JFrame {
 		initPDObjects(username, userID, wc, historyID);
 		
 		setTitle(username+"'s CMS");
-		setSize(150,100);
+		setSize(500,300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
 		
 		// set up and populate history pane
@@ -185,12 +185,18 @@ public class ContentManagementSystem extends JFrame {
 	}
 	
 	private void initPDObjects(String username, GUID userID, PDWorkingCopy wc, GUID historyID){
+		
+		GUID transaction = wc.getStore().begin();
+		
 		// init PDHistory
 		history = PDHistory.load(wc, historyID);
 		
 		// init PDUser
 		user = PDUser.load(wc, userID);
 		user.setName(username);
+		
+		wc.getStore().commit(transaction);
+		
 		
 	}
 	
@@ -213,8 +219,12 @@ public class ContentManagementSystem extends JFrame {
 	
 	public static void main(String[] args){
 
+		// This is required
 		try {
+			Class.forName("cms.dal.PDCharacter");
+			Class.forName("cms.dal.PDDocument");
 			Class.forName("cms.dal.PDHistory");
+			Class.forName("cms.dal.PDOperation");			
 			Class.forName("cms.dal.PDUser");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

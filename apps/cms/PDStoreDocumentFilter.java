@@ -4,7 +4,6 @@ package cms;
 import javax.swing.text.*;
 
 import cms.dal.PDDocument;
-import cms.dal.PDResource;
 import cms.dal.PDUser;
 
 import pdstore.GUID;
@@ -39,27 +38,34 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet attr) throws BadLocationException {
     	// don't do anything
     	System.out.println(user.getName()+" Recieved REPLACE: offset: "+offset+", length: "+length+", str: \n'"+str+"'");
-    	PDResource res = user.getCurrentResource();
-    	PDDocument pddoc;
-    	if (res == null){
-    		res = PDResource.load(wc, GUIDGen.generateGUIDs(1).remove(0));
-    		user.setCurrentResource(res);
-    		pddoc = PDDocument.load(wc, GUIDGen.generateGUIDs(1).remove(0));
-    		res.setResourceType(pddoc.getId());
-    	} else if (res.getResourceType().getTypeId().equals(PDDocument.typeId)) {
-    		pddoc = PDDocument.load(wc, res.getResourceType().getId());
-    	}
-    	// add char to document
-    	wc.commit();
-    	/*
-    	if (res.getResourceType().typeId.equals(PDDocument.typeId)) {
-    		System.out.println("Resource is Document");
-    	} else {
-    		System.out.println("Please create a document");
-    	}
-    	*/
+    	
+    	GUID transaction = wc.getStore().begin();
+
+    	// Get current document
+    	PDDocument pddoc = getCurrentDocument();
+    	// Add char to correct position in document
+    	
+
+    	wc.getStore().commit(transaction);
     	
     }
+    
+    private PDDocument getCurrentDocument(){
+    	
+    	PDDocument pddoc = user.getCurrentDocument();
+    	
+    	if (pddoc == null){
+    		// Need to create a document and set as current resource
+    		pddoc = PDDocument.load(wc, GUIDGen.generateGUIDs(1).remove(0));
+    		user.setCurrentDocument(pddoc);
+    	} else {
+    		System.out.println("Document exists");
+    		//pddoc = PDDocument.load(wc, res.);
+    	}   
+    	
+    	return pddoc;
+    }
+    
     
     //needs listeners to PDStore instance
     //listeners will call super methods
