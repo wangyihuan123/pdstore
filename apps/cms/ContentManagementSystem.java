@@ -10,10 +10,12 @@ import javax.swing.*;
 import diagrameditor.HistoryPanel;
 
 public class ContentManagementSystem extends JFrame {
+	
 	private JButton upButton;
 	private JButton downButton;
 	private JButton deleteButton;
 	public JList list;
+	
 	public ContentManagementSystem(){
 
 		setTitle("Collaboration Content Management System");
@@ -124,10 +126,6 @@ public class ContentManagementSystem extends JFrame {
 		
 		splitPane.setContinuousLayout(false);
 	
-
-	 
-
-		
 		splitPane.setOneTouchExpandable(true);
 		
 		historySplitPane.setOneTouchExpandable(true);
@@ -174,12 +172,13 @@ public class ContentManagementSystem extends JFrame {
 			e.printStackTrace();
 		}		
 		
-		ContentManagementSystem ui = new ContentManagementSystem();
+		// Create the UIs
+		ContentManagementSystem cms1 = new ContentManagementSystem();
+		ContentManagementSystem cms2 = new ContentManagementSystem();
 		ui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		ui.setVisible(true);
 		ui.setSize(1500, 1000);
 		
 	}
-	
 	
 }
