@@ -7,26 +7,45 @@ import java.awt.Insets;
 
 import javax.swing.*;
 
+import cms.dal.PDHistory;
+
+import pdstore.GUID;
+import pdstore.GUIDGen;
+import pdstore.PDStore;
+import pdstore.dal.PDSimpleWorkingCopy;
+import pdstore.dal.PDWorkingCopy;
+
 import diagrameditor.HistoryPanel;
 
 public class ContentManagementSystem extends JFrame {
+
+	private static final long serialVersionUID = 1L;
 	
+	// PDStore
+	private static final boolean NETWORK_ACCESS = false;
+	PDHistory history;
+	
+	// UI
 	private JButton upButton;
 	private JButton downButton;
 	private JButton deleteButton;
 	public JList list;
 	
-	public ContentManagementSystem(){
+	public ContentManagementSystem(String username, PDWorkingCopy wc, GUID historyID){
 
-		setTitle("Collaboration Content Management System");
+		setTitle(username+"'s CMS");
 		setSize(1500,1000);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		// get history
+		PDHistory.load(wc, historyID);
+		//...
 		
-		
-		// set up history pane
-	
-		JPanel buttonPane = new JPanel(new GridLayout(1, 3));
+		// set up and populate history pane
+		//JPanel historyPane = new JPanel();
+		JPanel buttonPane = new JPanel(new GridLayout(1, 3));		
 		JPanel buttonPane1 = new JPanel();
+
 		list = new JList();
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setSelectedIndex(0);
@@ -79,6 +98,7 @@ public class ContentManagementSystem extends JFrame {
 				//this.deleteButton.addActionListener(deleteButton(editor, list));
 				//this.deleteButton.setActionCommand("Delete");
 				buttonPane.add(this.deleteButton);
+
 				
 				buttonPane1.add(buttonPane);
 				JSplitPane historyPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,buttonPane,listScrollPane);
@@ -97,11 +117,9 @@ public class ContentManagementSystem extends JFrame {
 		
 		//set up list pane
 		
-		
-		
 		JPanel jsp2 = new JPanel();
-	
-		
+		JPanel historyPanel = new JPanel();
+		JLabel historyLabel = new JLabel("History");
 		
 		JTextArea displayArea = new JTextArea();
 		//displayArea.setMinimumSize(new Dimension(200,500));
@@ -114,14 +132,12 @@ public class ContentManagementSystem extends JFrame {
 		//jsp2.setMinimumSize(new Dimension(800,500));
 		
 		fileOrganiserPane.add(l3);
-		
-		JPanel editTextArea = new JPanel();
+		historyPanel.add(historyLabel);
+		//JPanel editTextArea = new JPanel();
+		JTextPane editTextArea = new JTextPane();
 		JLabel text = new JLabel("edit Text");
 		editTextArea.add(text);
 		//editTextArea.setMinimumSize(new Dimension(800,500));
-		
-		
-		
 		
 		//create split panes
 		
@@ -132,18 +148,13 @@ public class ContentManagementSystem extends JFrame {
 		    
 		JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,jsp2,editTextArea);
 		
-		
 		editTextSplitPane.setDividerSize(8);
 		editTextSplitPane.setContinuousLayout(true);
-		
-		
 		
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,historySplitPane,editTextSplitPane);
 		//JSplitPane fileOrganiserSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,splitPane,fileOrganiserPane);
 		
-		
 		splitPane.setContinuousLayout(false);
-	
 		splitPane.setOneTouchExpandable(true);
 		
 		historySplitPane.setOneTouchExpandable(true);
@@ -178,7 +189,13 @@ public class ContentManagementSystem extends JFrame {
 	public static void main(String[] args){
 		
 		// Load DAL classes
-	
+		PDStore store;
+		PDWorkingCopy wc1;
+		PDWorkingCopy wc2;
+		GUID historyID = GUIDGen.generateGUIDs(1).remove(0);
+		
+		// Load DAL classes -- TODO: Is this really needed?
+		/*
 		try {
 			Class.forName("cms.dal.PDCharacter");
 			Class.forName("cms.dal.PDDocument");
@@ -189,12 +206,24 @@ public class ContentManagementSystem extends JFrame {
 			
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		}	
+		*/
+	
+		
+		if (NETWORK_ACCESS) {
+			store = PDStore.connectToServer(null);
+			wc1 = new PDSimpleWorkingCopy(store);
+			wc2 = new PDSimpleWorkingCopy(store);
+		} else {
+			store = new PDStore("ContentManagementSystem");
+			wc1 = new PDSimpleWorkingCopy(store);
+			wc2 = wc1;
 		}		
 		
 		
 		// Create the UIs
-		ContentManagementSystem cms1 = new ContentManagementSystem();
-		ContentManagementSystem cms2 = new ContentManagementSystem();
+		ContentManagementSystem cms1 = new ContentManagementSystem("Bob", wc1, historyID);
+		ContentManagementSystem cms2 = new ContentManagementSystem("Alice", wc2, historyID);
 		cms1.setVisible(true);
 		cms2.setVisible(true);
 	}
