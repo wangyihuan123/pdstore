@@ -80,7 +80,7 @@ public class ContentManagementSystem extends JFrame {
 		
 		JPanel jsp2 = new JPanel();
 		JPanel historyPanel = new JPanel();
-		JLabel history = new JLabel("Hostory");
+		JLabel history = new JLabel("History");
 		
 		
 		JTextArea displayArea = new JTextArea();
@@ -145,6 +145,19 @@ public class ContentManagementSystem extends JFrame {
 	}
 	
 	public static void main(String[] args){
+		
+		// Load DAL classes
+		try {
+			Class.forName("cms.dal.PDCharacter");
+			Class.forName("cms.dal.PDDocument");
+			Class.forName("cms.dal.PDHistory");
+			Class.forName("cms.dal.PDOperation");
+			Class.forName("cms.dal.PDResource");
+			Class.forName("cms.dal.PDUser");
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}		
 		
 		ContentManagementSystem ui = new ContentManagementSystem();
 		ui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
