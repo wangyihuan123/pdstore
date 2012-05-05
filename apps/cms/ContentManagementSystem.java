@@ -1,15 +1,13 @@
 package cms;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.io.File;
-import java.io.IOException;
-
 import javax.swing.*;
 
 import cms.dal.PDHistory;
+import cms.dal.PDOperation;
 import cms.dal.PDUser;
 
 import pdstore.GUID;
@@ -17,8 +15,10 @@ import pdstore.GUIDGen;
 import pdstore.PDStore;
 import pdstore.dal.PDSimpleWorkingCopy;
 import pdstore.dal.PDWorkingCopy;
+import pdstore.generic.PDChange;
 
 import diagrameditor.HistoryPanel;
+import diagrameditor.RepaintListener;
 
 public class ContentManagementSystem extends JFrame {
 
@@ -137,11 +137,16 @@ public class ContentManagementSystem extends JFrame {
 		
 		fileOrganiserPane.add(l3);
 		historyPanel.add(historyLabel);
-		//JPanel editTextArea = new JPanel();
-		PDStoreTextPane editTextArea = new PDStoreTextPane(wc, user);
+
+		// TEXT PANE
+		PDStoreTextPane editTextArea = new PDStoreTextPane(wc, user, history);
 		JLabel text = new JLabel("edit Text");
 		editTextArea.add(text);
-		//editTextArea.setMinimumSize(new Dimension(800,500));
+
+		PDStoreDocumentListener listener = new PDStoreDocumentListener();
+        PDChange<GUID, Object, GUID> changeTemplate = new PDChange<GUID, Object, GUID> (null, null, null, PDOperation.roleOpTypeId, null);
+		wc.getStore().getListenerDispatcher().addListener(listener, changeTemplate);
+		//editTextArea.setMinimumSize(new Dimension(800,500));a
 		
 		//create split panes
 		
@@ -240,6 +245,8 @@ public class ContentManagementSystem extends JFrame {
 		GUID userID1 = GUIDGen.generateGUIDs(1).remove(0);
 		GUID userID2 = GUIDGen.generateGUIDs(1).remove(0);
 		
+		
+		
 		// Determine PDStore location
 		if (NETWORK_ACCESS) {
 			store = PDStore.connectToServer(null);
@@ -256,6 +263,7 @@ public class ContentManagementSystem extends JFrame {
 		ContentManagementSystem cms2 = new ContentManagementSystem("Alice", userID2, wc2, historyID);
 		cms1.setVisible(true);
 		cms2.setVisible(true);
+
 	}
 	
 }

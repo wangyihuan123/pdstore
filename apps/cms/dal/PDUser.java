@@ -12,10 +12,10 @@ import pdstore.dal.*;
  */
 public class PDUser implements PDInstance {
 
-	public static final GUID typeId = new GUID("81768bc0969c11e1a634d8a25e8c53de"); 
+	public static final GUID typeId = new GUID("70cc22b096bc11e184cdd8a25e8c53de"); 
 
-	public static final GUID roleUsernameId = new GUID("81768bc5969c11e1a634d8a25e8c53de");
-	public static final GUID roleCurrentDocumentId = new GUID("81768bc6969c11e1a634d8a25e8c53de");
+	public static final GUID roleUsernameId = new GUID("70cc22b596bc11e184cdd8a25e8c53de");
+	public static final GUID roleCurrentDocumentId = new GUID("70cc22b696bc11e184cdd8a25e8c53de");
 
 	static {
 		register();
@@ -268,7 +268,7 @@ public class PDUser implements PDInstance {
 	 */
 	 public Collection<PDDocument> getCurrentDocuments() throws PDStoreException {
 	 	Set<PDDocument> result = new HashSet<PDDocument>();
-	 	GUID PDDocumentTypeId = new GUID("81768bc1969c11e1a634d8a25e8c53de");
+	 	GUID PDDocumentTypeId = new GUID("70cc22b196bc11e184cdd8a25e8c53de");
 		pdWorkingCopy.getInstances(this, roleCurrentDocumentId, PDDocument.class, PDDocumentTypeId, result);
 	 	return result;
 	 }

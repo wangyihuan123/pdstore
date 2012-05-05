@@ -31,8 +31,7 @@ public class PDStoreCMSModelCreator {
 	protected static final GUID DOCUMENT_TYPE_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
 	protected static final GUID DOCUMENT_NAME_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
 	protected static final GUID DOCUMENT_LOCATION_ROLEID = GUIDGen.generateGUIDs(1).remove(0);	
-	protected static final GUID FISRT_CHAR_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
-	protected static final GUID LAST_CHAR_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
+	protected static final GUID CHARACTER_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
 	
 	// Character roles
 	protected static final GUID CHAR_VALUE_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
@@ -45,8 +44,13 @@ public class PDStoreCMSModelCreator {
 	// Operation roles
 	protected static final GUID OPERATION_TYPE_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
 	protected static final GUID OPERATION_USER_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
+	protected static final GUID OPERATION_OFFSET_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
+	protected static final GUID OPERATION_LENGTH_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
+	protected static final GUID OPERATION_STRING_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
 	protected static final GUID PREVIOUS_OPERATION_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
 	protected static final GUID NEXT_OPERATION_ROLEID = GUIDGen.generateGUIDs(1).remove(0);	
+	protected static final GUID OPERATION_DOCUMENT_ROLEID = GUIDGen.generateGUIDs(1).remove(0);	
+	
 		
 	public PDStoreCMSModelCreator(String DBFilename){
 		
@@ -71,17 +75,20 @@ public class PDStoreCMSModelCreator {
 		store.createRelation(transaction, DOCUMENT_TYPEID, null, "DocumentType", DOCUMENT_TYPE_ROLEID, PDStore.STRING_TYPEID);
 		store.createRelation(transaction, DOCUMENT_TYPEID, null, "DocumentFileName", DOCUMENT_NAME_ROLEID, PDStore.STRING_TYPEID);
 		store.createRelation(transaction, DOCUMENT_TYPEID, null, "DocumentFileLocation", DOCUMENT_LOCATION_ROLEID ,PDStore.STRING_TYPEID);		
-		store.createRelation(transaction, DOCUMENT_TYPEID, null, "FirstChar", FISRT_CHAR_ROLEID ,CHARACTER_TYPEID);
-		store.createRelation(transaction, DOCUMENT_TYPEID, null, "LastChar", LAST_CHAR_ROLEID ,CHARACTER_TYPEID);
+		store.createRelation(transaction, DOCUMENT_TYPEID, null, "Character", CHARACTER_ROLEID, CHARACTER_TYPEID);
 		
 		store.createRelation(transaction, CHARACTER_TYPEID, null, "CharValue", CHAR_VALUE_ROLEID , PDStore.CHAR_TYPEID);
 		store.createRelation(transaction, CHARACTER_TYPEID, null, "PrevChar", PREVIOUS_CHAR_ROLEID ,CHARACTER_TYPEID);
 		store.createRelation(transaction, CHARACTER_TYPEID, null, "NextChar", NEXT_CHAR_ROLEID ,CHARACTER_TYPEID);
 		
-		store.createRelation(transaction, HISTORY_TYPEID, null, "FirstOp", HISTORY_OPERATION_ROLEID, OPERATION_TYPEID);
+		store.createRelation(transaction, HISTORY_TYPEID, null, "Operation", HISTORY_OPERATION_ROLEID, OPERATION_TYPEID);
 		
-		store.createRelation(transaction, OPERATION_TYPEID, null, "OpType", OPERATION_TYPE_ROLEID, PDStore.INTEGER_TYPEID);
+		store.createRelation(transaction, OPERATION_TYPEID, null, "OpType", OPERATION_TYPE_ROLEID, PDStore.STRING_TYPEID);
+		store.createRelation(transaction, OPERATION_TYPEID, null, "OpOffset", OPERATION_OFFSET_ROLEID, PDStore.INTEGER_TYPEID);
+		store.createRelation(transaction, OPERATION_TYPEID, null, "OpLength", OPERATION_LENGTH_ROLEID, PDStore.INTEGER_TYPEID);
+		store.createRelation(transaction, OPERATION_TYPEID, null, "OpString", OPERATION_STRING_ROLEID, PDStore.STRING_TYPEID);
 		store.createRelation(transaction, OPERATION_TYPEID, null, "OpUser", OPERATION_USER_ROLEID, USER_TYPEID);
+		store.createRelation(transaction, OPERATION_TYPEID, null, "OpDocument", OPERATION_DOCUMENT_ROLEID, DOCUMENT_TYPEID);
 		store.createRelation(transaction, OPERATION_TYPEID, null, "PrevOp", PREVIOUS_OPERATION_ROLEID, OPERATION_TYPEID);
 		store.createRelation(transaction, OPERATION_TYPEID, null, "NextOp", NEXT_OPERATION_ROLEID, OPERATION_TYPEID);		
 		
