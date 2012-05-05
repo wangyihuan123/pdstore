@@ -139,10 +139,25 @@ public class ContentManagementSystem extends JFrame {
 		fileOrganiserSplitPane.setOneTouchExpandable(true);
 		
 		getContentPane().add(fileOrganiserSplitPane,BorderLayout.CENTER);
-	
-		
 		
 	}
+	
+	/**
+	 * Method to create an image
+	 * @param imageName
+	 * @return an ImageIcon of the image
+	 */
+	private static ImageIcon createImageIcon(String imageName) {
+		String imgLocation = imageName + ".jpg";
+		java.net.URL imageURL = HistoryPanel.class.getResource(imgLocation);
+		if (imageURL == null) {
+			System.err.println("Resource not found: " + imgLocation);
+			return null;
+		} else {
+			return new ImageIcon(imageURL);
+		}
+	}
+		
 	
 	public static void main(String[] args){
 		
@@ -164,28 +179,7 @@ public class ContentManagementSystem extends JFrame {
 		ui.setVisible(true);
 		ui.setSize(1500, 1000);
 		
-		
 	}
-	
-	/**
-	 * Method to create an image
-	 * @param imageName
-	 * @return an ImageIcon of the image
-	 */
-	private static ImageIcon createImageIcon(String imageName) {
-		String imgLocation = imageName + ".jpg";
-		java.net.URL imageURL = HistoryPanel.class.getResource(imgLocation);
-		if (imageURL == null) {
-			System.err.println("Resource not found: " + imgLocation);
-			return null;
-		} else {
-			return new ImageIcon(imageURL);
-		}
-	}
-	
-	
-	
-	
 	
 	
 }
