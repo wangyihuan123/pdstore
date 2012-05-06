@@ -43,7 +43,11 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	if (filter){
     		PDRemove(fb, offset, length);
     	} else {
-    		super.remove(fb, offset, length);
+    		try {
+    			super.remove(fb, offset, length);
+    		} catch (BadLocationException e){
+    			System.out.println("Bad location in DocumentFilter");
+    		}	
     	}
     	
     }
@@ -53,7 +57,11 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	if (filter){
     		PDInsertString(fb, offset, str, attr);
     	} else {
-    		super.insertString(fb, offset, str, attr);
+    		try {
+    			super.insertString(fb, offset, str, attr);
+    		} catch (BadLocationException e){
+    			System.out.println("Bad location in DocumentFilter");
+    		}	
     	}
     }
     
@@ -62,7 +70,11 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	if (filter){
     		PDReplace(fb, offset, length, str, attr);
     	} else {
-    		super.replace(fb, offset, length, str, attr);
+    		try {
+    			super.replace(fb, offset, length, str, attr);
+    		} catch (BadLocationException e){
+    			System.out.println("Bad location in DocumentFilter");
+    		}
     	}
     	
     }

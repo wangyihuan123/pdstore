@@ -34,12 +34,15 @@ public class CMSLoader {
 			store = PDStore.connectToServer(null);
 			addData();
 			for (int i = 0; i < instances; i++){
-				copies.add(new PDSimpleWorkingCopy(store));
+				PDWorkingCopy copy = new PDSimpleWorkingCopy(store);
+				//copy.setAutocommit(true);				
+				copies.add(copy);
 			}
 		} else {
 			store = new PDStore(STORE_NAME);
 			addData();
 			PDWorkingCopy sharedCopy = new PDSimpleWorkingCopy(store);
+			//sharedCopy.setAutocommit(true);
 			for (int i = 0; i < instances; i++){
 				copies.add(sharedCopy);
 			}			
@@ -75,11 +78,11 @@ public class CMSLoader {
 			store.setName(transaction, uID, "User_"+i);
 			store.setType(transaction, uID, PDUser.typeId);
 			// Assign caret colors
-			store.addLink(transaction, uID, PDUser.roleCaretColorRId, (long)(Math.random()*255.0));
-			store.addLink(transaction, uID, PDUser.roleCaretColorGId, (long)(Math.random()*255.0));
-			store.addLink(transaction, uID, PDUser.roleCaretColorBId, (long)(Math.random()*255.0));
+			store.addLink(transaction, uID, PDUser.roleCaretColorRId, new Long((long)(Math.random()*255.0)));
+			store.addLink(transaction, uID, PDUser.roleCaretColorGId, new Long((long)(Math.random()*255.0)));
+			store.addLink(transaction, uID, PDUser.roleCaretColorBId, new Long((long)(Math.random()*255.0)));
 			// Assign default caret position
-			store.addLink(transaction, uID, PDUser.roleCaretPositionId, 2);
+			store.addLink(transaction, uID, PDUser.roleCaretPositionId, new Long(0));
 			
 		}
 

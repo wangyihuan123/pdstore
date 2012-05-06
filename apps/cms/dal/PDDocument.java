@@ -12,12 +12,12 @@ import pdstore.dal.*;
  */
 public class PDDocument implements PDInstance {
 
-	public static final GUID typeId = new GUID("88f390a1975a11e18f70d8a25e8c53de"); 
+	public static final GUID typeId = new GUID("0b7bf011975d11e1b90ad8a25e8c53de"); 
 
-	public static final GUID roleCharacterId = new GUID("88f390ae975a11e18f70d8a25e8c53de");
-	public static final GUID roleDocumentFileNameId = new GUID("88f390ac975a11e18f70d8a25e8c53de");
-	public static final GUID roleDocumentFileLocationId = new GUID("88f390ad975a11e18f70d8a25e8c53de");
-	public static final GUID roleDocumentTypeId = new GUID("88f390ab975a11e18f70d8a25e8c53de");
+	public static final GUID roleCharacterId = new GUID("0b7bf01e975d11e1b90ad8a25e8c53de");
+	public static final GUID roleDocumentFileLocationId = new GUID("0b7bf01d975d11e1b90ad8a25e8c53de");
+	public static final GUID roleDocumentFileNameId = new GUID("0b7bf01c975d11e1b90ad8a25e8c53de");
+	public static final GUID roleDocumentTypeId = new GUID("0b7bf01b975d11e1b90ad8a25e8c53de");
 
 	static {
 		register();
@@ -185,7 +185,7 @@ public class PDDocument implements PDInstance {
 	 */
 	 public Collection<PDCharacter> getCharacters() throws PDStoreException {
 	 	Set<PDCharacter> result = new HashSet<PDCharacter>();
-	 	GUID PDCharacterTypeId = new GUID("88f390a2975a11e18f70d8a25e8c53de");
+	 	GUID PDCharacterTypeId = new GUID("0b7bf012975d11e1b90ad8a25e8c53de");
 		pdWorkingCopy.getInstances(this, roleCharacterId, PDCharacter.class, PDCharacterTypeId, result);
 	 	return result;
 	 }
@@ -291,91 +291,6 @@ public class PDDocument implements PDInstance {
 
 
 	/**
-	 * Returns the instance connected to this instance through the role "DocumentFileName".
-	 * @return the connected instance
-	 * @throws PDStoreException
-	 */
-	 public String getDocumentFileName() throws PDStoreException {
-	 	return (String)pdWorkingCopy.getInstance(this, roleDocumentFileNameId);
-	 }
-
-	/**
-	 * Returns the instance(s) connected to this instance through the role "DocumentFileName".
-	 * @return the connected instance(s)
-	 * @throws PDStoreException
-	 */
-	 public Collection<String> getDocumentFileNames() throws PDStoreException {
-	 	Set<String> result = new HashSet<String>();
-	 	GUID StringTypeId = new GUID("4a8a986c4062db11afc0b95b08f50e2f");
-		pdWorkingCopy.getInstances(this, roleDocumentFileNameId, String.class, StringTypeId, result);
-	 	return result;
-	 }
-	 
-   /**
-	 * Connects this instance to the given instance using role "DocumentFileName".
-	 * If the given instance is null, nothing happens.
-	 * @param documentFileName the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void addDocumentFileName(String documentFileName) throws PDStoreException {
-
-			if (documentFileName != null) {
-				
-				pdWorkingCopy.addLink(this.id, roleDocumentFileNameId, documentFileName);
-			}
-
-	}
-
-	/**
-	 * Connects this instance to the given instances using role "DocumentFileName".
-	 * If the given collection of instances is null, nothing happens.
-	 * @param documentFileName the Collection of instances to connect
-	 * @throws PDStoreException
-	 */
-	public void addDocumentFileNames(Collection<String> documentFileNames) throws PDStoreException {
-		if (documentFileNames == null)
-			return;
-
-		for (String instance : documentFileNames)
-			addDocumentFileName(instance);
-	}
-
-
-	/**
-	 * Removes the link from this instance through role "DocumentFileName".
-	 * @throws PDStoreException
-	 */
-	public void removeDocumentFileName() throws PDStoreException {
-		pdWorkingCopy.removeLink(this.id, roleDocumentFileNameId, 
-			pdWorkingCopy.getInstance(this, roleDocumentFileNameId));
-	}
-
-	/**
-	 * Removes the link from this instance through role "DocumentFileName" to the given instance, if the link exists.
-	 * If there is no such link, nothing happens.
-	 * If the given instance is null, nothing happens.
-	 * @throws PDStoreException
-	 */
-	public void removeDocumentFileName(Object documentFileName) throws PDStoreException {
-		if (documentFileName == null)
-			return;
-		pdWorkingCopy.removeLink(this.id, roleDocumentFileNameId, documentFileName);
-	}
-
-
-   /**
-	 * Connects this instance to the given instance using role "DocumentFileName".
-	 * If there is already an instance connected to this instance through role "DocumentFileName", the link will be overwritten.
-	 * If the given instance is null, an existing link is removed."
-	 * @param documentFileName the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void setDocumentFileName(String documentFileName) throws PDStoreException {
-		pdWorkingCopy.setLink(this.id,  roleDocumentFileNameId, documentFileName);	
-	}
-
-
-	/**
 	 * Returns the instance connected to this instance through the role "DocumentFileLocation".
 	 * @return the connected instance
 	 * @throws PDStoreException
@@ -457,6 +372,91 @@ public class PDDocument implements PDInstance {
 	 */
 	public void setDocumentFileLocation(String documentFileLocation) throws PDStoreException {
 		pdWorkingCopy.setLink(this.id,  roleDocumentFileLocationId, documentFileLocation);	
+	}
+
+
+	/**
+	 * Returns the instance connected to this instance through the role "DocumentFileName".
+	 * @return the connected instance
+	 * @throws PDStoreException
+	 */
+	 public String getDocumentFileName() throws PDStoreException {
+	 	return (String)pdWorkingCopy.getInstance(this, roleDocumentFileNameId);
+	 }
+
+	/**
+	 * Returns the instance(s) connected to this instance through the role "DocumentFileName".
+	 * @return the connected instance(s)
+	 * @throws PDStoreException
+	 */
+	 public Collection<String> getDocumentFileNames() throws PDStoreException {
+	 	Set<String> result = new HashSet<String>();
+	 	GUID StringTypeId = new GUID("4a8a986c4062db11afc0b95b08f50e2f");
+		pdWorkingCopy.getInstances(this, roleDocumentFileNameId, String.class, StringTypeId, result);
+	 	return result;
+	 }
+	 
+   /**
+	 * Connects this instance to the given instance using role "DocumentFileName".
+	 * If the given instance is null, nothing happens.
+	 * @param documentFileName the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void addDocumentFileName(String documentFileName) throws PDStoreException {
+
+			if (documentFileName != null) {
+				
+				pdWorkingCopy.addLink(this.id, roleDocumentFileNameId, documentFileName);
+			}
+
+	}
+
+	/**
+	 * Connects this instance to the given instances using role "DocumentFileName".
+	 * If the given collection of instances is null, nothing happens.
+	 * @param documentFileName the Collection of instances to connect
+	 * @throws PDStoreException
+	 */
+	public void addDocumentFileNames(Collection<String> documentFileNames) throws PDStoreException {
+		if (documentFileNames == null)
+			return;
+
+		for (String instance : documentFileNames)
+			addDocumentFileName(instance);
+	}
+
+
+	/**
+	 * Removes the link from this instance through role "DocumentFileName".
+	 * @throws PDStoreException
+	 */
+	public void removeDocumentFileName() throws PDStoreException {
+		pdWorkingCopy.removeLink(this.id, roleDocumentFileNameId, 
+			pdWorkingCopy.getInstance(this, roleDocumentFileNameId));
+	}
+
+	/**
+	 * Removes the link from this instance through role "DocumentFileName" to the given instance, if the link exists.
+	 * If there is no such link, nothing happens.
+	 * If the given instance is null, nothing happens.
+	 * @throws PDStoreException
+	 */
+	public void removeDocumentFileName(Object documentFileName) throws PDStoreException {
+		if (documentFileName == null)
+			return;
+		pdWorkingCopy.removeLink(this.id, roleDocumentFileNameId, documentFileName);
+	}
+
+
+   /**
+	 * Connects this instance to the given instance using role "DocumentFileName".
+	 * If there is already an instance connected to this instance through role "DocumentFileName", the link will be overwritten.
+	 * If the given instance is null, an existing link is removed."
+	 * @param documentFileName the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void setDocumentFileName(String documentFileName) throws PDStoreException {
+		pdWorkingCopy.setLink(this.id,  roleDocumentFileNameId, documentFileName);	
 	}
 
 

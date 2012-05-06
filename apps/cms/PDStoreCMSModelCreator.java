@@ -75,7 +75,7 @@ public class PDStoreCMSModelCreator {
 		// Create CMS roles
 			
 		store.createRelation(transaction, USER_TYPEID, null, "CurrentDocument", USER_RESOURCE_ROLEID, DOCUMENT_TYPEID);
-		store.createRelation(transaction, USER_TYPEID, null, "CaretColorR", USER_CARET_R_ROLEID, PDStore.INTEGER_TYPEID);
+		store.createRelation(transaction, USER_TYPEID, null, "CaretColorR", USER_CARET_R_ROLEID, PDStore.INTEGER_TYPEID); //Chars aren't working for some reason
 		store.createRelation(transaction, USER_TYPEID, null, "CaretColorG", USER_CARET_G_ROLEID, PDStore.INTEGER_TYPEID);
 		store.createRelation(transaction, USER_TYPEID, null, "CaretColorB", USER_CARET_B_ROLEID, PDStore.INTEGER_TYPEID);
 		store.createRelation(transaction, USER_TYPEID, null, "CaretPosition", USER_CARET_POSITION_ROLEID, PDStore.INTEGER_TYPEID);

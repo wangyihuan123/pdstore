@@ -9,6 +9,7 @@ import cms.dal.PDOperation;
 import cms.dal.PDUser;
 
 import pdstore.GUID;
+import pdstore.dal.PDInstance;
 import pdstore.generic.PDChange;
 import pdstore.generic.PDCoreI;
 import pdstore.notify.PDListener;
@@ -58,34 +59,80 @@ public class PDStoreDocumentListener implements PDListener<GUID, Object, GUID> {
 		// Do something appropriate given the OpType
 		filter.setFilter(false);
 		try {
-			switch ((int)type){
+			
+			int oldPos, newPos;
+			
+			switch ((int)type){	
 				case PDStoreDocumentFilter.REMOVE:
 					doc.remove((int) offset, (int) length);
+					// Broadcast change to other users
+					//broadcastCaretChange((int)-length);
 					// Update caret for this user
-					if (username.equals(cms.user.getName())){
-						cms.textEditor.setCaretPosition((int)offset);
+					if (username.equals(cms.user.getName())){ 
+						//cms.textEditor.setCaretPosition((int)offset);
+						cms.textEditor.setCaretPosition((int) ((cms.textEditor.getCaretPosition() - length)));
 					}
 					break;
 				case PDStoreDocumentFilter.INSERT:
 					doc.insertString((int) offset, str, null);
+					// Broadcast change to other users
+					oldPos = cms.textEditor.getCaretPosition();
+					newPos = oldPos + str.length();
+					//broadcastCaretChange(oldPos, newPos);
 					// Update caret for this user
 					if (username.equals(cms.user.getName())){
-						cms.textEditor.setCaretPosition(cms.textEditor.getCaretPosition()+str.length());
-					}							
+						cms.textEditor.setCaretPosition(newPos);
+					} 						
 					break;
 				case PDStoreDocumentFilter.REPLACE:	
 					doc.replace((int) offset, (int) length, str, null);
+					// Broadcast change to other users
+					oldPos = cms.textEditor.getCaretPosition();
+					newPos = oldPos + str.length();
+					//broadcastCaretChange(oldPos, newPos);
 					// Update caret for this user
 					if (username.equals(cms.user.getName())){
-						cms.textEditor.setCaretPosition(cms.textEditor.getCaretPosition()+str.length());
-					}						
+						cms.textEditor.setCaretPosition(newPos);
+					}				
 					break;		
 			}
 		} catch (BadLocationException e){
-			e.printStackTrace();
+			System.out.println("Bad location in DoucmentListener");
 		}
 		filter.setFilter(true);
 	
+	}
+
+	private void broadcastCaretChange(int length){
+		int change = length;
+		Collection<PDInstance> users = cms.wc.getAllInstancesOfType(PDUser.typeId);
+		int pos;
+		for (Object o : users){
+			PDUser u = (PDUser) o;
+			// Avoid updating the owner twice
+			if (!u.getName().equals(cms.user.getName())) {
+				pos = u.getCaretPosition().intValue() + change;
+				pos = pos < 0 ? 0 : pos;
+				u.setCaretPosition(new Long(pos));
+			}
+		}
+		cms.wc.commit();		
+	}
+	
+	private void broadcastCaretChange(int oldPos, int newPos){
+		int change = newPos - oldPos;
+		Collection<PDInstance> users = cms.wc.getAllInstancesOfType(PDUser.typeId);
+		int pos;
+		for (Object o : users){
+			PDUser u = (PDUser) o;
+			// Avoid updating the owner twice
+			if (!u.getName().equals(cms.user.getName())) {
+				pos = u.getCaretPosition().intValue() + change;
+				pos = pos < 0 ? 0 : pos;
+				u.setCaretPosition(new Long(pos));
+			}
+		}
+		cms.wc.commit();
 	}
 
 	@Override

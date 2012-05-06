@@ -16,6 +16,7 @@ import pdstore.GUIDGen;
 import pdstore.dal.PDInstance;
 import pdstore.dal.PDWorkingCopy;
 
+import cms.PDStoreTextPane.UserCaret;
 import cms.dal.PDUser;
 
 public class CMSCaret extends DefaultCaret {
@@ -63,8 +64,78 @@ public class CMSCaret extends DefaultCaret {
 			}
 		}
 		repaint();
-	}	
+	}
+	
 
+	@Override
+	public void paint(Graphics g)
+	{
+		if(isVisible()) 
+		{
+			int reportedPos = 0;
+			try 
+			{
+				
+				Collection<PDInstance> users = wc.getAllInstancesOfType(PDUser.typeId);
+				
+				PDStoreTextPane component = (PDStoreTextPane) getComponent();
+				TextUI mapper = component.getUI();
+				
+
+				ArrayList<Rectangle> damages = new ArrayList<Rectangle>();
+				Rectangle clip = g.getClipBounds();
+				Rectangle r;
+				int doRepaint = 0, getOut = 0;
+				
+				// Iterate over user carets
+				for (UserCaret uc: component.getUserCarets()) {
+					r = mapper.modelToView(component, uc.getPosition(), Position.Bias.Forward); 
+					
+					//### Debugging only
+					//reportedPos = uc.getPosition();
+					//if (uc.getName().equals(user.getName())){
+						//System.out.println("Location for "+user.getName()+": @reported "+reportedPos+", @local "+getDot()+", @remote "+user.getCaretPosition());
+					//}
+					//###
+					
+					if ((r == null) || ((r.width == 0) && (r.height == 0))) 
+					{
+						getOut++;			
+					} else {
+						if (width > 0 && height > 0 && !this.contains(r.x, r.y, r.width, r.height)) 
+						{
+							if (clip != null && !clip.contains(this)) 
+							{
+								doRepaint++;
+							}
+							damages.add(r);
+						}	
+						g.setColor(uc.getColor());
+						
+						// Paint caret
+						int paintWidth = getCaretWidth(r.height);
+						g.fillRect(r.x, r.y, paintWidth, r.height);
+					}					
+					
+				}
+				if (getOut == users.size()){
+					return;
+				} else {
+					if (doRepaint > 0){
+						repaint();
+					} else {
+						damage(damages);
+					}
+				}
+			} catch (BadLocationException e) 	{
+				//System.out.println("Hmmm... bad location for "+user.getName()+": @reported "+reportedPos+", @local "+getDot()+", @remote "+user.getCaretPosition());
+    			System.out.println("Bad location in CMSCaret");
+			}
+		}
+	}	
+	
+
+/*
 	@Override
 	public void paint(Graphics g)
 	{
@@ -73,12 +144,7 @@ public class CMSCaret extends DefaultCaret {
 			try 
 			{
 				
-				//Collection<Object> users = wc.getStore().getAllInstancesOfType(GUIDGen.generateGUIDs(1).remove(0), PDUser.typeId);
 				Collection<PDInstance> users = wc.getAllInstancesOfType(PDUser.typeId);
-				//ArrayList<Integer> users = new ArrayList<Integer>();
-				//users.add(getDot());
-				//int dot2 = getDot() - 3; dot2 = dot2 < 0?0:dot2;
-				//users.add(dot2);
 				
 				JTextComponent component = getComponent();
 				TextUI mapper = component.getUI();
@@ -91,11 +157,10 @@ public class CMSCaret extends DefaultCaret {
 				for (Object o : users){
 					PDUser u = (PDUser) o;
 					if (u.getName().equals(user.getName())) {
-						r = mapper.modelToView(component, getDot(), Position.Bias.Backward); 
+						r = mapper.modelToView(component, getDot(), Position.Bias.Forward); 
 					} else {
-						Object l = u.getCaretPosition();
-						int pos = getDot();
-						r = mapper.modelToView(component, pos, Position.Bias.Backward); 
+						int pos = u.getCaretPosition().intValue();
+						r = mapper.modelToView(component, pos, Position.Bias.Forward); 
 					}
 					if ((r == null) || ((r.width == 0) && (r.height == 0))) 
 					{
@@ -110,11 +175,11 @@ public class CMSCaret extends DefaultCaret {
 							damages.add(r);
 						}	
 						// Set color
-						//long red = (long) u.getCaretColorR();
-						//long green = (long) u.getCaretColorG().intValue();
-						//long blue = (long) (u.getCaretColorB().intValue());
-						//g.setColor(new Color((char)red, (char)green, (char)blue));
-						g.setColor(new Color(0, 0, 0));
+						int red = u.getCaretColorR().intValue();
+						int green = u.getCaretColorG().intValue();
+						int blue = u.getCaretColorB().intValue();
+						g.setColor(new Color((char) red, (char) green, (char) blue));
+						//g.setColor(new Color(0, 0, 0));
 						
 						// Paint caret
 						int paintWidth = getCaretWidth(r.height);
@@ -136,5 +201,7 @@ public class CMSCaret extends DefaultCaret {
 			}
 		}
 	}
+*/	
+	
 }
 

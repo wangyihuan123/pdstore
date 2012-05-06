@@ -186,7 +186,9 @@ public class ContentManagementSystem extends JFrame {
 		
 		// Setup editor
 		textEditor = new PDStoreTextPane(wc, user, history);
-		textEditor.setCaret(new CMSCaret(wc, user));
+		CMSCaret caret = new CMSCaret(wc, user);
+		textEditor.setCaret(caret);
+		//caret.
 		
 		// Editor label
 		JLabel text = new JLabel("Text Editor");
