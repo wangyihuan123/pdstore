@@ -83,7 +83,7 @@ public class PDStoreCMSModelCreator {
 		
 		store.createRelation(transaction, HISTORY_TYPEID, null, "Operation", HISTORY_OPERATION_ROLEID, OPERATION_TYPEID);
 		
-		store.createRelation(transaction, OPERATION_TYPEID, null, "OpType", OPERATION_TYPE_ROLEID, PDStore.STRING_TYPEID);
+		store.createRelation(transaction, OPERATION_TYPEID, null, "OpType", OPERATION_TYPE_ROLEID, PDStore.INTEGER_TYPEID);
 		store.createRelation(transaction, OPERATION_TYPEID, null, "OpOffset", OPERATION_OFFSET_ROLEID, PDStore.INTEGER_TYPEID);
 		store.createRelation(transaction, OPERATION_TYPEID, null, "OpLength", OPERATION_LENGTH_ROLEID, PDStore.INTEGER_TYPEID);
 		store.createRelation(transaction, OPERATION_TYPEID, null, "OpString", OPERATION_STRING_ROLEID, PDStore.STRING_TYPEID);

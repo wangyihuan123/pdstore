@@ -12,12 +12,12 @@ import pdstore.dal.*;
  */
 public class PDDocument implements PDInstance {
 
-	public static final GUID typeId = new GUID("70cc22b196bc11e184cdd8a25e8c53de"); 
+	public static final GUID typeId = new GUID("ad319011970611e1a171d8a25e8c53de"); 
 
-	public static final GUID roleDocumentFileLocationId = new GUID("70cc22b996bc11e184cdd8a25e8c53de");
-	public static final GUID roleCharacterId = new GUID("70cc22ba96bc11e184cdd8a25e8c53de");
-	public static final GUID roleDocumentTypeId = new GUID("70cc22b796bc11e184cdd8a25e8c53de");
-	public static final GUID roleDocumentFileNameId = new GUID("70cc22b896bc11e184cdd8a25e8c53de");
+	public static final GUID roleDocumentFileLocationId = new GUID("ad319019970611e1a171d8a25e8c53de");
+	public static final GUID roleCharacterId = new GUID("ad31901a970611e1a171d8a25e8c53de");
+	public static final GUID roleDocumentTypeId = new GUID("ad319017970611e1a171d8a25e8c53de");
+	public static final GUID roleDocumentFileNameId = new GUID("ad319018970611e1a171d8a25e8c53de");
 
 	static {
 		register();
@@ -270,7 +270,7 @@ public class PDDocument implements PDInstance {
 	 */
 	 public Collection<PDCharacter> getCharacters() throws PDStoreException {
 	 	Set<PDCharacter> result = new HashSet<PDCharacter>();
-	 	GUID PDCharacterTypeId = new GUID("70cc22b296bc11e184cdd8a25e8c53de");
+	 	GUID PDCharacterTypeId = new GUID("ad319012970611e1a171d8a25e8c53de");
 		pdWorkingCopy.getInstances(this, roleCharacterId, PDCharacter.class, PDCharacterTypeId, result);
 	 	return result;
 	 }

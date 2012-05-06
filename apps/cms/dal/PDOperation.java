@@ -12,16 +12,16 @@ import pdstore.dal.*;
  */
 public class PDOperation implements PDInstance {
 
-	public static final GUID typeId = new GUID("70cc22b496bc11e184cdd8a25e8c53de"); 
+	public static final GUID typeId = new GUID("ad319014970611e1a171d8a25e8c53de"); 
 
-	public static final GUID roleOpLengthId = new GUID("70cc22c296bc11e184cdd8a25e8c53de");
-	public static final GUID rolePrevOpId = new GUID("70cc22c496bc11e184cdd8a25e8c53de");
-	public static final GUID roleOpTypeId = new GUID("70cc22bf96bc11e184cdd8a25e8c53de");
-	public static final GUID roleOpDocumentId = new GUID("70cc22c696bc11e184cdd8a25e8c53de");
-	public static final GUID roleNextOpId = new GUID("70cc22c596bc11e184cdd8a25e8c53de");
-	public static final GUID roleOpUserId = new GUID("70cc22c096bc11e184cdd8a25e8c53de");
-	public static final GUID roleOpOffsetId = new GUID("70cc22c196bc11e184cdd8a25e8c53de");
-	public static final GUID roleOpStringId = new GUID("70cc22c396bc11e184cdd8a25e8c53de");
+	public static final GUID roleOpDocumentId = new GUID("ad319026970611e1a171d8a25e8c53de");
+	public static final GUID roleNextOpId = new GUID("ad319025970611e1a171d8a25e8c53de");
+	public static final GUID roleOpStringId = new GUID("ad319023970611e1a171d8a25e8c53de");
+	public static final GUID roleOpUserId = new GUID("ad319020970611e1a171d8a25e8c53de");
+	public static final GUID rolePrevOpId = new GUID("ad319024970611e1a171d8a25e8c53de");
+	public static final GUID roleOpLengthId = new GUID("ad319022970611e1a171d8a25e8c53de");
+	public static final GUID roleOpOffsetId = new GUID("ad319021970611e1a171d8a25e8c53de");
+	public static final GUID roleOpTypeId = new GUID("ad31901f970611e1a171d8a25e8c53de");
 
 	static {
 		register();
@@ -174,297 +174,6 @@ public class PDOperation implements PDInstance {
 	
 
 	/**
-	 * Returns the instance connected to this instance through the role "OpLength".
-	 * @return the connected instance
-	 * @throws PDStoreException
-	 */
-	 public Long getOpLength() throws PDStoreException {
-	 	return (Long)pdWorkingCopy.getInstance(this, roleOpLengthId);
-	 }
-
-	/**
-	 * Returns the instance(s) connected to this instance through the role "OpLength".
-	 * @return the connected instance(s)
-	 * @throws PDStoreException
-	 */
-	 public Collection<Long> getOpLengths() throws PDStoreException {
-	 	Set<Long> result = new HashSet<Long>();
-	 	GUID LongTypeId = new GUID("4b8a986c4062db11afc0b95b08f50e2f");
-		pdWorkingCopy.getInstances(this, roleOpLengthId, Long.class, LongTypeId, result);
-	 	return result;
-	 }
-	 
-   /**
-	 * Connects this instance to the given instance using role "OpLength".
-	 * If the given instance is null, nothing happens.
-	 * @param opLength the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void addOpLength(Long opLength) throws PDStoreException {
-
-			if (opLength != null) {
-				
-				pdWorkingCopy.addLink(this.id, roleOpLengthId, opLength);
-			}
-
-	}
-
-	/**
-	 * Connects this instance to the given instances using role "OpLength".
-	 * If the given collection of instances is null, nothing happens.
-	 * @param opLength the Collection of instances to connect
-	 * @throws PDStoreException
-	 */
-	public void addOpLengths(Collection<Long> opLengths) throws PDStoreException {
-		if (opLengths == null)
-			return;
-
-		for (Long instance : opLengths)
-			addOpLength(instance);
-	}
-
-
-	/**
-	 * Removes the link from this instance through role "OpLength".
-	 * @throws PDStoreException
-	 */
-	public void removeOpLength() throws PDStoreException {
-		pdWorkingCopy.removeLink(this.id, roleOpLengthId, 
-			pdWorkingCopy.getInstance(this, roleOpLengthId));
-	}
-
-	/**
-	 * Removes the link from this instance through role "OpLength" to the given instance, if the link exists.
-	 * If there is no such link, nothing happens.
-	 * If the given instance is null, nothing happens.
-	 * @throws PDStoreException
-	 */
-	public void removeOpLength(Object opLength) throws PDStoreException {
-		if (opLength == null)
-			return;
-		pdWorkingCopy.removeLink(this.id, roleOpLengthId, opLength);
-	}
-
-
-   /**
-	 * Connects this instance to the given instance using role "OpLength".
-	 * If there is already an instance connected to this instance through role "OpLength", the link will be overwritten.
-	 * If the given instance is null, an existing link is removed."
-	 * @param opLength the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void setOpLength(Long opLength) throws PDStoreException {
-		pdWorkingCopy.setLink(this.id,  roleOpLengthId, opLength);	
-	}
-
-
-	/**
-	 * Returns the instance connected to this instance through the role "PrevOp".
-	 * @return the connected instance
-	 * @throws PDStoreException
-	 */
-	 public PDOperation getPrevOp() throws PDStoreException {
-	 	return (PDOperation)pdWorkingCopy.getInstance(this, rolePrevOpId);
-	 }
-
-	/**
-	 * Returns the instance(s) connected to this instance through the role "PrevOp".
-	 * @return the connected instance(s)
-	 * @throws PDStoreException
-	 */
-	 public Collection<PDOperation> getPrevOps() throws PDStoreException {
-	 	Set<PDOperation> result = new HashSet<PDOperation>();
-	 	GUID PDOperationTypeId = new GUID("70cc22b496bc11e184cdd8a25e8c53de");
-		pdWorkingCopy.getInstances(this, rolePrevOpId, PDOperation.class, PDOperationTypeId, result);
-	 	return result;
-	 }
-	 
-   /**
-	 * Connects this instance to the given instance using role "PrevOp".
-	 * If the given instance is null, nothing happens.
-	 * @param prevOp the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void addPrevOp(GUID prevOp) throws PDStoreException {
-
-			if (prevOp != null) {
-				
-				pdWorkingCopy.addLink(this.id, rolePrevOpId, prevOp);
-			}
-
-	}
-
-
-	/**
-	 * Connects this instance to the given instance using role "PrevOp".
-	 * If the given instance is null, nothing happens.
-	 * @param prevOp the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void addPrevOp(PDOperation prevOp) throws PDStoreException {
-		if (prevOp != null) {
-			addPrevOp(prevOp.getId());
-		}		
-	}
-	
-	/**
-	 * Connects this instance to the given instance using role "PrevOp".
-	 * If the given collection of instances is null, nothing happens.
-	 * @param prevOp the Collection of instances to connect
-	 * @throws PDStoreException
-	 */
-	public void addPrevOps(Collection<PDOperation> prevOps) throws PDStoreException {
-		if (prevOps == null)
-			return;
-		
-		for (PDOperation instance : prevOps)
-			addPrevOp(instance);	
-	}
-
-	/**
-	 * Removes the link from this instance through role "PrevOp".
-	 * @throws PDStoreException
-	 */
-	public void removePrevOp() throws PDStoreException {
-		pdWorkingCopy.removeLink(this.id, rolePrevOpId, 
-			pdWorkingCopy.getInstance(this, rolePrevOpId));
-	}
-
-	/**
-	 * Removes the link from this instance through role "PrevOp" to the given instance, if the link exists.
-	 * If there is no such link, nothing happens.
-	 * If the given instance is null, nothing happens.
-	 * @throws PDStoreException
-	 */
-	public void removePrevOp(Object prevOp) throws PDStoreException {
-		if (prevOp == null)
-			return;
-		pdWorkingCopy.removeLink(this.id, rolePrevOpId, prevOp);
-	}
-
-	/**
-	 * Removes the links from this instance through role "PrevOp" to the instances 
-	 * in the given Collection, if the links exist.
-	 * If there are no such links or the collection argument is null, nothing happens.
-	 * @throws PDStoreException
-	 */
-	public void removePrevOps(Collection<PDOperation> prevOps) throws PDStoreException {
-		if (prevOps == null)
-			return;
-		
-		for (PDOperation instance : prevOps)
-			pdWorkingCopy.removeLink(this.id, rolePrevOpId, instance);
-	}
-
-   /**
-	 * Connects this instance to the given instance using role "PrevOp".
-	 * If there is already an instance connected to this instance through role "PrevOp", the link will be overwritten.
-	 * If the given instance is null, an existing link is removed."
-	 * @param prevOp the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void setPrevOp(GUID prevOp) throws PDStoreException {
-		pdWorkingCopy.setLink(this.id,  rolePrevOpId, prevOp);	
-	}
-	/**
-	 * Connects this instance to the given instance using role "PrevOp".
-	 * If there is already an instance connected to this instance through role "PrevOp", the link will be overwritten.
-	 * If the given instance is null, an existing link is removed."
-	 * @param prevOp the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void setPrevOp(PDOperation prevOp) throws PDStoreException {
-		setPrevOp(prevOp.getId());
-	}
-
-
-
-	/**
-	 * Returns the instance connected to this instance through the role "OpType".
-	 * @return the connected instance
-	 * @throws PDStoreException
-	 */
-	 public String getOpType() throws PDStoreException {
-	 	return (String)pdWorkingCopy.getInstance(this, roleOpTypeId);
-	 }
-
-	/**
-	 * Returns the instance(s) connected to this instance through the role "OpType".
-	 * @return the connected instance(s)
-	 * @throws PDStoreException
-	 */
-	 public Collection<String> getOpTypes() throws PDStoreException {
-	 	Set<String> result = new HashSet<String>();
-	 	GUID StringTypeId = new GUID("4a8a986c4062db11afc0b95b08f50e2f");
-		pdWorkingCopy.getInstances(this, roleOpTypeId, String.class, StringTypeId, result);
-	 	return result;
-	 }
-	 
-   /**
-	 * Connects this instance to the given instance using role "OpType".
-	 * If the given instance is null, nothing happens.
-	 * @param opType the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void addOpType(String opType) throws PDStoreException {
-
-			if (opType != null) {
-				
-				pdWorkingCopy.addLink(this.id, roleOpTypeId, opType);
-			}
-
-	}
-
-	/**
-	 * Connects this instance to the given instances using role "OpType".
-	 * If the given collection of instances is null, nothing happens.
-	 * @param opType the Collection of instances to connect
-	 * @throws PDStoreException
-	 */
-	public void addOpTypes(Collection<String> opTypes) throws PDStoreException {
-		if (opTypes == null)
-			return;
-
-		for (String instance : opTypes)
-			addOpType(instance);
-	}
-
-
-	/**
-	 * Removes the link from this instance through role "OpType".
-	 * @throws PDStoreException
-	 */
-	public void removeOpType() throws PDStoreException {
-		pdWorkingCopy.removeLink(this.id, roleOpTypeId, 
-			pdWorkingCopy.getInstance(this, roleOpTypeId));
-	}
-
-	/**
-	 * Removes the link from this instance through role "OpType" to the given instance, if the link exists.
-	 * If there is no such link, nothing happens.
-	 * If the given instance is null, nothing happens.
-	 * @throws PDStoreException
-	 */
-	public void removeOpType(Object opType) throws PDStoreException {
-		if (opType == null)
-			return;
-		pdWorkingCopy.removeLink(this.id, roleOpTypeId, opType);
-	}
-
-
-   /**
-	 * Connects this instance to the given instance using role "OpType".
-	 * If there is already an instance connected to this instance through role "OpType", the link will be overwritten.
-	 * If the given instance is null, an existing link is removed."
-	 * @param opType the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void setOpType(String opType) throws PDStoreException {
-		pdWorkingCopy.setLink(this.id,  roleOpTypeId, opType);	
-	}
-
-
-	/**
 	 * Returns the instance connected to this instance through the role "OpDocument".
 	 * @return the connected instance
 	 * @throws PDStoreException
@@ -480,7 +189,7 @@ public class PDOperation implements PDInstance {
 	 */
 	 public Collection<PDDocument> getOpDocuments() throws PDStoreException {
 	 	Set<PDDocument> result = new HashSet<PDDocument>();
-	 	GUID PDDocumentTypeId = new GUID("70cc22b196bc11e184cdd8a25e8c53de");
+	 	GUID PDDocumentTypeId = new GUID("ad319011970611e1a171d8a25e8c53de");
 		pdWorkingCopy.getInstances(this, roleOpDocumentId, PDDocument.class, PDDocumentTypeId, result);
 	 	return result;
 	 }
@@ -601,7 +310,7 @@ public class PDOperation implements PDInstance {
 	 */
 	 public Collection<PDOperation> getNextOps() throws PDStoreException {
 	 	Set<PDOperation> result = new HashSet<PDOperation>();
-	 	GUID PDOperationTypeId = new GUID("70cc22b496bc11e184cdd8a25e8c53de");
+	 	GUID PDOperationTypeId = new GUID("ad319014970611e1a171d8a25e8c53de");
 		pdWorkingCopy.getInstances(this, roleNextOpId, PDOperation.class, PDOperationTypeId, result);
 	 	return result;
 	 }
@@ -707,6 +416,91 @@ public class PDOperation implements PDInstance {
 
 
 	/**
+	 * Returns the instance connected to this instance through the role "OpString".
+	 * @return the connected instance
+	 * @throws PDStoreException
+	 */
+	 public String getOpString() throws PDStoreException {
+	 	return (String)pdWorkingCopy.getInstance(this, roleOpStringId);
+	 }
+
+	/**
+	 * Returns the instance(s) connected to this instance through the role "OpString".
+	 * @return the connected instance(s)
+	 * @throws PDStoreException
+	 */
+	 public Collection<String> getOpStrings() throws PDStoreException {
+	 	Set<String> result = new HashSet<String>();
+	 	GUID StringTypeId = new GUID("4a8a986c4062db11afc0b95b08f50e2f");
+		pdWorkingCopy.getInstances(this, roleOpStringId, String.class, StringTypeId, result);
+	 	return result;
+	 }
+	 
+   /**
+	 * Connects this instance to the given instance using role "OpString".
+	 * If the given instance is null, nothing happens.
+	 * @param opString the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void addOpString(String opString) throws PDStoreException {
+
+			if (opString != null) {
+				
+				pdWorkingCopy.addLink(this.id, roleOpStringId, opString);
+			}
+
+	}
+
+	/**
+	 * Connects this instance to the given instances using role "OpString".
+	 * If the given collection of instances is null, nothing happens.
+	 * @param opString the Collection of instances to connect
+	 * @throws PDStoreException
+	 */
+	public void addOpStrings(Collection<String> opStrings) throws PDStoreException {
+		if (opStrings == null)
+			return;
+
+		for (String instance : opStrings)
+			addOpString(instance);
+	}
+
+
+	/**
+	 * Removes the link from this instance through role "OpString".
+	 * @throws PDStoreException
+	 */
+	public void removeOpString() throws PDStoreException {
+		pdWorkingCopy.removeLink(this.id, roleOpStringId, 
+			pdWorkingCopy.getInstance(this, roleOpStringId));
+	}
+
+	/**
+	 * Removes the link from this instance through role "OpString" to the given instance, if the link exists.
+	 * If there is no such link, nothing happens.
+	 * If the given instance is null, nothing happens.
+	 * @throws PDStoreException
+	 */
+	public void removeOpString(Object opString) throws PDStoreException {
+		if (opString == null)
+			return;
+		pdWorkingCopy.removeLink(this.id, roleOpStringId, opString);
+	}
+
+
+   /**
+	 * Connects this instance to the given instance using role "OpString".
+	 * If there is already an instance connected to this instance through role "OpString", the link will be overwritten.
+	 * If the given instance is null, an existing link is removed."
+	 * @param opString the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void setOpString(String opString) throws PDStoreException {
+		pdWorkingCopy.setLink(this.id,  roleOpStringId, opString);	
+	}
+
+
+	/**
 	 * Returns the instance connected to this instance through the role "OpUser".
 	 * @return the connected instance
 	 * @throws PDStoreException
@@ -722,7 +516,7 @@ public class PDOperation implements PDInstance {
 	 */
 	 public Collection<PDUser> getOpUsers() throws PDStoreException {
 	 	Set<PDUser> result = new HashSet<PDUser>();
-	 	GUID PDUserTypeId = new GUID("70cc22b096bc11e184cdd8a25e8c53de");
+	 	GUID PDUserTypeId = new GUID("ad319010970611e1a171d8a25e8c53de");
 		pdWorkingCopy.getInstances(this, roleOpUserId, PDUser.class, PDUserTypeId, result);
 	 	return result;
 	 }
@@ -828,6 +622,212 @@ public class PDOperation implements PDInstance {
 
 
 	/**
+	 * Returns the instance connected to this instance through the role "PrevOp".
+	 * @return the connected instance
+	 * @throws PDStoreException
+	 */
+	 public PDOperation getPrevOp() throws PDStoreException {
+	 	return (PDOperation)pdWorkingCopy.getInstance(this, rolePrevOpId);
+	 }
+
+	/**
+	 * Returns the instance(s) connected to this instance through the role "PrevOp".
+	 * @return the connected instance(s)
+	 * @throws PDStoreException
+	 */
+	 public Collection<PDOperation> getPrevOps() throws PDStoreException {
+	 	Set<PDOperation> result = new HashSet<PDOperation>();
+	 	GUID PDOperationTypeId = new GUID("ad319014970611e1a171d8a25e8c53de");
+		pdWorkingCopy.getInstances(this, rolePrevOpId, PDOperation.class, PDOperationTypeId, result);
+	 	return result;
+	 }
+	 
+   /**
+	 * Connects this instance to the given instance using role "PrevOp".
+	 * If the given instance is null, nothing happens.
+	 * @param prevOp the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void addPrevOp(GUID prevOp) throws PDStoreException {
+
+			if (prevOp != null) {
+				
+				pdWorkingCopy.addLink(this.id, rolePrevOpId, prevOp);
+			}
+
+	}
+
+
+	/**
+	 * Connects this instance to the given instance using role "PrevOp".
+	 * If the given instance is null, nothing happens.
+	 * @param prevOp the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void addPrevOp(PDOperation prevOp) throws PDStoreException {
+		if (prevOp != null) {
+			addPrevOp(prevOp.getId());
+		}		
+	}
+	
+	/**
+	 * Connects this instance to the given instance using role "PrevOp".
+	 * If the given collection of instances is null, nothing happens.
+	 * @param prevOp the Collection of instances to connect
+	 * @throws PDStoreException
+	 */
+	public void addPrevOps(Collection<PDOperation> prevOps) throws PDStoreException {
+		if (prevOps == null)
+			return;
+		
+		for (PDOperation instance : prevOps)
+			addPrevOp(instance);	
+	}
+
+	/**
+	 * Removes the link from this instance through role "PrevOp".
+	 * @throws PDStoreException
+	 */
+	public void removePrevOp() throws PDStoreException {
+		pdWorkingCopy.removeLink(this.id, rolePrevOpId, 
+			pdWorkingCopy.getInstance(this, rolePrevOpId));
+	}
+
+	/**
+	 * Removes the link from this instance through role "PrevOp" to the given instance, if the link exists.
+	 * If there is no such link, nothing happens.
+	 * If the given instance is null, nothing happens.
+	 * @throws PDStoreException
+	 */
+	public void removePrevOp(Object prevOp) throws PDStoreException {
+		if (prevOp == null)
+			return;
+		pdWorkingCopy.removeLink(this.id, rolePrevOpId, prevOp);
+	}
+
+	/**
+	 * Removes the links from this instance through role "PrevOp" to the instances 
+	 * in the given Collection, if the links exist.
+	 * If there are no such links or the collection argument is null, nothing happens.
+	 * @throws PDStoreException
+	 */
+	public void removePrevOps(Collection<PDOperation> prevOps) throws PDStoreException {
+		if (prevOps == null)
+			return;
+		
+		for (PDOperation instance : prevOps)
+			pdWorkingCopy.removeLink(this.id, rolePrevOpId, instance);
+	}
+
+   /**
+	 * Connects this instance to the given instance using role "PrevOp".
+	 * If there is already an instance connected to this instance through role "PrevOp", the link will be overwritten.
+	 * If the given instance is null, an existing link is removed."
+	 * @param prevOp the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void setPrevOp(GUID prevOp) throws PDStoreException {
+		pdWorkingCopy.setLink(this.id,  rolePrevOpId, prevOp);	
+	}
+	/**
+	 * Connects this instance to the given instance using role "PrevOp".
+	 * If there is already an instance connected to this instance through role "PrevOp", the link will be overwritten.
+	 * If the given instance is null, an existing link is removed."
+	 * @param prevOp the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void setPrevOp(PDOperation prevOp) throws PDStoreException {
+		setPrevOp(prevOp.getId());
+	}
+
+
+
+	/**
+	 * Returns the instance connected to this instance through the role "OpLength".
+	 * @return the connected instance
+	 * @throws PDStoreException
+	 */
+	 public Long getOpLength() throws PDStoreException {
+	 	return (Long)pdWorkingCopy.getInstance(this, roleOpLengthId);
+	 }
+
+	/**
+	 * Returns the instance(s) connected to this instance through the role "OpLength".
+	 * @return the connected instance(s)
+	 * @throws PDStoreException
+	 */
+	 public Collection<Long> getOpLengths() throws PDStoreException {
+	 	Set<Long> result = new HashSet<Long>();
+	 	GUID LongTypeId = new GUID("4b8a986c4062db11afc0b95b08f50e2f");
+		pdWorkingCopy.getInstances(this, roleOpLengthId, Long.class, LongTypeId, result);
+	 	return result;
+	 }
+	 
+   /**
+	 * Connects this instance to the given instance using role "OpLength".
+	 * If the given instance is null, nothing happens.
+	 * @param opLength the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void addOpLength(Long opLength) throws PDStoreException {
+
+			if (opLength != null) {
+				
+				pdWorkingCopy.addLink(this.id, roleOpLengthId, opLength);
+			}
+
+	}
+
+	/**
+	 * Connects this instance to the given instances using role "OpLength".
+	 * If the given collection of instances is null, nothing happens.
+	 * @param opLength the Collection of instances to connect
+	 * @throws PDStoreException
+	 */
+	public void addOpLengths(Collection<Long> opLengths) throws PDStoreException {
+		if (opLengths == null)
+			return;
+
+		for (Long instance : opLengths)
+			addOpLength(instance);
+	}
+
+
+	/**
+	 * Removes the link from this instance through role "OpLength".
+	 * @throws PDStoreException
+	 */
+	public void removeOpLength() throws PDStoreException {
+		pdWorkingCopy.removeLink(this.id, roleOpLengthId, 
+			pdWorkingCopy.getInstance(this, roleOpLengthId));
+	}
+
+	/**
+	 * Removes the link from this instance through role "OpLength" to the given instance, if the link exists.
+	 * If there is no such link, nothing happens.
+	 * If the given instance is null, nothing happens.
+	 * @throws PDStoreException
+	 */
+	public void removeOpLength(Object opLength) throws PDStoreException {
+		if (opLength == null)
+			return;
+		pdWorkingCopy.removeLink(this.id, roleOpLengthId, opLength);
+	}
+
+
+   /**
+	 * Connects this instance to the given instance using role "OpLength".
+	 * If there is already an instance connected to this instance through role "OpLength", the link will be overwritten.
+	 * If the given instance is null, an existing link is removed."
+	 * @param opLength the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void setOpLength(Long opLength) throws PDStoreException {
+		pdWorkingCopy.setLink(this.id,  roleOpLengthId, opLength);	
+	}
+
+
+	/**
 	 * Returns the instance connected to this instance through the role "OpOffset".
 	 * @return the connected instance
 	 * @throws PDStoreException
@@ -913,86 +913,86 @@ public class PDOperation implements PDInstance {
 
 
 	/**
-	 * Returns the instance connected to this instance through the role "OpString".
+	 * Returns the instance connected to this instance through the role "OpType".
 	 * @return the connected instance
 	 * @throws PDStoreException
 	 */
-	 public String getOpString() throws PDStoreException {
-	 	return (String)pdWorkingCopy.getInstance(this, roleOpStringId);
+	 public Long getOpType() throws PDStoreException {
+	 	return (Long)pdWorkingCopy.getInstance(this, roleOpTypeId);
 	 }
 
 	/**
-	 * Returns the instance(s) connected to this instance through the role "OpString".
+	 * Returns the instance(s) connected to this instance through the role "OpType".
 	 * @return the connected instance(s)
 	 * @throws PDStoreException
 	 */
-	 public Collection<String> getOpStrings() throws PDStoreException {
-	 	Set<String> result = new HashSet<String>();
-	 	GUID StringTypeId = new GUID("4a8a986c4062db11afc0b95b08f50e2f");
-		pdWorkingCopy.getInstances(this, roleOpStringId, String.class, StringTypeId, result);
+	 public Collection<Long> getOpTypes() throws PDStoreException {
+	 	Set<Long> result = new HashSet<Long>();
+	 	GUID LongTypeId = new GUID("4b8a986c4062db11afc0b95b08f50e2f");
+		pdWorkingCopy.getInstances(this, roleOpTypeId, Long.class, LongTypeId, result);
 	 	return result;
 	 }
 	 
    /**
-	 * Connects this instance to the given instance using role "OpString".
+	 * Connects this instance to the given instance using role "OpType".
 	 * If the given instance is null, nothing happens.
-	 * @param opString the instance to connect
+	 * @param opType the instance to connect
 	 * @throws PDStoreException
 	 */
-	public void addOpString(String opString) throws PDStoreException {
+	public void addOpType(Long opType) throws PDStoreException {
 
-			if (opString != null) {
+			if (opType != null) {
 				
-				pdWorkingCopy.addLink(this.id, roleOpStringId, opString);
+				pdWorkingCopy.addLink(this.id, roleOpTypeId, opType);
 			}
 
 	}
 
 	/**
-	 * Connects this instance to the given instances using role "OpString".
+	 * Connects this instance to the given instances using role "OpType".
 	 * If the given collection of instances is null, nothing happens.
-	 * @param opString the Collection of instances to connect
+	 * @param opType the Collection of instances to connect
 	 * @throws PDStoreException
 	 */
-	public void addOpStrings(Collection<String> opStrings) throws PDStoreException {
-		if (opStrings == null)
+	public void addOpTypes(Collection<Long> opTypes) throws PDStoreException {
+		if (opTypes == null)
 			return;
 
-		for (String instance : opStrings)
-			addOpString(instance);
+		for (Long instance : opTypes)
+			addOpType(instance);
 	}
 
 
 	/**
-	 * Removes the link from this instance through role "OpString".
+	 * Removes the link from this instance through role "OpType".
 	 * @throws PDStoreException
 	 */
-	public void removeOpString() throws PDStoreException {
-		pdWorkingCopy.removeLink(this.id, roleOpStringId, 
-			pdWorkingCopy.getInstance(this, roleOpStringId));
+	public void removeOpType() throws PDStoreException {
+		pdWorkingCopy.removeLink(this.id, roleOpTypeId, 
+			pdWorkingCopy.getInstance(this, roleOpTypeId));
 	}
 
 	/**
-	 * Removes the link from this instance through role "OpString" to the given instance, if the link exists.
+	 * Removes the link from this instance through role "OpType" to the given instance, if the link exists.
 	 * If there is no such link, nothing happens.
 	 * If the given instance is null, nothing happens.
 	 * @throws PDStoreException
 	 */
-	public void removeOpString(Object opString) throws PDStoreException {
-		if (opString == null)
+	public void removeOpType(Object opType) throws PDStoreException {
+		if (opType == null)
 			return;
-		pdWorkingCopy.removeLink(this.id, roleOpStringId, opString);
+		pdWorkingCopy.removeLink(this.id, roleOpTypeId, opType);
 	}
 
 
    /**
-	 * Connects this instance to the given instance using role "OpString".
-	 * If there is already an instance connected to this instance through role "OpString", the link will be overwritten.
+	 * Connects this instance to the given instance using role "OpType".
+	 * If there is already an instance connected to this instance through role "OpType", the link will be overwritten.
 	 * If the given instance is null, an existing link is removed."
-	 * @param opString the instance to connect
+	 * @param opType the instance to connect
 	 * @throws PDStoreException
 	 */
-	public void setOpString(String opString) throws PDStoreException {
-		pdWorkingCopy.setLink(this.id,  roleOpStringId, opString);	
+	public void setOpType(Long opType) throws PDStoreException {
+		pdWorkingCopy.setLink(this.id,  roleOpTypeId, opType);	
 	}
 }

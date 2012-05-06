@@ -27,8 +27,10 @@ public class ContentManagementSystem extends JFrame {
 	
 	// PDStore
 	private static final boolean NETWORK_ACCESS = false;
+	PDWorkingCopy wc;
 	PDHistory history;
 	PDUser user;
+	PDStoreTextPane textEditor;
 	
 	// UI
 	private JButton upButton;
@@ -139,13 +141,12 @@ public class ContentManagementSystem extends JFrame {
 		historyPanel.add(historyLabel);
 
 		// TEXT PANE
-		PDStoreTextPane editTextArea = new PDStoreTextPane(wc, user, history);
+		textEditor = new PDStoreTextPane(wc, user, history);
 		JLabel text = new JLabel("edit Text");
-		editTextArea.add(text);
-
-		PDStoreDocumentListener listener = new PDStoreDocumentListener();
-        PDChange<GUID, Object, GUID> changeTemplate = new PDChange<GUID, Object, GUID> (null, null, null, PDOperation.roleOpTypeId, null);
-		wc.getStore().getListenerDispatcher().addListener(listener, changeTemplate);
+		textEditor.add(text);
+		// Setup listener
+		GUID role2 = PDOperation.roleOpTypeId;
+		wc.getStore().getDetachedListenerList().add(new PDStoreDocumentListener(this, role2));
 		//editTextArea.setMinimumSize(new Dimension(800,500));a
 		
 		//create split panes
@@ -155,7 +156,7 @@ public class ContentManagementSystem extends JFrame {
 		historySplitPane.setDividerSize(8);
 		historySplitPane.setContinuousLayout(true);
 		    
-		JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,jsp2,editTextArea);
+		JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,jsp2,textEditor);
 		
 		editTextSplitPane.setDividerSize(8);
 		editTextSplitPane.setContinuousLayout(true);
@@ -191,16 +192,14 @@ public class ContentManagementSystem extends JFrame {
 	
 	private void initPDObjects(String username, GUID userID, PDWorkingCopy wc, GUID historyID){
 		
-		GUID transaction = wc.getStore().begin();
-		
+		this.wc = wc;
 		// init PDHistory
 		history = PDHistory.load(wc, historyID);
-		
 		// init PDUser
 		user = PDUser.load(wc, userID);
 		user.setName(username);
 		
-		wc.getStore().commit(transaction);
+		wc.commit();
 		
 		
 	}

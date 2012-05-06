@@ -1,7 +1,9 @@
 
 package cms;
 
+import javax.swing.event.DocumentEvent;
 import javax.swing.text.*;
+import javax.swing.text.DocumentFilter.FilterBypass;
 
 import cms.dal.PDCharacter;
 import cms.dal.PDDocument;
@@ -18,6 +20,12 @@ import java.util.Collection;
 
 public class PDStoreDocumentFilter extends DocumentFilter {
 
+	protected static final int REMOVE = 0;
+	protected static final int INSERT = 1;
+	protected static final int REPLACE = 2;	
+	
+	private boolean filter = true;
+	
 	PDUser user;
 	PDHistory history;
 	PDWorkingCopy wc;
@@ -30,39 +38,98 @@ public class PDStoreDocumentFilter extends DocumentFilter {
 		// TODO: get username from PDStore and listen to changes in name
     }
     
+    @Override
     public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
-    	// don't do anything
+    	if (filter){
+    		PDRemove(fb, offset, length);
+    	} else {
+    		super.remove(fb, offset, length);
+    	}
+    	
+    }
+    
+    @Override
+    public void insertString(FilterBypass fb, int offset, String str, AttributeSet attr) throws BadLocationException {
+    	if (filter){
+    		PDInsertString(fb, offset, str, attr);
+    	} else {
+    		super.insertString(fb, offset, str, attr);
+    	}
+    }
+    
+    @Override
+    public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet attr) throws BadLocationException {
+    	if (filter){
+    		PDReplace(fb, offset, length, str, attr);
+    	} else {
+    		super.replace(fb, offset, length, str, attr);
+    	}
+    	
+    }
+    
+    public void PDRemove(FilterBypass fb, int offset, int length) throws BadLocationException {
     	System.out.println(user.getName()+" Recieved REMOVE: offset: "+offset+", length: "+length);
     	
-    }
-    
-    public void insertString(FilterBypass fb, int offset, String str, AttributeSet attr) throws BadLocationException {
-    	// don't do anything
-    	System.out.println(user.getName()+" Recieved INSERT: offset: "+offset+", str: \n'"+str+"'");
-    }
-    
-    public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet attr) throws BadLocationException {
-    	// don't do anything
-    	System.out.println(user.getName()+" Recieved REPLACE: offset: "+offset+", length: "+length+", str: \n'"+str+"'");
-    	
-    	// Start
     	// Get current document
     	PDDocument pddoc = getCurrentDocument();
+    	wc.commit();
+    	
     	// Create operation
     	PDOperation op = PDOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
     	op.setOpDocument(pddoc);
     	op.setOpUser(user);
-    	op.setOpType("replace");
+    	op.setOpType((long)REMOVE);
+    	op.setOpOffset((long)offset);
+    	op.setOpLength((long)length);
+    	// Attach to history
+		history.addOperation(op); // needs to be some kind of linked list
+		// Commit
+		wc.commit();
+    }    
+    
+    public void PDInsertString(FilterBypass fb, int offset, String str, AttributeSet attr) throws BadLocationException {
+    	System.out.println(user.getName()+" Recieved INSERT: offset: "+offset+", str: \n'"+str+"'");
+    	
+    	// Get current document
+    	PDDocument pddoc = getCurrentDocument();
+    	wc.commit();
+    	
+    	// Create operation
+    	PDOperation op = PDOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
+    	op.setOpDocument(pddoc);
+    	op.setOpUser(user);
+    	op.setOpType((long)INSERT);
+    	op.setOpOffset((long)offset);
+    	op.setOpString(str);
+    	// Attach to history
+		history.addOperation(op); // needs to be some kind of linked list
+		// Commit
+		wc.commit();
+    }  
+
+    public void PDReplace(FilterBypass fb, int offset, int length, String str, AttributeSet attr) throws BadLocationException {
+    	System.out.println(user.getName()+" Recieved REPLACE: offset: "+offset+", length: "+length+", str: \n'"+str+"'");
+    	
+    	// Get current document
+    	PDDocument pddoc = getCurrentDocument();
+    	wc.commit();
+    	
+    	// Create operation
+    	PDOperation op = PDOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
+    	op.setOpDocument(pddoc);
+    	op.setOpUser(user);
+    	op.setOpType((long)REPLACE);
     	op.setOpOffset((long)offset);
     	op.setOpLength((long)length);
     	op.setOpString(str);
-    	// Attach to hirstory
-		history.addOperation(op);
+    	// Attach to history
+		history.addOperation(op); // needs to be some kind of linked list
 		// Commit
 		wc.commit();
-  	
+		//System.out.println("THREAD: "+Thread.currentThread().getId()+" OP TYPE: "+op.getOpType());
     }
     
+    @Deprecated
     private void addCharacters(PDDocument pddoc, int offset, int length, String str){
     	Collection<PDCharacter> chars = pddoc.getCharacters(); //not null
     	ArrayList<PDCharacter> list = new ArrayList<PDCharacter>(str.length());
@@ -93,6 +160,10 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	
     }
     
+    public void setFilter(boolean on) {
+    	filter = on;
+    }
+    
     private PDDocument getCurrentDocument(){
     	
     	PDDocument pddoc = user.getCurrentDocument();
@@ -102,7 +173,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     		pddoc = PDDocument.load(wc, GUIDGen.generateGUIDs(1).remove(0));
     		user.setCurrentDocument(pddoc);
     	} else {
-    		System.out.println("Document exists");
+    		//System.out.println("Document exists");
     	}   
     	
     	return pddoc;
@@ -111,6 +182,5 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     
     //needs listeners to PDStore instance
     //listeners will call super methods
- 
 
 }

@@ -12,10 +12,10 @@ import pdstore.dal.*;
  */
 public class PDUser implements PDInstance {
 
-	public static final GUID typeId = new GUID("70cc22b096bc11e184cdd8a25e8c53de"); 
+	public static final GUID typeId = new GUID("ad319010970611e1a171d8a25e8c53de"); 
 
-	public static final GUID roleUsernameId = new GUID("70cc22b596bc11e184cdd8a25e8c53de");
-	public static final GUID roleCurrentDocumentId = new GUID("70cc22b696bc11e184cdd8a25e8c53de");
+	public static final GUID roleCurrentDocumentId = new GUID("ad319016970611e1a171d8a25e8c53de");
+	public static final GUID roleUsernameId = new GUID("ad319015970611e1a171d8a25e8c53de");
 
 	static {
 		register();
@@ -168,91 +168,6 @@ public class PDUser implements PDInstance {
 	
 
 	/**
-	 * Returns the instance connected to this instance through the role "Username".
-	 * @return the connected instance
-	 * @throws PDStoreException
-	 */
-	 public String getUsername() throws PDStoreException {
-	 	return (String)pdWorkingCopy.getInstance(this, roleUsernameId);
-	 }
-
-	/**
-	 * Returns the instance(s) connected to this instance through the role "Username".
-	 * @return the connected instance(s)
-	 * @throws PDStoreException
-	 */
-	 public Collection<String> getUsernames() throws PDStoreException {
-	 	Set<String> result = new HashSet<String>();
-	 	GUID StringTypeId = new GUID("4a8a986c4062db11afc0b95b08f50e2f");
-		pdWorkingCopy.getInstances(this, roleUsernameId, String.class, StringTypeId, result);
-	 	return result;
-	 }
-	 
-   /**
-	 * Connects this instance to the given instance using role "Username".
-	 * If the given instance is null, nothing happens.
-	 * @param username the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void addUsername(String username) throws PDStoreException {
-
-			if (username != null) {
-				
-				pdWorkingCopy.addLink(this.id, roleUsernameId, username);
-			}
-
-	}
-
-	/**
-	 * Connects this instance to the given instances using role "Username".
-	 * If the given collection of instances is null, nothing happens.
-	 * @param username the Collection of instances to connect
-	 * @throws PDStoreException
-	 */
-	public void addUsernames(Collection<String> usernames) throws PDStoreException {
-		if (usernames == null)
-			return;
-
-		for (String instance : usernames)
-			addUsername(instance);
-	}
-
-
-	/**
-	 * Removes the link from this instance through role "Username".
-	 * @throws PDStoreException
-	 */
-	public void removeUsername() throws PDStoreException {
-		pdWorkingCopy.removeLink(this.id, roleUsernameId, 
-			pdWorkingCopy.getInstance(this, roleUsernameId));
-	}
-
-	/**
-	 * Removes the link from this instance through role "Username" to the given instance, if the link exists.
-	 * If there is no such link, nothing happens.
-	 * If the given instance is null, nothing happens.
-	 * @throws PDStoreException
-	 */
-	public void removeUsername(Object username) throws PDStoreException {
-		if (username == null)
-			return;
-		pdWorkingCopy.removeLink(this.id, roleUsernameId, username);
-	}
-
-
-   /**
-	 * Connects this instance to the given instance using role "Username".
-	 * If there is already an instance connected to this instance through role "Username", the link will be overwritten.
-	 * If the given instance is null, an existing link is removed."
-	 * @param username the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void setUsername(String username) throws PDStoreException {
-		pdWorkingCopy.setLink(this.id,  roleUsernameId, username);	
-	}
-
-
-	/**
 	 * Returns the instance connected to this instance through the role "CurrentDocument".
 	 * @return the connected instance
 	 * @throws PDStoreException
@@ -268,7 +183,7 @@ public class PDUser implements PDInstance {
 	 */
 	 public Collection<PDDocument> getCurrentDocuments() throws PDStoreException {
 	 	Set<PDDocument> result = new HashSet<PDDocument>();
-	 	GUID PDDocumentTypeId = new GUID("70cc22b196bc11e184cdd8a25e8c53de");
+	 	GUID PDDocumentTypeId = new GUID("ad319011970611e1a171d8a25e8c53de");
 		pdWorkingCopy.getInstances(this, roleCurrentDocumentId, PDDocument.class, PDDocumentTypeId, result);
 	 	return result;
 	 }
@@ -371,4 +286,89 @@ public class PDUser implements PDInstance {
 		setCurrentDocument(currentDocument.getId());
 	}
 
+
+
+	/**
+	 * Returns the instance connected to this instance through the role "Username".
+	 * @return the connected instance
+	 * @throws PDStoreException
+	 */
+	 public String getUsername() throws PDStoreException {
+	 	return (String)pdWorkingCopy.getInstance(this, roleUsernameId);
+	 }
+
+	/**
+	 * Returns the instance(s) connected to this instance through the role "Username".
+	 * @return the connected instance(s)
+	 * @throws PDStoreException
+	 */
+	 public Collection<String> getUsernames() throws PDStoreException {
+	 	Set<String> result = new HashSet<String>();
+	 	GUID StringTypeId = new GUID("4a8a986c4062db11afc0b95b08f50e2f");
+		pdWorkingCopy.getInstances(this, roleUsernameId, String.class, StringTypeId, result);
+	 	return result;
+	 }
+	 
+   /**
+	 * Connects this instance to the given instance using role "Username".
+	 * If the given instance is null, nothing happens.
+	 * @param username the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void addUsername(String username) throws PDStoreException {
+
+			if (username != null) {
+				
+				pdWorkingCopy.addLink(this.id, roleUsernameId, username);
+			}
+
+	}
+
+	/**
+	 * Connects this instance to the given instances using role "Username".
+	 * If the given collection of instances is null, nothing happens.
+	 * @param username the Collection of instances to connect
+	 * @throws PDStoreException
+	 */
+	public void addUsernames(Collection<String> usernames) throws PDStoreException {
+		if (usernames == null)
+			return;
+
+		for (String instance : usernames)
+			addUsername(instance);
+	}
+
+
+	/**
+	 * Removes the link from this instance through role "Username".
+	 * @throws PDStoreException
+	 */
+	public void removeUsername() throws PDStoreException {
+		pdWorkingCopy.removeLink(this.id, roleUsernameId, 
+			pdWorkingCopy.getInstance(this, roleUsernameId));
+	}
+
+	/**
+	 * Removes the link from this instance through role "Username" to the given instance, if the link exists.
+	 * If there is no such link, nothing happens.
+	 * If the given instance is null, nothing happens.
+	 * @throws PDStoreException
+	 */
+	public void removeUsername(Object username) throws PDStoreException {
+		if (username == null)
+			return;
+		pdWorkingCopy.removeLink(this.id, roleUsernameId, username);
+	}
+
+
+   /**
+	 * Connects this instance to the given instance using role "Username".
+	 * If there is already an instance connected to this instance through role "Username", the link will be overwritten.
+	 * If the given instance is null, an existing link is removed."
+	 * @param username the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void setUsername(String username) throws PDStoreException {
+		pdWorkingCopy.setLink(this.id,  roleUsernameId, username);	
+	}
 }
