@@ -68,7 +68,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     }
     
     public void PDRemove(FilterBypass fb, int offset, int length) throws BadLocationException {
-    	System.out.println(user.getName()+" Recieved REMOVE: offset: "+offset+", length: "+length);
+    	//System.out.println(user.getName()+" Recieved REMOVE: offset: "+offset+", length: "+length);
     	
     	// Get current document
     	PDDocument pddoc = getCurrentDocument();
@@ -88,7 +88,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     }    
     
     public void PDInsertString(FilterBypass fb, int offset, String str, AttributeSet attr) throws BadLocationException {
-    	System.out.println(user.getName()+" Recieved INSERT: offset: "+offset+", str: \n'"+str+"'");
+    	//System.out.println(user.getName()+" Recieved INSERT: offset: "+offset+", str: \n'"+str+"'");
     	
     	// Get current document
     	PDDocument pddoc = getCurrentDocument();
@@ -108,7 +108,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     }  
 
     public void PDReplace(FilterBypass fb, int offset, int length, String str, AttributeSet attr) throws BadLocationException {
-    	System.out.println(user.getName()+" Recieved REPLACE: offset: "+offset+", length: "+length+", str: \n'"+str+"'");
+    	//System.out.println(user.getName()+" Recieved REPLACE: offset: "+offset+", length: "+length+", str: \n'"+str+"'");
     	
     	// Get current document
     	PDDocument pddoc = getCurrentDocument();
@@ -179,8 +179,5 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	return pddoc;
     }
     
-    
-    //needs listeners to PDStore instance
-    //listeners will call super methods
 
 }

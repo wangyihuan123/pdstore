@@ -36,8 +36,6 @@ public class PDStoreDocumentListener implements PDListener<GUID, Object, GUID> {
 				PDOperation op = PDOperation.load(cms.wc, (GUID)change.getInstance1());
 				performOperation(op);
 			}
-			
-			
 		}
 	}
 	

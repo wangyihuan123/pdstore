@@ -26,6 +26,11 @@ public class PDStoreCMSModelCreator {
 	// User roles
 	protected static final GUID USERNAME_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
 	protected static final GUID USER_RESOURCE_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
+	protected static final GUID USER_CARET_R_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
+	protected static final GUID USER_CARET_G_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
+	protected static final GUID USER_CARET_B_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
+	protected static final GUID USER_CARET_POSITION_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
+	
 	
 	// Document roles
 	protected static final GUID DOCUMENT_TYPE_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
@@ -68,9 +73,12 @@ public class PDStoreCMSModelCreator {
 		store.createType(transaction, CMS_MODELID, OPERATION_TYPEID, "Operation");
 		
 		// Create CMS roles
-		
-		store.createRelation(transaction, USER_TYPEID, null, "Username", USERNAME_ROLEID, PDStore.STRING_TYPEID);	
+			
 		store.createRelation(transaction, USER_TYPEID, null, "CurrentDocument", USER_RESOURCE_ROLEID, DOCUMENT_TYPEID);
+		store.createRelation(transaction, USER_TYPEID, null, "CaretColorR", USER_CARET_R_ROLEID, PDStore.INTEGER_TYPEID);
+		store.createRelation(transaction, USER_TYPEID, null, "CaretColorG", USER_CARET_G_ROLEID, PDStore.INTEGER_TYPEID);
+		store.createRelation(transaction, USER_TYPEID, null, "CaretColorB", USER_CARET_B_ROLEID, PDStore.INTEGER_TYPEID);
+		store.createRelation(transaction, USER_TYPEID, null, "CaretPosition", USER_CARET_POSITION_ROLEID, PDStore.INTEGER_TYPEID);
 		
 		store.createRelation(transaction, DOCUMENT_TYPEID, null, "DocumentType", DOCUMENT_TYPE_ROLEID, PDStore.STRING_TYPEID);
 		store.createRelation(transaction, DOCUMENT_TYPEID, null, "DocumentFileName", DOCUMENT_NAME_ROLEID, PDStore.STRING_TYPEID);

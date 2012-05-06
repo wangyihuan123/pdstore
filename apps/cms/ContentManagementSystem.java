@@ -1,6 +1,8 @@
 package cms;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.io.File;
@@ -26,7 +28,6 @@ public class ContentManagementSystem extends JFrame {
 	protected static final String DOCUMENT_ROOT = System.getenv("HOME")+"/www";
 	
 	// PDStore
-	private static final boolean NETWORK_ACCESS = false;
 	PDWorkingCopy wc;
 	PDHistory history;
 	PDUser user;
@@ -38,14 +39,20 @@ public class ContentManagementSystem extends JFrame {
 	private JButton deleteButton;
 	public JList list;
 	
-	public ContentManagementSystem(String username, GUID userID, PDWorkingCopy wc, GUID historyID){
+	public ContentManagementSystem(GUID userID, GUID historyID, PDWorkingCopy wc){
 
-		checkDocumentRoot();
-		initPDObjects(username, userID, wc, historyID);
+		// Setup PDStore Objects
+		this.wc = wc;
+		initPDObjects(userID, historyID);
 		
-		setTitle(username+"'s CMS");
+		// Setup common CMS properties
+		checkDocumentRoot();
+		setTitle(user.getName()+"'s CMS");
 		setSize(500,300);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);			
+		
+		// Create history based text editor	
+		initTextEditor();
 		
 		// set up and populate history pane
 		//JPanel historyPane = new JPanel();
@@ -139,15 +146,6 @@ public class ContentManagementSystem extends JFrame {
 		
 		fileOrganiserPane.add(l3);
 		historyPanel.add(historyLabel);
-
-		// TEXT PANE
-		textEditor = new PDStoreTextPane(wc, user, history);
-		JLabel text = new JLabel("edit Text");
-		textEditor.add(text);
-		// Setup listener
-		GUID role2 = PDOperation.roleOpTypeId;
-		wc.getStore().getDetachedListenerList().add(new PDStoreDocumentListener(this, role2));
-		//editTextArea.setMinimumSize(new Dimension(800,500));a
 		
 		//create split panes
 		
@@ -179,6 +177,31 @@ public class ContentManagementSystem extends JFrame {
 		
 	}
 	
+	private void initPDObjects(GUID userID, GUID historyID){
+		user = PDUser.load(wc, userID);
+		history = PDHistory.load(wc, historyID);
+	}
+	
+	private void initTextEditor(){
+		
+		// Setup editor
+		textEditor = new PDStoreTextPane(wc, user, history);
+		textEditor.setCaret(new CMSCaret(wc, user));
+		
+		// Editor label
+		JLabel text = new JLabel("Text Editor");
+		textEditor.add(text);
+		
+		// Setup listener
+		GUID role2 = PDOperation.roleOpTypeId;
+		wc.getStore().getDetachedListenerList().add(new PDStoreDocumentListener(this, role2));
+			
+	}
+	
+	public void setCaretColor(Color c){
+		textEditor.setCaretColor(c);
+	}
+	
 	private void checkDocumentRoot(){
 		File root = new File(DOCUMENT_ROOT);
 		if (!root.isDirectory()){
@@ -189,20 +212,7 @@ public class ContentManagementSystem extends JFrame {
 			}
 		}
 	}
-	
-	private void initPDObjects(String username, GUID userID, PDWorkingCopy wc, GUID historyID){
-		
-		this.wc = wc;
-		// init PDHistory
-		history = PDHistory.load(wc, historyID);
-		// init PDUser
-		user = PDUser.load(wc, userID);
-		user.setName(username);
-		
-		wc.commit();
-		
-		
-	}
+
 	
 	/**
 	 * Method to create an image
@@ -218,51 +228,6 @@ public class ContentManagementSystem extends JFrame {
 		} else {
 			return new ImageIcon(imageURL);
 		}
-	}
-		
-	
-	public static void main(String[] args){
-
-		// This is required
-		try {
-			Class.forName("cms.dal.PDCharacter");
-			Class.forName("cms.dal.PDDocument");
-			Class.forName("cms.dal.PDHistory");
-			Class.forName("cms.dal.PDOperation");			
-			Class.forName("cms.dal.PDUser");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}		
-		
-		// Setup PDStore cache
-		PDStore store;
-		PDWorkingCopy wc1;
-		PDWorkingCopy wc2;
-		
-		// Setup GUIDs
-		GUID historyID = GUIDGen.generateGUIDs(1).remove(0);
-		GUID userID1 = GUIDGen.generateGUIDs(1).remove(0);
-		GUID userID2 = GUIDGen.generateGUIDs(1).remove(0);
-		
-		
-		
-		// Determine PDStore location
-		if (NETWORK_ACCESS) {
-			store = PDStore.connectToServer(null);
-			wc1 = new PDSimpleWorkingCopy(store);
-			wc2 = new PDSimpleWorkingCopy(store);
-		} else {
-			store = new PDStore("ContentManagementSystem");
-			wc1 = new PDSimpleWorkingCopy(store);
-			wc2 = wc1;
-		}		
-
-		// Create the UIs
-		ContentManagementSystem cms1 = new ContentManagementSystem("Bob", userID1, wc1, historyID);
-		ContentManagementSystem cms2 = new ContentManagementSystem("Alice", userID2, wc2, historyID);
-		cms1.setVisible(true);
-		cms2.setVisible(true);
-
 	}
 	
 }
