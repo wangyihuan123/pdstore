@@ -1,6 +1,7 @@
 package cms;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -9,7 +10,10 @@ import javax.swing.JTextPane;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.AbstractDocument;
+import javax.swing.text.Document;
 import javax.swing.text.StyledDocument;
+
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import cms.dal.PDHistory;
 import cms.dal.PDOperation;
@@ -22,7 +26,7 @@ import pdstore.generic.PDChange;
 import pdstore.generic.PDCoreI;
 import pdstore.notify.PDListener;
 
-public class PDStoreTextPane extends JTextPane {
+public class PDStoreTextPane extends RSyntaxTextArea {
 	
 	private static final long serialVersionUID = 1L;
 	private PDWorkingCopy wc;
@@ -38,7 +42,7 @@ public class PDStoreTextPane extends JTextPane {
 		setUserCarets();
 		
 		AbstractDocument doc;
-        StyledDocument styledDoc = getStyledDocument();
+        Document styledDoc = getDocument();
         if (styledDoc instanceof AbstractDocument) {
             doc = (AbstractDocument)styledDoc;
             doc.setDocumentFilter(new PDStoreDocumentFilter(wc, user, history));
@@ -115,7 +119,11 @@ public class PDStoreTextPane extends JTextPane {
 			carets.get(carets.size()-1).setPosition(dot);
 			// Inform others
 			user.setCaretPosition(new Long(dot));
-			wc.commit();
+			try {
+				wc.commit();
+			} catch (Exception e){
+				
+			}
 		}
 
 		@Override
@@ -127,7 +135,7 @@ public class PDStoreTextPane extends JTextPane {
 			for (PDChange<GUID, Object, GUID> change : transaction) {
 				if (change.getRole2().equals(role2)){
 					PDUser other = PDUser.load(wc, (GUID)change.getInstance1());
-					while (other.getName() == null);
+					//while (other.getName() == null);
 					String username = other.getName();
 					// Update local view of other caret positions
 					if (!user.getName().equals(username)) {
@@ -156,6 +164,7 @@ public class PDStoreTextPane extends JTextPane {
 		private String username;
 		private int position;
 		private Color color;
+		private Rectangle r;
 		
 		public UserCaret(String username, int position, Color color) {
 			
@@ -179,6 +188,14 @@ public class PDStoreTextPane extends JTextPane {
 		public String getName(){
 			return username;
 		}
+		
+		public void setRect(Rectangle r){
+			this.r = r;
+		}
+		
+		public Rectangle getRect(){
+			return r;
+		}		
 		
 
 		

@@ -8,6 +8,9 @@ import java.awt.Insets;
 import java.io.File;
 import javax.swing.*;
 
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
+
 import cms.dal.PDHistory;
 import cms.dal.PDOperation;
 import cms.dal.PDUser;
@@ -186,9 +189,19 @@ public class ContentManagementSystem extends JFrame {
 		
 		// Setup editor
 		textEditor = new PDStoreTextPane(wc, user, history);
+		
+		// RSyntax Highlighting
+		JPanel cp = new JPanel(new BorderLayout());
+		textEditor.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_HTML);
+		textEditor.setCodeFoldingEnabled(true);
+		textEditor.setAntiAliasingEnabled(true);
+		RTextScrollPane sp = new RTextScrollPane(textEditor);
+	    sp.setFoldIndicatorEnabled(true);
+	    cp.add(sp);		
+		
 		CMSCaret caret = new CMSCaret(wc, user);
-		textEditor.setCaret(caret);
-		//caret.
+		textEditor.setCaret(caret);		
+		
 		
 		// Editor label
 		JLabel text = new JLabel("Text Editor");

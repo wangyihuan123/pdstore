@@ -106,8 +106,12 @@ public class CMSLoader {
 			e.printStackTrace();
 		}		
 		
-		CMSLoader cmsl = new CMSLoader(NETWORK_ACCESS, NUM_USERS);
-		cmsl.init();
+		try {
+			CMSLoader cmsl = new CMSLoader(NETWORK_ACCESS, NUM_USERS);
+			cmsl.init();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 }

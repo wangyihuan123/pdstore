@@ -1,41 +1,38 @@
 package cms;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Collection;
-
 import javax.swing.plaf.TextUI;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.Position;
 
-import pdstore.GUIDGen;
-import pdstore.dal.PDInstance;
+import org.fife.ui.rtextarea.ConfigurableCaret;
+
 import pdstore.dal.PDWorkingCopy;
 
 import cms.PDStoreTextPane.UserCaret;
 import cms.dal.PDUser;
 
-public class CMSCaret extends DefaultCaret {
+public class CMSCaret extends ConfigurableCaret {
 
 
 	private static final long serialVersionUID = 1L;
 	JTextComponent component;
 	int dot;
-	private double aspectRatio = 0.2;
+	private double aspectRatio = 0.1;
 	private int caretWidth = 1;
 	transient Position.Bias dotBias;
 	PDWorkingCopy wc;
 	PDUser user;
 
 
-	public CMSCaret(PDWorkingCopy wc, PDUser user) // Or just the username
+	public CMSCaret(PDWorkingCopy wc, PDUser user)
 	{
 		super();
-		super.setBlinkRate(500); // TODO: maybe just set to 0
+		super.setBlinkRate(500);
 		this.wc = wc;
 		this.user = user;
 	}
@@ -65,143 +62,59 @@ public class CMSCaret extends DefaultCaret {
 		}
 		repaint();
 	}
-	
+
 
 	@Override
-	public void paint(Graphics g)
-	{
-		if(isVisible()) 
-		{
-			int reportedPos = 0;
-			try 
-			{
-				
-				Collection<PDInstance> users = wc.getAllInstancesOfType(PDUser.typeId);
-				
-				PDStoreTextPane component = (PDStoreTextPane) getComponent();
-				TextUI mapper = component.getUI();
-				
+	public void paint(Graphics g) {
 
-				ArrayList<Rectangle> damages = new ArrayList<Rectangle>();
-				Rectangle clip = g.getClipBounds();
-				Rectangle r;
-				int doRepaint = 0, getOut = 0;
-				
-				// Iterate over user carets
-				for (UserCaret uc: component.getUserCarets()) {
-					r = mapper.modelToView(component, uc.getPosition(), Position.Bias.Forward); 
-					
-					//### Debugging only
-					//reportedPos = uc.getPosition();
-					//if (uc.getName().equals(user.getName())){
-						//System.out.println("Location for "+user.getName()+": @reported "+reportedPos+", @local "+getDot()+", @remote "+user.getCaretPosition());
-					//}
-					//###
-					
-					if ((r == null) || ((r.width == 0) && (r.height == 0))) 
+		PDStoreTextPane component = (PDStoreTextPane) getComponent();
+		TextUI mapper = component.getUI();
+
+		ArrayList<UserCaret> carets = component.getUserCarets();
+		Rectangle clip = g.getClipBounds();
+		Rectangle r = null;
+
+		// Iterate over user carets
+		for (UserCaret uc: carets) {
+
+			try {
+				r = mapper.modelToView(component, uc.getPosition(), Position.Bias.Forward);
+			} catch (BadLocationException e) {} 
+
+			if (! ((r == null) || ((r.width == 0) && (r.height == 0))) ) {
+
+				if (width > 0 && height > 0 && !this.contains(r.x, r.y, r.width, r.height)) 
+				{
+					if (clip != null && !clip.contains(this)) 
 					{
-						getOut++;			
-					} else {
-						if (width > 0 && height > 0 && !this.contains(r.x, r.y, r.width, r.height)) 
-						{
-							if (clip != null && !clip.contains(this)) 
-							{
-								doRepaint++;
-							}
-							damages.add(r);
-						}	
-						g.setColor(uc.getColor());
-						
-						// Paint caret
-						int paintWidth = getCaretWidth(r.height);
-						g.fillRect(r.x, r.y, paintWidth, r.height);
-					}					
-					
-				}
-				if (getOut == users.size()){
-					return;
-				} else {
-					if (doRepaint > 0){
 						repaint();
-					} else {
-						damage(damages);
 					}
-				}
-			} catch (BadLocationException e) 	{
-				//System.out.println("Hmmm... bad location for "+user.getName()+": @reported "+reportedPos+", @local "+getDot()+", @remote "+user.getCaretPosition());
-    			System.out.println("Bad location in CMSCaret");
-			}
+					damage(r);
+				}	
+				uc.setRect(r);
+
+			}										
 		}
-	}	
-	
+		// Draw successful carets
+		for (UserCaret uc : carets){
 
-/*
-	@Override
-	public void paint(Graphics g)
-	{
-		if(isVisible()) 
-		{
-			try 
-			{
-				
-				Collection<PDInstance> users = wc.getAllInstancesOfType(PDUser.typeId);
-				
-				JTextComponent component = getComponent();
-				TextUI mapper = component.getUI();
-
-				ArrayList<Rectangle> damages = new ArrayList<Rectangle>();
-				Rectangle clip = g.getClipBounds();
-				Rectangle r;
-				int doRepaint = 0, getOut = 0;
-
-				for (Object o : users){
-					PDUser u = (PDUser) o;
-					if (u.getName().equals(user.getName())) {
-						r = mapper.modelToView(component, getDot(), Position.Bias.Forward); 
-					} else {
-						int pos = u.getCaretPosition().intValue();
-						r = mapper.modelToView(component, pos, Position.Bias.Forward); 
-					}
-					if ((r == null) || ((r.width == 0) && (r.height == 0))) 
-					{
-						getOut++;			
-					} else {
-						if (width > 0 && height > 0 && !this.contains(r.x, r.y, r.width, r.height)) 
-						{
-							if (clip != null && !clip.contains(this)) 
-							{
-								doRepaint++;
-							}
-							damages.add(r);
-						}	
-						// Set color
-						int red = u.getCaretColorR().intValue();
-						int green = u.getCaretColorG().intValue();
-						int blue = u.getCaretColorB().intValue();
-						g.setColor(new Color((char) red, (char) green, (char) blue));
-						//g.setColor(new Color(0, 0, 0));
-						
-						// Paint caret
-						int paintWidth = getCaretWidth(r.height);
-						g.fillRect(r.x, r.y, paintWidth, r.height);
-					}
+			// if user caret
+			if (uc.getName().equals(user.getName())){
+				if (isVisible()){
+					paintUserCaret(g, uc);
 				}
-				if (getOut == users.size()){
-					return;
-				} else {
-					if (doRepaint > 0){
-						repaint();
-					} else {
-						damage(damages);
-					}
-				}
-			} catch (BadLocationException e) 	{
-				e.printStackTrace();
-
-			}
+			} else {
+				// other caret shouldn't blink
+				paintUserCaret(g, uc);
+			}	
 		}
+
 	}
-*/	
-	
-}
 
+	private void paintUserCaret(Graphics g, UserCaret uc){
+		Rectangle rect = uc.getRect();
+		g.setColor(uc.getColor());
+		int paintWidth = getCaretWidth(rect.height);
+		g.fillRect(rect.x, rect.y, paintWidth, rect.height);		
+	}
+}

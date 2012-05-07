@@ -41,7 +41,11 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     @Override
     public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
     	if (filter){
-    		PDRemove(fb, offset, length);
+	    	try{	
+	    		PDRemove(fb, offset, length);
+			} catch (Exception e){
+				e.printStackTrace();
+			}    		
     	} else {
     		try {
     			super.remove(fb, offset, length);
@@ -55,7 +59,11 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     @Override
     public void insertString(FilterBypass fb, int offset, String str, AttributeSet attr) throws BadLocationException {
     	if (filter){
-    		PDInsertString(fb, offset, str, attr);
+	    	try{
+	    		PDInsertString(fb, offset, str, attr);
+			} catch (Exception e){
+				e.printStackTrace();
+			}
     	} else {
     		try {
     			super.insertString(fb, offset, str, attr);
@@ -68,11 +76,15 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     @Override
     public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet attr) throws BadLocationException {
     	if (filter){
-    		PDReplace(fb, offset, length, str, attr);
+    		try {
+    			PDReplace(fb, offset, length, str, attr);
+    		} catch (Exception e){
+    			e.printStackTrace();
+    		}
     	} else {
     		try {
     			super.replace(fb, offset, length, str, attr);
-    		} catch (BadLocationException e){
+    		} catch (Exception e){
     			System.out.println("Bad location in DocumentFilter");
     		}
     	}

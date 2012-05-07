@@ -42,18 +42,23 @@ public class PDStoreDocumentListener implements PDListener<GUID, Object, GUID> {
 	
 	private void performOperation(PDOperation op){
 		
-		AbstractDocument doc = (AbstractDocument)cms.textEditor.getStyledDocument();
+		AbstractDocument doc = (AbstractDocument)cms.textEditor.getDocument();
 		PDStoreDocumentFilter filter = (PDStoreDocumentFilter) doc.getDocumentFilter();
 		
-		while (op.getOpType() == null); // seems the get method can return null at first
-		
+		//while (op.getOpType() == null); // seems the get method can return null at first
+		if (op.getOpType() == null){
+			return;
+		}
 		long type = op.getOpType();
 		long offset = op.getOpOffset();
 		long length = op.getOpLength();
 		String str = op.getOpString();
 		
-		while (op.getOpUser() == null); // method can return null at first
+		//while (op.getOpUser() == null); // method can return null at first
 		PDUser user = op.getOpUser();
+		if (user == null){
+			return;
+		}
 		String username = user.getName();
 	
 		// Do something appropriate given the OpType
@@ -69,8 +74,10 @@ public class PDStoreDocumentListener implements PDListener<GUID, Object, GUID> {
 					//broadcastCaretChange((int)-length);
 					// Update caret for this user
 					if (username.equals(cms.user.getName())){ 
-						//cms.textEditor.setCaretPosition((int)offset);
-						cms.textEditor.setCaretPosition((int) ((cms.textEditor.getCaretPosition() - length)));
+						//int pos = (int) (cms.textEditor.getCaretPosition() - length);
+						//pos = pos < 0 ? 0 : pos;
+						cms.textEditor.setCaretPosition((int)offset);
+						//cms.textEditor.setCaretPosition(pos);
 					}
 					break;
 				case PDStoreDocumentFilter.INSERT:
@@ -92,7 +99,11 @@ public class PDStoreDocumentListener implements PDListener<GUID, Object, GUID> {
 					//broadcastCaretChange(oldPos, newPos);
 					// Update caret for this user
 					if (username.equals(cms.user.getName())){
-						cms.textEditor.setCaretPosition(newPos);
+						try {
+							cms.textEditor.setCaretPosition(newPos);
+						} catch (Exception e){
+							e.printStackTrace();
+						}
 					}				
 					break;		
 			}
@@ -102,7 +113,12 @@ public class PDStoreDocumentListener implements PDListener<GUID, Object, GUID> {
 		filter.setFilter(true);
 	
 	}
+	
+	/*
+	 * Broadcast methods were used to keep relative distances between carets but it is currently unstable with many bad location errors.
+	 */
 
+	@Deprecated
 	private void broadcastCaretChange(int length){
 		int change = length;
 		Collection<PDInstance> users = cms.wc.getAllInstancesOfType(PDUser.typeId);
@@ -119,6 +135,7 @@ public class PDStoreDocumentListener implements PDListener<GUID, Object, GUID> {
 		cms.wc.commit();		
 	}
 	
+	@Deprecated
 	private void broadcastCaretChange(int oldPos, int newPos){
 		int change = newPos - oldPos;
 		Collection<PDInstance> users = cms.wc.getAllInstancesOfType(PDUser.typeId);
