@@ -39,6 +39,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet attr) throws BadLocationException {
     	// don't do anything
     	System.out.println(user.getName()+" Recieved REPLACE: offset: "+offset+", length: "+length+", str: \n'"+str+"'");
+    	/*
     	PDResource res = user.getCurrentResource();
     	PDDocument pddoc;
     	if (res == null){
@@ -51,12 +52,6 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	}
     	// add char to document
     	wc.commit();
-    	/*
-    	if (res.getResourceType().typeId.equals(PDDocument.typeId)) {
-    		System.out.println("Resource is Document");
-    	} else {
-    		System.out.println("Please create a document");
-    	}
     	*/
     	
     }
