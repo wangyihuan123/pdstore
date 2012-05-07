@@ -114,16 +114,11 @@ public class PDStoreTextPane extends RSyntaxTextArea {
 		public void caretUpdate(CaretEvent event) {
 				
 			int dot = event.getDot();
-			//sdfSystem.out.println(user.getName()+" Caret has moved from: "+carets.get(carets.size()-1).getPosition()+" to: "+dot);
-			
 			carets.get(carets.size()-1).setPosition(dot);
+			
 			// Inform others
 			user.setCaretPosition(new Long(dot));
-			try {
-				wc.commit();
-			} catch (Exception e){
-				
-			}
+			wc.commit();
 		}
 
 		@Override

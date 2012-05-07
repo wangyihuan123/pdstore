@@ -337,20 +337,22 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	    sp.setFoldIndicatorEnabled(true);
 	    cp.add(sp);		
 		
-		
+		// Set up mulitiple carets
 		CMSCaret caret = new CMSCaret(wc, user);
+		caret.setUpdatePolicy(CMSCaret.ALWAYS_UPDATE);
 		textEditor.setCaret(caret);	
-		textEditor.addKeyListener(this);
-		
 		
 		// Editor label
 		JLabel text = new JLabel("Text Editor");
 		textEditor.add(text);
 		
-		// Setup listener
+		// Setup PDOperation listener
 		GUID role2 = PDOperation.roleOpTypeId;
 		wc.getStore().getDetachedListenerList().add(new PDStoreDocumentListener(this, role2));
-			
+		
+		// Set key listener to notify html view
+		textEditor.addKeyListener(this);
+		
 	}
 	
 	public void setCaretColor(Color c){
