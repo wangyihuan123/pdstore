@@ -12,12 +12,12 @@ import pdstore.dal.*;
  */
 public class PDDocument implements PDInstance {
 
-	public static final GUID typeId = new GUID("0b7bf011975d11e1b90ad8a25e8c53de"); 
+	public static final GUID typeId = new GUID("e9395462981111e194a9005056c00008"); 
 
-	public static final GUID roleCharacterId = new GUID("0b7bf01e975d11e1b90ad8a25e8c53de");
-	public static final GUID roleDocumentFileLocationId = new GUID("0b7bf01d975d11e1b90ad8a25e8c53de");
-	public static final GUID roleDocumentFileNameId = new GUID("0b7bf01c975d11e1b90ad8a25e8c53de");
-	public static final GUID roleDocumentTypeId = new GUID("0b7bf01b975d11e1b90ad8a25e8c53de");
+	public static final GUID roleDocumentFileLocationId = new GUID("e9397b77981111e194a9005056c00008");
+	public static final GUID roleDocumentFileNameId = new GUID("e9397b76981111e194a9005056c00008");
+	public static final GUID roleDocumentTypeId = new GUID("e9397b75981111e194a9005056c00008");
+	public static final GUID roleCharacterId = new GUID("e9397b78981111e194a9005056c00008");
 
 	static {
 		register();
@@ -168,127 +168,6 @@ public class PDDocument implements PDInstance {
 		pdWorkingCopy.removeIcon(id);
 	}
 	
-
-	/**
-	 * Returns the instance connected to this instance through the role "Character".
-	 * @return the connected instance
-	 * @throws PDStoreException
-	 */
-	 public PDCharacter getCharacter() throws PDStoreException {
-	 	return (PDCharacter)pdWorkingCopy.getInstance(this, roleCharacterId);
-	 }
-
-	/**
-	 * Returns the instance(s) connected to this instance through the role "Character".
-	 * @return the connected instance(s)
-	 * @throws PDStoreException
-	 */
-	 public Collection<PDCharacter> getCharacters() throws PDStoreException {
-	 	Set<PDCharacter> result = new HashSet<PDCharacter>();
-	 	GUID PDCharacterTypeId = new GUID("0b7bf012975d11e1b90ad8a25e8c53de");
-		pdWorkingCopy.getInstances(this, roleCharacterId, PDCharacter.class, PDCharacterTypeId, result);
-	 	return result;
-	 }
-	 
-   /**
-	 * Connects this instance to the given instance using role "Character".
-	 * If the given instance is null, nothing happens.
-	 * @param character the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void addCharacter(GUID character) throws PDStoreException {
-
-			if (character != null) {
-				
-				pdWorkingCopy.addLink(this.id, roleCharacterId, character);
-			}
-
-	}
-
-
-	/**
-	 * Connects this instance to the given instance using role "Character".
-	 * If the given instance is null, nothing happens.
-	 * @param character the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void addCharacter(PDCharacter character) throws PDStoreException {
-		if (character != null) {
-			addCharacter(character.getId());
-		}		
-	}
-	
-	/**
-	 * Connects this instance to the given instance using role "Character".
-	 * If the given collection of instances is null, nothing happens.
-	 * @param character the Collection of instances to connect
-	 * @throws PDStoreException
-	 */
-	public void addCharacters(Collection<PDCharacter> characters) throws PDStoreException {
-		if (characters == null)
-			return;
-		
-		for (PDCharacter instance : characters)
-			addCharacter(instance);	
-	}
-
-	/**
-	 * Removes the link from this instance through role "Character".
-	 * @throws PDStoreException
-	 */
-	public void removeCharacter() throws PDStoreException {
-		pdWorkingCopy.removeLink(this.id, roleCharacterId, 
-			pdWorkingCopy.getInstance(this, roleCharacterId));
-	}
-
-	/**
-	 * Removes the link from this instance through role "Character" to the given instance, if the link exists.
-	 * If there is no such link, nothing happens.
-	 * If the given instance is null, nothing happens.
-	 * @throws PDStoreException
-	 */
-	public void removeCharacter(Object character) throws PDStoreException {
-		if (character == null)
-			return;
-		pdWorkingCopy.removeLink(this.id, roleCharacterId, character);
-	}
-
-	/**
-	 * Removes the links from this instance through role "Character" to the instances 
-	 * in the given Collection, if the links exist.
-	 * If there are no such links or the collection argument is null, nothing happens.
-	 * @throws PDStoreException
-	 */
-	public void removeCharacters(Collection<PDCharacter> characters) throws PDStoreException {
-		if (characters == null)
-			return;
-		
-		for (PDCharacter instance : characters)
-			pdWorkingCopy.removeLink(this.id, roleCharacterId, instance);
-	}
-
-   /**
-	 * Connects this instance to the given instance using role "Character".
-	 * If there is already an instance connected to this instance through role "Character", the link will be overwritten.
-	 * If the given instance is null, an existing link is removed."
-	 * @param character the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void setCharacter(GUID character) throws PDStoreException {
-		pdWorkingCopy.setLink(this.id,  roleCharacterId, character);	
-	}
-	/**
-	 * Connects this instance to the given instance using role "Character".
-	 * If there is already an instance connected to this instance through role "Character", the link will be overwritten.
-	 * If the given instance is null, an existing link is removed."
-	 * @param character the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void setCharacter(PDCharacter character) throws PDStoreException {
-		setCharacter(character.getId());
-	}
-
-
 
 	/**
 	 * Returns the instance connected to this instance through the role "DocumentFileLocation".
@@ -543,4 +422,125 @@ public class PDDocument implements PDInstance {
 	public void setDocumentType(String documentType) throws PDStoreException {
 		pdWorkingCopy.setLink(this.id,  roleDocumentTypeId, documentType);	
 	}
+
+
+	/**
+	 * Returns the instance connected to this instance through the role "Character".
+	 * @return the connected instance
+	 * @throws PDStoreException
+	 */
+	 public PDCharacter getCharacter() throws PDStoreException {
+	 	return (PDCharacter)pdWorkingCopy.getInstance(this, roleCharacterId);
+	 }
+
+	/**
+	 * Returns the instance(s) connected to this instance through the role "Character".
+	 * @return the connected instance(s)
+	 * @throws PDStoreException
+	 */
+	 public Collection<PDCharacter> getCharacters() throws PDStoreException {
+	 	Set<PDCharacter> result = new HashSet<PDCharacter>();
+	 	GUID PDCharacterTypeId = new GUID("e9395463981111e194a9005056c00008");
+		pdWorkingCopy.getInstances(this, roleCharacterId, PDCharacter.class, PDCharacterTypeId, result);
+	 	return result;
+	 }
+	 
+   /**
+	 * Connects this instance to the given instance using role "Character".
+	 * If the given instance is null, nothing happens.
+	 * @param character the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void addCharacter(GUID character) throws PDStoreException {
+
+			if (character != null) {
+				
+				pdWorkingCopy.addLink(this.id, roleCharacterId, character);
+			}
+
+	}
+
+
+	/**
+	 * Connects this instance to the given instance using role "Character".
+	 * If the given instance is null, nothing happens.
+	 * @param character the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void addCharacter(PDCharacter character) throws PDStoreException {
+		if (character != null) {
+			addCharacter(character.getId());
+		}		
+	}
+	
+	/**
+	 * Connects this instance to the given instance using role "Character".
+	 * If the given collection of instances is null, nothing happens.
+	 * @param character the Collection of instances to connect
+	 * @throws PDStoreException
+	 */
+	public void addCharacters(Collection<PDCharacter> characters) throws PDStoreException {
+		if (characters == null)
+			return;
+		
+		for (PDCharacter instance : characters)
+			addCharacter(instance);	
+	}
+
+	/**
+	 * Removes the link from this instance through role "Character".
+	 * @throws PDStoreException
+	 */
+	public void removeCharacter() throws PDStoreException {
+		pdWorkingCopy.removeLink(this.id, roleCharacterId, 
+			pdWorkingCopy.getInstance(this, roleCharacterId));
+	}
+
+	/**
+	 * Removes the link from this instance through role "Character" to the given instance, if the link exists.
+	 * If there is no such link, nothing happens.
+	 * If the given instance is null, nothing happens.
+	 * @throws PDStoreException
+	 */
+	public void removeCharacter(Object character) throws PDStoreException {
+		if (character == null)
+			return;
+		pdWorkingCopy.removeLink(this.id, roleCharacterId, character);
+	}
+
+	/**
+	 * Removes the links from this instance through role "Character" to the instances 
+	 * in the given Collection, if the links exist.
+	 * If there are no such links or the collection argument is null, nothing happens.
+	 * @throws PDStoreException
+	 */
+	public void removeCharacters(Collection<PDCharacter> characters) throws PDStoreException {
+		if (characters == null)
+			return;
+		
+		for (PDCharacter instance : characters)
+			pdWorkingCopy.removeLink(this.id, roleCharacterId, instance);
+	}
+
+   /**
+	 * Connects this instance to the given instance using role "Character".
+	 * If there is already an instance connected to this instance through role "Character", the link will be overwritten.
+	 * If the given instance is null, an existing link is removed."
+	 * @param character the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void setCharacter(GUID character) throws PDStoreException {
+		pdWorkingCopy.setLink(this.id,  roleCharacterId, character);	
+	}
+	/**
+	 * Connects this instance to the given instance using role "Character".
+	 * If there is already an instance connected to this instance through role "Character", the link will be overwritten.
+	 * If the given instance is null, an existing link is removed."
+	 * @param character the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void setCharacter(PDCharacter character) throws PDStoreException {
+		setCharacter(character.getId());
+	}
+
 }

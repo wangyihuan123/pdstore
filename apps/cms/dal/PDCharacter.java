@@ -12,11 +12,11 @@ import pdstore.dal.*;
  */
 public class PDCharacter implements PDInstance {
 
-	public static final GUID typeId = new GUID("0b7bf012975d11e1b90ad8a25e8c53de"); 
+	public static final GUID typeId = new GUID("e9395463981111e194a9005056c00008"); 
 
-	public static final GUID rolePrevCharId = new GUID("0b7bf020975d11e1b90ad8a25e8c53de");
-	public static final GUID roleNextCharId = new GUID("0b7bf021975d11e1b90ad8a25e8c53de");
-	public static final GUID roleCharValueId = new GUID("0b7bf01f975d11e1b90ad8a25e8c53de");
+	public static final GUID rolePrevCharId = new GUID("e9397b7a981111e194a9005056c00008");
+	public static final GUID roleNextCharId = new GUID("e9397b7b981111e194a9005056c00008");
+	public static final GUID roleCharValueId = new GUID("e9397b79981111e194a9005056c00008");
 
 	static {
 		register();
@@ -184,7 +184,7 @@ public class PDCharacter implements PDInstance {
 	 */
 	 public Collection<PDCharacter> getPrevChars() throws PDStoreException {
 	 	Set<PDCharacter> result = new HashSet<PDCharacter>();
-	 	GUID PDCharacterTypeId = new GUID("0b7bf012975d11e1b90ad8a25e8c53de");
+	 	GUID PDCharacterTypeId = new GUID("e9395463981111e194a9005056c00008");
 		pdWorkingCopy.getInstances(this, rolePrevCharId, PDCharacter.class, PDCharacterTypeId, result);
 	 	return result;
 	 }
@@ -305,7 +305,7 @@ public class PDCharacter implements PDInstance {
 	 */
 	 public Collection<PDCharacter> getNextChars() throws PDStoreException {
 	 	Set<PDCharacter> result = new HashSet<PDCharacter>();
-	 	GUID PDCharacterTypeId = new GUID("0b7bf012975d11e1b90ad8a25e8c53de");
+	 	GUID PDCharacterTypeId = new GUID("e9395463981111e194a9005056c00008");
 		pdWorkingCopy.getInstances(this, roleNextCharId, PDCharacter.class, PDCharacterTypeId, result);
 	 	return result;
 	 }

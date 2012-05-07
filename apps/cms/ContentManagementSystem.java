@@ -33,6 +33,9 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
+
 import apple.laf.JRSUIUtils.Tree;
 
 import cms.dal.PDHistory;
@@ -87,7 +90,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		// Setup common CMS properties
 		checkDocumentRoot();
 		setTitle(user.getName()+"'s CMS");
-		setSize(100,100);
+		setSize(1000,1000);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);			
 	
 		// Create history based text editor	
@@ -245,15 +248,15 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		    
 		//set up display area pane
 		
-		JPanel displayAreaPanel = new JPanel();
+		//JPanel displayAreaPanel = new JPanel();
 		htmlTextArea = new JTextPane();
 		
-		//PDStoreTextPane editTextArea = new PDStoreTextPane(wc, user);
+		//PDStoreTextPane editTextArea = new PDStoreTextPane(wc, user, history);
 		//editTextArea.addKeyListener(this);
 		
 		htmlTextArea.setContentType("text/html");
-		editTextArea.setText("<span style='font-size: 20pt'>Big</span>");
-		htmlTextArea.setText(editTextArea.getText());
+		//editTextArea.setText("<span style='font-size: 20pt'>Big</span>");
+		//htmlTextArea.setText(editTextArea.getText());
 		
 		
 		// set up the folder tree view.
@@ -287,7 +290,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		historySplitPane.setDividerSize(8);
 		historySplitPane.setContinuousLayout(true);
 		    
-		JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,htmlTextArea,editTextArea);
+		JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,htmlTextArea,textEditor);
 
 		//JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,jsp2,textEditor);
 
@@ -336,7 +339,8 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		
 		
 		CMSCaret caret = new CMSCaret(wc, user);
-		//textEditor.setCaret(caret);		
+		textEditor.setCaret(caret);	
+		textEditor.addKeyListener(this);
 		
 		
 		// Editor label
@@ -390,7 +394,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
      
     /** Handle the key pressed event from the text field. */
     public void keyPressed(KeyEvent e) {
-    	htmlTextArea.setText(editTextArea.getText());
+    	htmlTextArea.setText(textEditor.getText());
     }
      
     /** Handle the key released event from the text field. */
