@@ -26,6 +26,7 @@ import javax.swing.text.Position;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import apple.laf.JRSUIUtils.Tree;
@@ -66,6 +67,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	 JSplitPane fileOrganiserSplitPane;
 	 // JSplitPane splitPane;
 	 JPanel fileOrganiserPane;
+	 JTextField folderName;
 	public ContentManagementSystem(String username, GUID userID, PDWorkingCopy wc, GUID historyID){
 
 		checkDocumentRoot();
@@ -151,39 +153,76 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 		   // JLabel history = new JLabel("History");
 		    JButton add = new JButton("ADD");
+		    folderName = new JTextField("test");
+		 
+		   // folderName.enableInputMethods(true);
+		    folderName.setEditable(true);
+		    //folderName.setSize(1000, 1000);
 		    add.addActionListener(new ActionListener()  
 			{  
 				   public void actionPerformed(ActionEvent e)  
 				   {  
-				  File s = new File(node.toString()+ "/newfolder");
+					   //add new node into the file system
+				  String filename = folderName.getText();	  
+				  File s = new File(node.toString()+ "/"+filename);
 				  s.mkdir();
 				  // refresh tree
-				  //DefaultMutableTreeNode top= new DefaultMutableTreeNode(s);
-				 
-				 
-				  DefaultTreeModel model = (DefaultTreeModel) tree.getModel(); 
+				  DefaultMutableTreeNode selNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
+				  DefaultTreeModel m_model =(DefaultTreeModel) (tree.getModel()); 
+		            if (selNode != null) 
+		            { 
+		                // add new node as a child of a selected node at the end 
+		                DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(filename); 
+		                  m_model.insertNodeInto(newNode, selNode, selNode.getChildCount()); 
+		                   
+		                  //make the node visible by scroll to it 
+		                TreeNode[] nodes = m_model.getPathToRoot(newNode); 
+		                TreePath path = new TreePath(nodes); 
+		                tree.scrollPathToVisible(path); 
+		                 
+		                //select the newly added node 
+		                tree.setSelectionPath(path); 
+		            
+		              
+		            } 
 				  
-				// Find node to which new node is to be added
-				//  int startRow = 0;
-				  //String prefix = "J";
-				 // TreePath path = tree.getNextMatch(prefix, startRow, Position.Bias.Forward);
-				//  MutableTreeNode node = node;
-
-				// Create new node
-				  MutableTreeNode newNode = new DefaultMutableTreeNode("newfolder");
-
-				  // Insert new node as last child of node
-				  model.insertNodeInto(newNode, node, node.getChildCount());
-				  
-				  model.reload();
-				  fileOrganiserPane.repaint();
 				   }  
 				});
 		    
 		    JButton delete = new JButton("DELETE");
+		    
+		    
+		    delete.addActionListener(new ActionListener()  
+		 			{  
+		 				   public void actionPerformed(ActionEvent e)  
+		 				   {  
+		 					   //add new node into the file system
+		 				//  String filename = folderName.getText();	  
+		 				//  File s = new File(node.toString()+ "/"+filename);
+		 				//  s.mkdir();
+		 				  
+		 				  
+		 				  // refresh tree
+		 				  DefaultMutableTreeNode selNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
+		 				  DefaultTreeModel m_model =(DefaultTreeModel) (tree.getModel()); 
+		 		            if (selNode != null) 
+		 		            { 
+		 		                // add new node as a child of a selected node at the end 
+		 		              
+		 		                  m_model.removeNodeFromParent(selNode); 
+		 		                
+		 		            } 
+		 				  
+		 				   }  
+		 				});
+		    
+		    
+	                  
+		    
 		    JButton move = new JButton("MOVE");
 		  
 		    functionalButtonPanel.add(add,gbc);
+		    functionalButtonPanel.add(folderName,gbc);
 		    functionalButtonPanel.add(delete,gbc);
 		    functionalButtonPanel.add(move,gbc);
 		    
@@ -203,12 +242,12 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		
 		// set up the folder tree view.
 		
-		 fileOrganiserPane = new JPanel();
+		// fileOrganiserPane = new JPanel();
 	
 
 		  
 		   tree = new JTree(addNodes(null, dir));
-		  
+		   tree.setEditable(true);
 
 		    // Add a listener
 		    tree.addTreeSelectionListener(new TreeSelectionListener() {
@@ -222,7 +261,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		    
 		    
 
-		   fileOrganiserPane.add(tree);
+		  // fileOrganiserPane.add(tree);
 		
 		
 		
@@ -247,7 +286,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		historySplitPane.setOneTouchExpandable(true);
 		editTextSplitPane.setOneTouchExpandable(true);
 		
-		 fileOrganiserSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,splitPane,fileOrganiserPane);
+		 fileOrganiserSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,splitPane,tree);
 		
 		fileOrganiserSplitPane.setContinuousLayout(false);
 		fileOrganiserSplitPane.setOneTouchExpandable(true);
@@ -350,12 +389,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
       return curDir;
     }
 
-    
-    
-    
-	
-	 
-	 
+
 	
 	public static void main(String[] args){
 
