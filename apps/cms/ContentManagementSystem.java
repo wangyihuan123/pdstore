@@ -348,7 +348,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		
 		// Setup PDOperation listener
 		GUID role2 = PDOperation.roleOpTypeId;
-		wc.getStore().getDetachedListenerList().add(new PDStoreDocumentListener(this, role2));
+		wc.getStore().getDetachedListenerList().add(new PDDocumentOperationListener(this, role2));
 		
 		// Set key listener to notify html view
 		textEditor.addKeyListener(this);

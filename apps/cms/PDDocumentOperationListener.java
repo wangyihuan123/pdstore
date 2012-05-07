@@ -14,12 +14,12 @@ import pdstore.generic.PDChange;
 import pdstore.generic.PDCoreI;
 import pdstore.notify.PDListener;
 
-public class PDStoreDocumentListener implements PDListener<GUID, Object, GUID> {
+public class PDDocumentOperationListener implements PDListener<GUID, Object, GUID> {
 
 	private ContentManagementSystem cms;
 	private GUID role2;
 	
-	public PDStoreDocumentListener(ContentManagementSystem cms, GUID role2) {
+	public PDDocumentOperationListener(ContentManagementSystem cms, GUID role2) {
 		super();
 		this.cms = cms;
 		this.role2 = role2;
