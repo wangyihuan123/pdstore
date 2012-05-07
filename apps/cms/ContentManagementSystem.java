@@ -72,7 +72,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	private JLabel theLabel;
     private JTextPane htmlTextArea;
 	JTextPane editTextArea;
-	File dir = new File("/Users/eason36/www/");
+	File dir = new File(System.getenv("HOME")+"/www");
 	 DefaultMutableTreeNode node;
 	  JTree tree;
 	  
