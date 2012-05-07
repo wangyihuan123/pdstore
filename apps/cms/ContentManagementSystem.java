@@ -1,7 +1,11 @@
 package cms;
 
 import java.awt.BorderLayout;
+
 import java.awt.Component;
+
+import java.awt.Color;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -14,10 +18,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import java.io.File;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Vector;
-
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -32,6 +36,7 @@ import javax.swing.tree.TreePath;
 import apple.laf.JRSUIUtils.Tree;
 
 import cms.dal.PDHistory;
+import cms.dal.PDOperation;
 import cms.dal.PDUser;
 
 import pdstore.GUID;
@@ -39,8 +44,10 @@ import pdstore.GUIDGen;
 import pdstore.PDStore;
 import pdstore.dal.PDSimpleWorkingCopy;
 import pdstore.dal.PDWorkingCopy;
+import pdstore.generic.PDChange;
 
 import diagrameditor.HistoryPanel;
+import diagrameditor.RepaintListener;
 
 public class ContentManagementSystem extends JFrame implements KeyListener   {
 
@@ -48,15 +55,17 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	protected static final String DOCUMENT_ROOT = System.getenv("HOME")+"/www";
 	
 	// PDStore
-	private static final boolean NETWORK_ACCESS = false;
+	PDWorkingCopy wc;
 	PDHistory history;
 	PDUser user;
+	PDStoreTextPane textEditor;
 	
 	// UI
 	private JButton upButton;
 	private JButton downButton;
 	private JButton deleteButton;
 	public JList list;
+
 	private JLabel theLabel;
     private JTextPane htmlTextArea;
 	JTextPane editTextArea;
@@ -68,14 +77,21 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	 // JSplitPane splitPane;
 	 JPanel fileOrganiserPane;
 	 JTextField folderName;
-	public ContentManagementSystem(String username, GUID userID, PDWorkingCopy wc, GUID historyID){
+	 public ContentManagementSystem(GUID userID, GUID historyID, PDWorkingCopy wc){
 
-		checkDocumentRoot();
-		initPDObjects(username, userID, wc, historyID);
+
+		// Setup PDStore Objects
+		this.wc = wc;
+		initPDObjects(userID, historyID);
 		
-		setTitle(username+"'s CMS");
-		setSize(1000,1000);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
+		// Setup common CMS properties
+		checkDocumentRoot();
+		setTitle(user.getName()+"'s CMS");
+		setSize(100,100);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);			
+	
+		// Create history based text editor	
+		initTextEditor();
 		
 		// set up and populate history pane
 		//JPanel historyPane = new JPanel();
@@ -232,8 +248,8 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		JPanel displayAreaPanel = new JPanel();
 		htmlTextArea = new JTextPane();
 		
-		PDStoreTextPane editTextArea = new PDStoreTextPane(wc, user);
-		editTextArea.addKeyListener(this);
+		//PDStoreTextPane editTextArea = new PDStoreTextPane(wc, user);
+		//editTextArea.addKeyListener(this);
 		
 		htmlTextArea.setContentType("text/html");
 		editTextArea.setText("<span style='font-size: 20pt'>Big</span>");
@@ -262,8 +278,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		    
 
 		  // fileOrganiserPane.add(tree);
-		
-		
+
 		
 		//create split panes
 		
@@ -273,6 +288,9 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		historySplitPane.setContinuousLayout(true);
 		    
 		JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,htmlTextArea,editTextArea);
+
+		//JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,jsp2,textEditor);
+
 		
 		editTextSplitPane.setDividerSize(8);
 		editTextSplitPane.setContinuousLayout(true);
@@ -297,6 +315,44 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		
 	}
 	
+	private void initPDObjects(GUID userID, GUID historyID){
+		user = PDUser.load(wc, userID);
+		history = PDHistory.load(wc, historyID);
+	}
+	
+	private void initTextEditor(){
+		
+		// Setup editor
+		textEditor = new PDStoreTextPane(wc, user, history);
+		
+		// RSyntax Highlighting
+		JPanel cp = new JPanel(new BorderLayout());
+		textEditor.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_HTML);
+		textEditor.setCodeFoldingEnabled(true);
+		textEditor.setAntiAliasingEnabled(true);
+		RTextScrollPane sp = new RTextScrollPane(textEditor);
+	    sp.setFoldIndicatorEnabled(true);
+	    cp.add(sp);		
+		
+		
+		CMSCaret caret = new CMSCaret(wc, user);
+		//textEditor.setCaret(caret);		
+		
+		
+		// Editor label
+		JLabel text = new JLabel("Text Editor");
+		textEditor.add(text);
+		
+		// Setup listener
+		GUID role2 = PDOperation.roleOpTypeId;
+		wc.getStore().getDetachedListenerList().add(new PDStoreDocumentListener(this, role2));
+			
+	}
+	
+	public void setCaretColor(Color c){
+		textEditor.setCaretColor(c);
+	}
+	
 	private void checkDocumentRoot(){
 		File root = new File(DOCUMENT_ROOT);
 		if (!root.isDirectory()){
@@ -307,16 +363,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 			}
 		}
 	}
-	
-	private void initPDObjects(String username, GUID userID, PDWorkingCopy wc, GUID historyID){
-		// init PDHistory
-		history = PDHistory.load(wc, historyID);
-		
-		// init PDUser
-		user = PDUser.load(wc, userID);
-		user.setName(username);
-		
-	}
+
 	
 	/**
 	 * Method to create an image
@@ -390,42 +437,4 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
     }
 
 
-	
-	public static void main(String[] args){
-
-		try {
-			Class.forName("cms.dal.PDHistory");
-			Class.forName("cms.dal.PDUser");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}		
-		
-		// Setup PDStore cache
-		PDStore store;
-		PDWorkingCopy wc1;
-		PDWorkingCopy wc2;
-		
-		// Setup GUIDs
-		GUID historyID = GUIDGen.generateGUIDs(1).remove(0);
-		GUID userID1 = GUIDGen.generateGUIDs(1).remove(0);
-		GUID userID2 = GUIDGen.generateGUIDs(1).remove(0);
-		
-		// Determine PDStore location
-		if (NETWORK_ACCESS) {
-			store = PDStore.connectToServer(null);
-			wc1 = new PDSimpleWorkingCopy(store);
-			wc2 = new PDSimpleWorkingCopy(store);
-		} else {
-			store = new PDStore("ContentManagementSystem");
-			wc1 = new PDSimpleWorkingCopy(store);
-			wc2 = wc1;
-		}		
-
-		// Create the UIs
-		ContentManagementSystem cms1 = new ContentManagementSystem("Bob", userID1, wc1, historyID);
-		ContentManagementSystem cms2 = new ContentManagementSystem("Alice", userID2, wc2, historyID);
-		cms1.setVisible(true);
-		cms2.setVisible(true);
-	}
-	
 }
