@@ -57,13 +57,18 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	JTextPane editTextArea;
 
 	File dir = new File(System.getenv("HOME")+"/www");
-	DefaultMutableTreeNode node;
+	static DefaultMutableTreeNode node;
 	PDFileBrowser tree;
 
 	JSplitPane fileOrganiserSplitPane;
 	// JSplitPane splitPane;
 	JPanel fileOrganiserPane;
-	JTextField folderName;
+	DefaultMutableTreeNode moveOrgNode;
+	DefaultMutableTreeNode moveDestNode;
+	DefaultMutableTreeNode copyOrgNode;
+	DefaultMutableTreeNode copyDestNode;
+	
+	static JTextField folderName;
 	public ContentManagementSystem(GUID userID, GUID historyID, PDWorkingCopy wc){
 
 
@@ -168,11 +173,11 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				//add new node into the file system
 				String filename = folderName.getText();	  
 				File s = new File(node.toString()+ "/"+filename);
+				
 				if (s.mkdir()){
 					// TODO: if new file, add to PDStore
-
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-					tree.addNode(node, filename);
+					tree.addNodeToTree(node, filename);
 				}
 
 			}  
@@ -185,32 +190,63 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		{  
 			public void actionPerformed(ActionEvent e)  
 			{  
-				//add new node into the file system
-				//  String filename = folderName.getText();	  
-				//  File s = new File(node.toString()+ "/"+filename);
-				//  s.mkdir();
-
-
-				// refresh tree
+				// refresh the tree node after delete
 				DefaultMutableTreeNode selNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
-				DefaultTreeModel m_model =(DefaultTreeModel) (tree.getModel()); 
-				if (selNode != null) 
-				{ 
-					// add new node as a child of a selected node at the end 
-
-					m_model.removeNodeFromParent(selNode); 
-
-				} 
-
-				File deletefile = new File(selNode.toString());
-				deletefile.delete();
+				tree.deleteNodeFromTree(selNode);
+				
+				//delete the file from file system.
+				deleteFiles(selNode.toString());
 			}  
 		});
 
 
 
-
-		JButton move = new JButton("MOVE");
+		//add move from button
+		JButton moveFrom = new JButton("MOVE FROM");
+		moveFrom.addActionListener(new ActionListener(){
+			public void actionPerformed (ActionEvent e)
+			{
+				//get the orginal node
+				moveOrgNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
+			}
+		});
+		
+		//add move to button
+				JButton moveTo = new JButton("MOVE TO");
+				moveTo.addActionListener(new ActionListener(){
+					public void actionPerformed (ActionEvent e)
+					{
+						//get the orginal node
+						moveDestNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
+						tree.moveNodeToTree(moveOrgNode, moveDestNode);
+					}
+				});
+				
+				
+		//add copyFrom button
+		JButton copyFrom = new JButton("COPY FROM");
+		
+		copyFrom.addActionListener(new ActionListener(){
+			public void actionPerformed (ActionEvent e)
+			{
+				//get the orginal node
+				copyOrgNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
+			}
+		});
+		
+		//add copyTo button
+		JButton copyTo = new JButton("COPY TO");
+		
+		copyTo.addActionListener(new ActionListener(){
+			public void actionPerformed (ActionEvent e)
+			{
+				//get the orginal node
+				copyDestNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
+				tree.copyNodeToTree(copyOrgNode, copyDestNode);
+			}
+		});
+		
+		
 
 		JButton load = new JButton("LOAD");
 
@@ -219,7 +255,10 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		functionalButtonPanel.add(add,gbc);
 		functionalButtonPanel.add(folderName,gbc);
 		functionalButtonPanel.add(delete,gbc);
-		functionalButtonPanel.add(move,gbc);
+		functionalButtonPanel.add(moveFrom,gbc);
+		functionalButtonPanel.add(moveTo,gbc);
+		functionalButtonPanel.add(copyFrom,gbc);
+		functionalButtonPanel.add(copyTo,gbc);
 		functionalButtonPanel.add(load,gbc);
 
 		//set up display area pane
@@ -240,7 +279,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		// fileOrganiserPane = new JPanel();
 
 
-		DefaultMutableTreeNode defaultTreeNode = initDocumentTree(null, null);
+		DefaultMutableTreeNode defaultTreeNode = initDocumentTree(null, new File(DOCUMENT_ROOT));
 		tree = new PDFileBrowser(defaultTreeNode, DOCUMENT_ROOT);
 		tree.setEditable(true);
 
@@ -352,7 +391,6 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 	/** Add nodes from under "dir" into curTop. Highly recursive. */
 	private DefaultMutableTreeNode initDocumentTree(DefaultMutableTreeNode curTop, File dir) {
-		dir = new File(DOCUMENT_ROOT);
 		String curPath = dir.getPath();
 		DefaultMutableTreeNode curDir = new DefaultMutableTreeNode(curPath);
 		if (curTop != null) { // should only be null at root
@@ -421,7 +459,46 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	public void createTree(){
 
 	}
+	
+	/**
+	 * Method to delete the file from file system
+	 * @param filename
+	 */
+	private static void deleteFiles(String filename){
+		File deletefile = new File(filename);
+		deletefile.delete();
+	}
 
-
+	/**
+	 * Method to delete the file from file system
+	 * @param filename
+	 */
+	private static void addFiles(String filename){
+		File newfile = new File(filename);
+		newfile.mkdir();
+		
+	}
+	
+	/**
+	 * Method to move the file from original position to destination position
+	 * @param original
+	 * @param destination
+	 */
+	private static void moveFiles(String original,String destination){
+		addFiles(destination);
+		deleteFiles(original);
+	}
+	
+	/**
+	 * Method to copy the file from original position to destination position
+	 * @param original
+	 * @param destination
+	 */
+	private static void copyFiles(String original,String destination){
+		addFiles(destination);
+		
+	}
+	
+	
 
 }
