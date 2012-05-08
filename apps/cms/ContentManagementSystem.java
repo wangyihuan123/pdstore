@@ -72,7 +72,8 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	private JLabel theLabel;
     private JTextPane htmlTextArea;
 	JTextPane editTextArea;
-	File dir = new File("/Users/eason36/www/");
+	//File dir = new File("/Users/eason36/www/");
+	File dir = new File(DOCUMENT_ROOT);
 	 DefaultMutableTreeNode node;
 	  JTree tree;
 	  
@@ -231,7 +232,9 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		 		                  m_model.removeNodeFromParent(selNode); 
 		 		                
 		 		            } 
-		 				  
+		 		            
+		 		           File deletefile = new File(selNode.toString());
+		 		           deletefile.delete();
 		 				   }  
 		 				});
 		    
@@ -239,11 +242,16 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	                  
 		    
 		    JButton move = new JButton("MOVE");
+		    
+		    JButton load = new JButton("LOAD");
+		    
+		    
 		  
 		    functionalButtonPanel.add(add,gbc);
 		    functionalButtonPanel.add(folderName,gbc);
 		    functionalButtonPanel.add(delete,gbc);
 		    functionalButtonPanel.add(move,gbc);
+		    functionalButtonPanel.add(load,gbc);
 		    
 		    
 		//set up display area pane
