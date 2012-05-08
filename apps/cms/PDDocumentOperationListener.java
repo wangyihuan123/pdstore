@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
+
+import cms.dal.PDDocument;
 import cms.dal.PDOperation;
 import cms.dal.PDUser;
 
@@ -35,7 +37,20 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 			if (change.getRole2().equals(role2)){
 				//System.out.println("Found Operation");
 				PDOperation op = PDOperation.load(cms.wc, (GUID)change.getInstance1());
-				performOperation(op);
+				// Check if they are working on the same document
+				PDDocument userDoc = cms.user.getCurrentDocument();
+				PDUser otherUser = op.getOpUser();
+				if (otherUser == null){
+					return;
+				}
+				
+				PDDocument otherDoc = otherUser.getCurrentDocument();
+				if (otherDoc == null){
+					return;
+				} else if (userDoc == null || userDoc.getId().equals(otherDoc.getId())){
+					// Current document needs to be set in the file browser
+					performOperation(op);
+				}
 			}
 		}
 	}
