@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
+
+import cms.dal.PDDocument;
 import cms.dal.PDOperation;
 import cms.dal.PDUser;
 
@@ -14,12 +16,12 @@ import pdstore.generic.PDChange;
 import pdstore.generic.PDCoreI;
 import pdstore.notify.PDListener;
 
-public class PDStoreDocumentListener implements PDListener<GUID, Object, GUID> {
+public class PDDocumentOperationListener implements PDListener<GUID, Object, GUID> {
 
 	private ContentManagementSystem cms;
 	private GUID role2;
 	
-	public PDStoreDocumentListener(ContentManagementSystem cms, GUID role2) {
+	public PDDocumentOperationListener(ContentManagementSystem cms, GUID role2) {
 		super();
 		this.cms = cms;
 		this.role2 = role2;
@@ -35,7 +37,20 @@ public class PDStoreDocumentListener implements PDListener<GUID, Object, GUID> {
 			if (change.getRole2().equals(role2)){
 				//System.out.println("Found Operation");
 				PDOperation op = PDOperation.load(cms.wc, (GUID)change.getInstance1());
-				performOperation(op);
+				// Check if they are working on the same document
+				PDDocument userDoc = cms.user.getCurrentDocument();
+				PDUser otherUser = op.getOpUser();
+				if (otherUser == null){
+					return;
+				}
+				
+				PDDocument otherDoc = otherUser.getCurrentDocument();
+				if (otherDoc == null){
+					return;
+				} else if (userDoc == null || userDoc.getId().equals(otherDoc.getId())){
+					// Current document needs to be set in the file browser
+					performOperation(op);
+				}
 			}
 		}
 	}
@@ -59,52 +74,19 @@ public class PDStoreDocumentListener implements PDListener<GUID, Object, GUID> {
 		if (user == null){
 			return;
 		}
-		String username = user.getName();
 	
 		// Do something appropriate given the OpType
 		filter.setFilter(false);
 		try {
-			
-			int oldPos, newPos;
-			
 			switch ((int)type){	
 				case PDStoreDocumentFilter.REMOVE:
 					doc.remove((int) offset, (int) length);
-					// Broadcast change to other users
-					//broadcastCaretChange((int)-length);
-					// Update caret for this user
-					if (username.equals(cms.user.getName())){ 
-						//int pos = (int) (cms.textEditor.getCaretPosition() - length);
-						//pos = pos < 0 ? 0 : pos;
-						cms.textEditor.setCaretPosition((int)offset);
-						//cms.textEditor.setCaretPosition(pos);
-					}
 					break;
 				case PDStoreDocumentFilter.INSERT:
-					doc.insertString((int) offset, str, null);
-					// Broadcast change to other users
-					oldPos = cms.textEditor.getCaretPosition();
-					newPos = oldPos + str.length();
-					//broadcastCaretChange(oldPos, newPos);
-					// Update caret for this user
-					if (username.equals(cms.user.getName())){
-						cms.textEditor.setCaretPosition(newPos);
-					} 						
+					doc.insertString((int) offset, str, null);					
 					break;
 				case PDStoreDocumentFilter.REPLACE:	
-					doc.replace((int) offset, (int) length, str, null);
-					// Broadcast change to other users
-					oldPos = cms.textEditor.getCaretPosition();
-					newPos = oldPos + str.length();
-					//broadcastCaretChange(oldPos, newPos);
-					// Update caret for this user
-					if (username.equals(cms.user.getName())){
-						try {
-							cms.textEditor.setCaretPosition(newPos);
-						} catch (Exception e){
-							e.printStackTrace();
-						}
-					}				
+					doc.replace((int) offset, (int) length, str, null);			
 					break;		
 			}
 		} catch (BadLocationException e){
