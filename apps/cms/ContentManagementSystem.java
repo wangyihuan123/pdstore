@@ -27,11 +27,13 @@ import javax.swing.tree.DefaultTreeModel;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
+import cms.dal.PDDocument;
+import cms.dal.PDDocumentOperation;
 import cms.dal.PDHistory;
-import cms.dal.PDOperation;
 import cms.dal.PDUser;
 
 import pdstore.GUID;
+import pdstore.GUIDGen;
 import pdstore.dal.PDWorkingCopy;
 import diagrameditor.HistoryPanel;
 
@@ -58,13 +60,13 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 	File dir = new File(System.getenv("HOME")+"/www");
 	DefaultMutableTreeNode node;
-	PDFileBrowser tree;
+	protected PDFileBrowser tree;
 
 	JSplitPane fileOrganiserSplitPane;
 	// JSplitPane splitPane;
 	JPanel fileOrganiserPane;
 	JTextField folderName;
-	public ContentManagementSystem(GUID userID, GUID historyID, PDWorkingCopy wc){
+	public ContentManagementSystem(GUID userID, GUID historyID, final PDWorkingCopy wc){
 
 
 		// Setup PDStore Objects
@@ -170,6 +172,20 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				File s = new File(node.toString()+ "/"+filename);
 				if (s.mkdir()){
 					// TODO: if new file, add to PDStore
+					
+			    	// Create operation
+			    	PDDocument doc = PDDocument.load(wc, GUIDGen.generateGUIDs(1).remove(0));
+			    	/*
+			    	op.setOpDocument(pddoc);
+			    	op.setOpUser(user);
+			    	op.setOpType((long)INSERT);
+			    	op.setOpOffset((long)offset);
+			    	op.setOpString(str);
+			    	// Attach to history
+					history.addOperation(op); // needs to be some kind of linked list
+					// Commit
+					wc.commit();
+					*/
 
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
 					tree.addNode(node, filename);
@@ -240,7 +256,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		// fileOrganiserPane = new JPanel();
 
 
-		DefaultMutableTreeNode defaultTreeNode = initDocumentTree(null, null);
+		DefaultMutableTreeNode defaultTreeNode = initDocumentTree(null, new File(DOCUMENT_ROOT));
 		tree = new PDFileBrowser(defaultTreeNode, DOCUMENT_ROOT);
 		tree.setEditable(true);
 
@@ -326,8 +342,8 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		JLabel text = new JLabel("Text Editor");
 		textEditor.add(text);
 
-		// Setup PDOperation listener
-		GUID role2 = PDOperation.roleOpTypeId;
+		// Setup PDDocumentOperation listener
+		GUID role2 = PDDocumentOperation.roleOpTypeId;
 		wc.getStore().getDetachedListenerList().add(new PDDocumentOperationListener(this, role2));
 
 		// Set key listener to notify html view

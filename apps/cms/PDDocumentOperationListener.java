@@ -7,7 +7,7 @@ import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
 
 import cms.dal.PDDocument;
-import cms.dal.PDOperation;
+import cms.dal.PDDocumentOperation;
 import cms.dal.PDUser;
 
 import pdstore.GUID;
@@ -36,7 +36,7 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 			//System.out.println("Change: " + change);
 			if (change.getRole2().equals(role2)){
 				//System.out.println("Found Operation");
-				PDOperation op = PDOperation.load(cms.wc, (GUID)change.getInstance1());
+				PDDocumentOperation op = PDDocumentOperation.load(cms.wc, (GUID)change.getInstance1());
 				// Check if they are working on the same document
 				PDDocument userDoc = cms.user.getCurrentDocument();
 				PDUser otherUser = op.getOpUser();
@@ -55,7 +55,7 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 		}
 	}
 	
-	private void performOperation(PDOperation op){
+	private void performOperation(PDDocumentOperation op){
 		
 		AbstractDocument doc = (AbstractDocument)cms.textEditor.getDocument();
 		PDStoreDocumentFilter filter = (PDStoreDocumentFilter) doc.getDocumentFilter();
@@ -68,12 +68,6 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 		long offset = op.getOpOffset();
 		long length = op.getOpLength();
 		String str = op.getOpString();
-		
-		//while (op.getOpUser() == null); // method can return null at first
-		PDUser user = op.getOpUser();
-		if (user == null){
-			return;
-		}
 	
 		// Do something appropriate given the OpType
 		filter.setFilter(false);

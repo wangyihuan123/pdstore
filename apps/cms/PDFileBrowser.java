@@ -10,6 +10,13 @@ public class PDFileBrowser extends JTree {
 	
 	private static final long serialVersionUID = 1L;
 	
+	protected static final int
+		ADD = 0,
+		DELETE = 1,
+		COPY = 2,
+		MOVE = 3,
+		SELECT = 4;
+	
 	private String DOCUMENT_ROOT;
 	
 	public PDFileBrowser(DefaultMutableTreeNode node, String docRoot){

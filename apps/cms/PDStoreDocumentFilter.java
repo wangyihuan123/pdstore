@@ -5,12 +5,10 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.text.*;
 import javax.swing.text.DocumentFilter.FilterBypass;
 
-import cms.dal.PDCharacter;
 import cms.dal.PDDocument;
+import cms.dal.PDDocumentOperation;
 import cms.dal.PDHistory;
 import cms.dal.PDUser;
-import cms.dal.PDOperation;
-
 import pdstore.GUID;
 import pdstore.GUIDGen;
 import pdstore.dal.PDWorkingCopy;
@@ -20,9 +18,10 @@ import java.util.Collection;
 
 public class PDStoreDocumentFilter extends DocumentFilter {
 
-	protected static final int REMOVE = 0;
-	protected static final int INSERT = 1;
-	protected static final int REPLACE = 2;	
+	protected static final int
+		REMOVE = 0,
+		INSERT = 1,
+		REPLACE = 2;	
 	
 	private boolean filter = true;
 	
@@ -99,14 +98,14 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	wc.commit();
 
     	// Create operation
-    	PDOperation op = PDOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
+    	PDDocumentOperation op = PDDocumentOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
     	op.setOpDocument(pddoc);
     	op.setOpUser(user);
     	op.setOpType((long)REMOVE);
     	op.setOpOffset((long)offset);
     	op.setOpLength((long)length);
     	// Attach to history
-		history.addOperation(op); // needs to be some kind of linked list
+		history.addDocumentOperation(op); // needs to be some kind of linked list
 		// Commit
 		wc.commit();
     }    
@@ -119,14 +118,14 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	wc.commit();
     	
     	// Create operation
-    	PDOperation op = PDOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
+    	PDDocumentOperation op = PDDocumentOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
     	op.setOpDocument(pddoc);
     	op.setOpUser(user);
     	op.setOpType((long)INSERT);
     	op.setOpOffset((long)offset);
     	op.setOpString(str);
     	// Attach to history
-		history.addOperation(op); // needs to be some kind of linked list
+		history.addDocumentOperation(op); // needs to be some kind of linked list
 		// Commit
 		wc.commit();
     }  
@@ -139,7 +138,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	wc.commit();
     	
     	// Create operation
-    	PDOperation op = PDOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
+    	PDDocumentOperation op = PDDocumentOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
     	op.setOpDocument(pddoc);
     	op.setOpUser(user);
     	op.setOpType((long)REPLACE);
@@ -147,41 +146,10 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	op.setOpLength((long)length);
     	op.setOpString(str);
     	// Attach to history
-		history.addOperation(op); // needs to be some kind of linked list
+		history.addDocumentOperation(op); // needs to be some kind of linked list
 		// Commit
 		wc.commit();
 		//System.out.println("THREAD: "+Thread.currentThread().getId()+" OP TYPE: "+op.getOpType());
-    }
-    
-    @Deprecated
-    private void addCharacters(PDDocument pddoc, int offset, int length, String str){
-    	Collection<PDCharacter> chars = pddoc.getCharacters(); //not null
-    	ArrayList<PDCharacter> list = new ArrayList<PDCharacter>(str.length());
-    	PDCharacter c;
-    	
-    	if (chars.size() == 0){
-	    	// Convert string to PDCharacters
-	    	for (int i = 0; i < str.length(); i++){
-	    		c = PDCharacter.load(wc, GUIDGen.generateGUIDs(1).remove(0));
-	    		c.setCharValue(str.charAt(i));
-	    		list.add(c);
-	    	}
-	    	
-	    	// Set previous and next chars
-	    	for (int i = 0; i < list.size(); i++){
-	    		if (i > 0){
-	    			// set previous
-	    			list.get(i).setPrevChar(list.get(i-1));
-	    		}
-	    		if (i < (list.size() - 1)){
-	    			// set next
-	    			list.get(i).setNextChar(list.get(i+1));
-	    		}
-	    	}  
-	    	
-	    	pddoc.addCharacters(list);
-    	}
-    	
     }
     
     public void setFilter(boolean on) {

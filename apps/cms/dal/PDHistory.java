@@ -12,9 +12,10 @@ import pdstore.dal.*;
  */
 public class PDHistory implements PDInstance {
 
-	public static final GUID typeId = new GUID("e9395464981111e194a9005056c00008"); 
+	public static final GUID typeId = new GUID("a66fc74498ed11e1921bc42c0302465e"); 
 
-	public static final GUID roleOperationId = new GUID("e9397b7c981111e194a9005056c00008");
+	public static final GUID roleDocumentOperationId = new GUID("a66fc75898ed11e1921bc42c0302465e");
+	public static final GUID roleFileOperationId = new GUID("a66fc75998ed11e1921bc42c0302465e");
 
 	static {
 		register();
@@ -167,122 +168,243 @@ public class PDHistory implements PDInstance {
 	
 
 	/**
-	 * Returns the instance connected to this instance through the role "Operation".
+	 * Returns the instance connected to this instance through the role "DocumentOperation".
 	 * @return the connected instance
 	 * @throws PDStoreException
 	 */
-	 public PDOperation getOperation() throws PDStoreException {
-	 	return (PDOperation)pdWorkingCopy.getInstance(this, roleOperationId);
+	 public PDDocumentOperation getDocumentOperation() throws PDStoreException {
+	 	return (PDDocumentOperation)pdWorkingCopy.getInstance(this, roleDocumentOperationId);
 	 }
 
 	/**
-	 * Returns the instance(s) connected to this instance through the role "Operation".
+	 * Returns the instance(s) connected to this instance through the role "DocumentOperation".
 	 * @return the connected instance(s)
 	 * @throws PDStoreException
 	 */
-	 public Collection<PDOperation> getOperations() throws PDStoreException {
-	 	Set<PDOperation> result = new HashSet<PDOperation>();
-	 	GUID PDOperationTypeId = new GUID("e9395465981111e194a9005056c00008");
-		pdWorkingCopy.getInstances(this, roleOperationId, PDOperation.class, PDOperationTypeId, result);
+	 public Collection<PDDocumentOperation> getDocumentOperations() throws PDStoreException {
+	 	Set<PDDocumentOperation> result = new HashSet<PDDocumentOperation>();
+	 	GUID PDDocumentOperationTypeId = new GUID("a66fc74298ed11e1921bc42c0302465e");
+		pdWorkingCopy.getInstances(this, roleDocumentOperationId, PDDocumentOperation.class, PDDocumentOperationTypeId, result);
 	 	return result;
 	 }
 	 
    /**
-	 * Connects this instance to the given instance using role "Operation".
+	 * Connects this instance to the given instance using role "DocumentOperation".
 	 * If the given instance is null, nothing happens.
-	 * @param operation the instance to connect
+	 * @param documentOperation the instance to connect
 	 * @throws PDStoreException
 	 */
-	public void addOperation(GUID operation) throws PDStoreException {
+	public void addDocumentOperation(GUID documentOperation) throws PDStoreException {
 
-			if (operation != null) {
+			if (documentOperation != null) {
 				
-				pdWorkingCopy.addLink(this.id, roleOperationId, operation);
+				pdWorkingCopy.addLink(this.id, roleDocumentOperationId, documentOperation);
 			}
 
 	}
 
 
 	/**
-	 * Connects this instance to the given instance using role "Operation".
+	 * Connects this instance to the given instance using role "DocumentOperation".
 	 * If the given instance is null, nothing happens.
-	 * @param operation the instance to connect
+	 * @param documentOperation the instance to connect
 	 * @throws PDStoreException
 	 */
-	public void addOperation(PDOperation operation) throws PDStoreException {
-		if (operation != null) {
-			addOperation(operation.getId());
+	public void addDocumentOperation(PDDocumentOperation documentOperation) throws PDStoreException {
+		if (documentOperation != null) {
+			addDocumentOperation(documentOperation.getId());
 		}		
 	}
 	
 	/**
-	 * Connects this instance to the given instance using role "Operation".
+	 * Connects this instance to the given instance using role "DocumentOperation".
 	 * If the given collection of instances is null, nothing happens.
-	 * @param operation the Collection of instances to connect
+	 * @param documentOperation the Collection of instances to connect
 	 * @throws PDStoreException
 	 */
-	public void addOperations(Collection<PDOperation> operations) throws PDStoreException {
-		if (operations == null)
+	public void addDocumentOperations(Collection<PDDocumentOperation> documentOperations) throws PDStoreException {
+		if (documentOperations == null)
 			return;
 		
-		for (PDOperation instance : operations)
-			addOperation(instance);	
+		for (PDDocumentOperation instance : documentOperations)
+			addDocumentOperation(instance);	
 	}
 
 	/**
-	 * Removes the link from this instance through role "Operation".
+	 * Removes the link from this instance through role "DocumentOperation".
 	 * @throws PDStoreException
 	 */
-	public void removeOperation() throws PDStoreException {
-		pdWorkingCopy.removeLink(this.id, roleOperationId, 
-			pdWorkingCopy.getInstance(this, roleOperationId));
+	public void removeDocumentOperation() throws PDStoreException {
+		pdWorkingCopy.removeLink(this.id, roleDocumentOperationId, 
+			pdWorkingCopy.getInstance(this, roleDocumentOperationId));
 	}
 
 	/**
-	 * Removes the link from this instance through role "Operation" to the given instance, if the link exists.
+	 * Removes the link from this instance through role "DocumentOperation" to the given instance, if the link exists.
 	 * If there is no such link, nothing happens.
 	 * If the given instance is null, nothing happens.
 	 * @throws PDStoreException
 	 */
-	public void removeOperation(Object operation) throws PDStoreException {
-		if (operation == null)
+	public void removeDocumentOperation(Object documentOperation) throws PDStoreException {
+		if (documentOperation == null)
 			return;
-		pdWorkingCopy.removeLink(this.id, roleOperationId, operation);
+		pdWorkingCopy.removeLink(this.id, roleDocumentOperationId, documentOperation);
 	}
 
 	/**
-	 * Removes the links from this instance through role "Operation" to the instances 
+	 * Removes the links from this instance through role "DocumentOperation" to the instances 
 	 * in the given Collection, if the links exist.
 	 * If there are no such links or the collection argument is null, nothing happens.
 	 * @throws PDStoreException
 	 */
-	public void removeOperations(Collection<PDOperation> operations) throws PDStoreException {
-		if (operations == null)
+	public void removeDocumentOperations(Collection<PDDocumentOperation> documentOperations) throws PDStoreException {
+		if (documentOperations == null)
 			return;
 		
-		for (PDOperation instance : operations)
-			pdWorkingCopy.removeLink(this.id, roleOperationId, instance);
+		for (PDDocumentOperation instance : documentOperations)
+			pdWorkingCopy.removeLink(this.id, roleDocumentOperationId, instance);
 	}
 
    /**
-	 * Connects this instance to the given instance using role "Operation".
-	 * If there is already an instance connected to this instance through role "Operation", the link will be overwritten.
+	 * Connects this instance to the given instance using role "DocumentOperation".
+	 * If there is already an instance connected to this instance through role "DocumentOperation", the link will be overwritten.
 	 * If the given instance is null, an existing link is removed."
-	 * @param operation the instance to connect
+	 * @param documentOperation the instance to connect
 	 * @throws PDStoreException
 	 */
-	public void setOperation(GUID operation) throws PDStoreException {
-		pdWorkingCopy.setLink(this.id,  roleOperationId, operation);	
+	public void setDocumentOperation(GUID documentOperation) throws PDStoreException {
+		pdWorkingCopy.setLink(this.id,  roleDocumentOperationId, documentOperation);	
 	}
 	/**
-	 * Connects this instance to the given instance using role "Operation".
-	 * If there is already an instance connected to this instance through role "Operation", the link will be overwritten.
+	 * Connects this instance to the given instance using role "DocumentOperation".
+	 * If there is already an instance connected to this instance through role "DocumentOperation", the link will be overwritten.
 	 * If the given instance is null, an existing link is removed."
-	 * @param operation the instance to connect
+	 * @param documentOperation the instance to connect
 	 * @throws PDStoreException
 	 */
-	public void setOperation(PDOperation operation) throws PDStoreException {
-		setOperation(operation.getId());
+	public void setDocumentOperation(PDDocumentOperation documentOperation) throws PDStoreException {
+		setDocumentOperation(documentOperation.getId());
+	}
+
+
+
+	/**
+	 * Returns the instance connected to this instance through the role "FileOperation".
+	 * @return the connected instance
+	 * @throws PDStoreException
+	 */
+	 public PDFileOperation getFileOperation() throws PDStoreException {
+	 	return (PDFileOperation)pdWorkingCopy.getInstance(this, roleFileOperationId);
+	 }
+
+	/**
+	 * Returns the instance(s) connected to this instance through the role "FileOperation".
+	 * @return the connected instance(s)
+	 * @throws PDStoreException
+	 */
+	 public Collection<PDFileOperation> getFileOperations() throws PDStoreException {
+	 	Set<PDFileOperation> result = new HashSet<PDFileOperation>();
+	 	GUID PDFileOperationTypeId = new GUID("a66fc74398ed11e1921bc42c0302465e");
+		pdWorkingCopy.getInstances(this, roleFileOperationId, PDFileOperation.class, PDFileOperationTypeId, result);
+	 	return result;
+	 }
+	 
+   /**
+	 * Connects this instance to the given instance using role "FileOperation".
+	 * If the given instance is null, nothing happens.
+	 * @param fileOperation the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void addFileOperation(GUID fileOperation) throws PDStoreException {
+
+			if (fileOperation != null) {
+				
+				pdWorkingCopy.addLink(this.id, roleFileOperationId, fileOperation);
+			}
+
+	}
+
+
+	/**
+	 * Connects this instance to the given instance using role "FileOperation".
+	 * If the given instance is null, nothing happens.
+	 * @param fileOperation the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void addFileOperation(PDFileOperation fileOperation) throws PDStoreException {
+		if (fileOperation != null) {
+			addFileOperation(fileOperation.getId());
+		}		
+	}
+	
+	/**
+	 * Connects this instance to the given instance using role "FileOperation".
+	 * If the given collection of instances is null, nothing happens.
+	 * @param fileOperation the Collection of instances to connect
+	 * @throws PDStoreException
+	 */
+	public void addFileOperations(Collection<PDFileOperation> fileOperations) throws PDStoreException {
+		if (fileOperations == null)
+			return;
+		
+		for (PDFileOperation instance : fileOperations)
+			addFileOperation(instance);	
+	}
+
+	/**
+	 * Removes the link from this instance through role "FileOperation".
+	 * @throws PDStoreException
+	 */
+	public void removeFileOperation() throws PDStoreException {
+		pdWorkingCopy.removeLink(this.id, roleFileOperationId, 
+			pdWorkingCopy.getInstance(this, roleFileOperationId));
+	}
+
+	/**
+	 * Removes the link from this instance through role "FileOperation" to the given instance, if the link exists.
+	 * If there is no such link, nothing happens.
+	 * If the given instance is null, nothing happens.
+	 * @throws PDStoreException
+	 */
+	public void removeFileOperation(Object fileOperation) throws PDStoreException {
+		if (fileOperation == null)
+			return;
+		pdWorkingCopy.removeLink(this.id, roleFileOperationId, fileOperation);
+	}
+
+	/**
+	 * Removes the links from this instance through role "FileOperation" to the instances 
+	 * in the given Collection, if the links exist.
+	 * If there are no such links or the collection argument is null, nothing happens.
+	 * @throws PDStoreException
+	 */
+	public void removeFileOperations(Collection<PDFileOperation> fileOperations) throws PDStoreException {
+		if (fileOperations == null)
+			return;
+		
+		for (PDFileOperation instance : fileOperations)
+			pdWorkingCopy.removeLink(this.id, roleFileOperationId, instance);
+	}
+
+   /**
+	 * Connects this instance to the given instance using role "FileOperation".
+	 * If there is already an instance connected to this instance through role "FileOperation", the link will be overwritten.
+	 * If the given instance is null, an existing link is removed."
+	 * @param fileOperation the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void setFileOperation(GUID fileOperation) throws PDStoreException {
+		pdWorkingCopy.setLink(this.id,  roleFileOperationId, fileOperation);	
+	}
+	/**
+	 * Connects this instance to the given instance using role "FileOperation".
+	 * If there is already an instance connected to this instance through role "FileOperation", the link will be overwritten.
+	 * If the given instance is null, an existing link is removed."
+	 * @param fileOperation the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void setFileOperation(PDFileOperation fileOperation) throws PDStoreException {
+		setFileOperation(fileOperation.getId());
 	}
 
 }
