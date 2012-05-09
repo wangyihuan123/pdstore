@@ -5,17 +5,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Enumeration; 
 
-import javax.swing.text.AbstractDocument;
-import javax.swing.text.BadLocationException;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-
-import cms.dal.PDDocument;
 import cms.dal.PDFileOperation;
 import cms.dal.PDUser;
 
 import pdstore.GUID;
-import pdstore.dal.PDInstance;
 import pdstore.generic.PDChange;
 import pdstore.generic.PDCoreI;
 import pdstore.notify.PDListener;

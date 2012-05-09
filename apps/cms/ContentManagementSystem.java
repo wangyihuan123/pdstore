@@ -2,8 +2,6 @@ package cms;
 
 import java.awt.BorderLayout;
 
-import java.awt.Color;
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -24,7 +22,6 @@ import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
@@ -35,7 +32,6 @@ import cms.dal.PDHistory;
 import cms.dal.PDUser;
 
 import pdstore.GUID;
-import pdstore.GUIDGen;
 import pdstore.dal.PDInstance;
 import pdstore.dal.PDWorkingCopy;
 import diagrameditor.HistoryPanel;
@@ -234,12 +230,16 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				moveTo.addActionListener(new ActionListener(){
 					public void actionPerformed (ActionEvent e)
 					{
-						//get the orginal node
-						moveDestNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
-						tree.moveNodeToTree(moveOrgNode, moveDestNode);
-						String pdOrgFname = moveOrgNode.toString().replace(DOCUMENT_ROOT, "");
-						String pdDestFname = moveDestNode.toString().replace(DOCUMENT_ROOT, "");
-						tree.alertPDFileOperation(PDFileBrowser.MOVE, pdOrgFname, pdDestFname);
+						if (moveDestNode == null) {
+							return;
+						} else {						
+							//get the orginal node
+							moveDestNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
+							tree.moveNodeToTree(moveOrgNode, moveDestNode);
+							String pdOrgFname = moveOrgNode.toString().replace(DOCUMENT_ROOT, "");
+							String pdDestFname = moveDestNode.toString().replace(DOCUMENT_ROOT, "");
+							tree.alertPDFileOperation(PDFileBrowser.MOVE, pdOrgFname, pdDestFname);
+						}
 					}
 				});
 				
@@ -261,12 +261,16 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		copyTo.addActionListener(new ActionListener(){
 			public void actionPerformed (ActionEvent e)
 			{
-				//get the orginal node
-				copyDestNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
-				tree.copyNodeToTree(copyOrgNode, copyDestNode);
-				String pdOrgFname = copyOrgNode.toString().replace(DOCUMENT_ROOT, "");
-				String pdDestFname = copyDestNode.toString().replace(DOCUMENT_ROOT, "");
-				tree.alertPDFileOperation(PDFileBrowser.COPY, pdOrgFname, pdDestFname);
+				if (copyOrgNode == null) {
+					return;
+				} else {
+					//get the orginal node
+					copyDestNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
+					tree.copyNodeToTree(copyOrgNode, copyDestNode);
+					String pdOrgFname = copyOrgNode.toString().replace(DOCUMENT_ROOT, "");
+					String pdDestFname = copyDestNode.toString().replace(DOCUMENT_ROOT, "");
+					tree.alertPDFileOperation(PDFileBrowser.COPY, pdOrgFname, pdDestFname);
+				}
 			}
 		});
 		
