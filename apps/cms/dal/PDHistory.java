@@ -12,10 +12,10 @@ import pdstore.dal.*;
  */
 public class PDHistory implements PDInstance {
 
-	public static final GUID typeId = new GUID("a66fc74498ed11e1921bc42c0302465e"); 
+	public static final GUID typeId = new GUID("0a83d544999e11e18ad8d8a25e8c53de"); 
 
-	public static final GUID roleDocumentOperationId = new GUID("a66fc75898ed11e1921bc42c0302465e");
-	public static final GUID roleFileOperationId = new GUID("a66fc75998ed11e1921bc42c0302465e");
+	public static final GUID roleDocumentOperationId = new GUID("0a83d558999e11e18ad8d8a25e8c53de");
+	public static final GUID roleFileOperationId = new GUID("0a83d559999e11e18ad8d8a25e8c53de");
 
 	static {
 		register();
@@ -183,7 +183,7 @@ public class PDHistory implements PDInstance {
 	 */
 	 public Collection<PDDocumentOperation> getDocumentOperations() throws PDStoreException {
 	 	Set<PDDocumentOperation> result = new HashSet<PDDocumentOperation>();
-	 	GUID PDDocumentOperationTypeId = new GUID("a66fc74298ed11e1921bc42c0302465e");
+	 	GUID PDDocumentOperationTypeId = new GUID("0a83d542999e11e18ad8d8a25e8c53de");
 		pdWorkingCopy.getInstances(this, roleDocumentOperationId, PDDocumentOperation.class, PDDocumentOperationTypeId, result);
 	 	return result;
 	 }
@@ -304,7 +304,7 @@ public class PDHistory implements PDInstance {
 	 */
 	 public Collection<PDFileOperation> getFileOperations() throws PDStoreException {
 	 	Set<PDFileOperation> result = new HashSet<PDFileOperation>();
-	 	GUID PDFileOperationTypeId = new GUID("a66fc74398ed11e1921bc42c0302465e");
+	 	GUID PDFileOperationTypeId = new GUID("0a83d543999e11e18ad8d8a25e8c53de");
 		pdWorkingCopy.getInstances(this, roleFileOperationId, PDFileOperation.class, PDFileOperationTypeId, result);
 	 	return result;
 	 }

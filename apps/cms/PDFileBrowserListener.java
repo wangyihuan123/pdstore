@@ -53,7 +53,7 @@ public class PDFileBrowserListener implements PDListener<GUID, Object, GUID> {
 	}
 
 	private void performOperation(PDFileOperation op){
-
+		
 		//while (op.getOpType() == null); // seems the get method can return null at first
 		if (op.getOpType() == null){
 			return;

@@ -79,7 +79,8 @@ public class PDFileBrowser extends JTree {
     	op.setOpUser(user);
     	op.setOpType((long)type);
     	op.setOpParamA(paramA);
-    	op.setOpParamB(paramB); // potential failure on null?
+    	paramB = paramB == null ? "" : paramB;
+    	op.setOpParamB(paramB);
     	
     	// Attach to history
 		history.addFileOperation(op); // needs to be some kind of linked list

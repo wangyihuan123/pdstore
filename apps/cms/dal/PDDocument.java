@@ -12,11 +12,11 @@ import pdstore.dal.*;
  */
 public class PDDocument implements PDInstance {
 
-	public static final GUID typeId = new GUID("a66fc74198ed11e1921bc42c0302465e"); 
+	public static final GUID typeId = new GUID("0a83d541999e11e18ad8d8a25e8c53de"); 
 
-	public static final GUID roleDocumentTypeId = new GUID("a66fc74b98ed11e1921bc42c0302465e");
-	public static final GUID roleDocumentFileNameId = new GUID("a66fc74c98ed11e1921bc42c0302465e");
-	public static final GUID roleDocumentFileLocationId = new GUID("a66fc74d98ed11e1921bc42c0302465e");
+	public static final GUID roleDocumentTypeId = new GUID("0a83d54b999e11e18ad8d8a25e8c53de");
+	public static final GUID roleDocumentFileNameId = new GUID("0a83d54c999e11e18ad8d8a25e8c53de");
+	public static final GUID roleDocumentFileLocationId = new GUID("0a83d54d999e11e18ad8d8a25e8c53de");
 
 	static {
 		register();

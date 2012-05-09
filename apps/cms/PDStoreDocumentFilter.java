@@ -149,7 +149,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	filter = on;
     }
     
-    private PDDocument getCurrentDocument(){
+    protected PDDocument getCurrentDocument(){
     	
     	PDDocument pddoc = user.getCurrentDocument();
     	
@@ -159,6 +159,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     		user.setCurrentDocument(pddoc);
     	} else {
     		//System.out.println("Document exists");
+    		// TODO: some code here to find the document
     	}   
     	
     	return pddoc;
