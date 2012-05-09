@@ -1,10 +1,13 @@
 package cms;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 import cms.dal.PDDocument;
 import cms.dal.PDFileOperation;
@@ -38,7 +41,7 @@ public class PDFileBrowserListener implements PDListener<GUID, Object, GUID> {
 				//System.out.println("Found Operation");
 				PDFileOperation op = PDFileOperation.load(cms.wc, (GUID)change.getInstance1());
 				
-				// Check if this user has called the operation, if so do it otherwise just refresh view
+				// Check to see if another use has made this operation, if so, refresh the view
 				PDUser otherUser = op.getOpUser();
 				if (otherUser == null){
 					return;
@@ -65,7 +68,11 @@ public class PDFileBrowserListener implements PDListener<GUID, Object, GUID> {
 		// Do something appropriate given the OpType
 		switch ((int)type){	
 		case PDFileBrowser.ADD:
-			// cms.tree.addFile(paramA);
+			File selNode = new File(cms.DOCUMENT_ROOT+"/"+paramA);
+			//String parent = selNode.getParent();
+			//DefaultTreeModel model = (DefaultTreeModel) (cms.tree.getModel());
+			//DefaultMutableTreeNode newFile = new DefaultMutableTreeNode(paramA);
+			//cms.tree.addNodeToTree(newFile, paramA);
 			break;
 		case PDFileBrowser.DELETE:
 			// cms.tree.deleteFile(paramA);	
@@ -90,7 +97,7 @@ public class PDFileBrowserListener implements PDListener<GUID, Object, GUID> {
 		String paramA = op.getOpParamA();	
 		switch ((int)type){
 			case PDFileBrowser.SELECT:	
-				// Highlight other user's selection in addition to main user selection
+				// TODO: Highlight other user's selection in addition to main user selection
 				// cms.tree.selectFile(paramA);
 				break;			
 		}
@@ -99,7 +106,6 @@ public class PDFileBrowserListener implements PDListener<GUID, Object, GUID> {
 
 	@Override
 	public Collection<PDChange<GUID, Object, GUID>> getMatchingTemplates() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

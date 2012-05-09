@@ -16,6 +16,7 @@ import java.awt.event.KeyListener;
 
 import java.io.File;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Vector;
 
@@ -35,6 +36,7 @@ import cms.dal.PDUser;
 
 import pdstore.GUID;
 import pdstore.GUIDGen;
+import pdstore.dal.PDInstance;
 import pdstore.dal.PDWorkingCopy;
 import diagrameditor.HistoryPanel;
 
@@ -183,9 +185,12 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				if (s.mkdir()){
 
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-					tree.addNodeToTree(node, filename);
+					tree.addNodeToTree(node, filename);	
+					if (s.isFile()) {
+						tree.createPDDocument(pdfname);
+					}
 					// inform others via PDStore after the local user has performed the file operation
-					tree.alertPDFileOperation(PDFileBrowser.ADD, pdfname, null);	
+					tree.alertPDFileOperation(PDFileBrowser.ADD, pdfname, null);
 				}
 
 			}  
@@ -358,11 +363,24 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				// if node is a file, set current user document in pdstore
 				if (node.isLeaf() && !node.getAllowsChildren()) {
 					String pdfname = node.toString().replace(DOCUMENT_ROOT, "");
-					tree.alertPDFileOperation(PDFileBrowser.SELECT, pdfname, null); //TODO: get the filename from DOCUMENT_ROOT					
+					setCurrentDocument(pdfname);
+					tree.alertPDFileOperation(PDFileBrowser.SELECT, pdfname, null);	
 				}
 			}
 		});
 
+	}
+	
+	protected void setCurrentDocument(String fname){
+		Collection<PDInstance> docs = wc.getAllInstancesOfType(PDDocument.typeId);
+		for (PDInstance i : docs){
+			PDDocument d = (PDDocument) i;
+			if (d.getDocumentFileName().equals(fname)){
+				user.setCurrentDocument(d.getId());
+				break;
+			}
+		}
+		
 	}
 
 	private void initTextEditor(){

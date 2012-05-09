@@ -157,10 +157,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     		// Need to create a document and set as current resource
     		pddoc = PDDocument.load(wc, GUIDGen.generateGUIDs(1).remove(0));
     		user.setCurrentDocument(pddoc);
-    	} else {
-    		//System.out.println("Document exists");
-    		// TODO: some code here to find the document
-    	}   
+    	} 
     	
     	return pddoc;
     }
