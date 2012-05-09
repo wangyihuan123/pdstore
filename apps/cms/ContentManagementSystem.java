@@ -29,6 +29,7 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 
 import cms.dal.PDDocument;
 import cms.dal.PDDocumentOperation;
+import cms.dal.PDFileOperation;
 import cms.dal.PDHistory;
 import cms.dal.PDUser;
 
@@ -66,6 +67,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	// JSplitPane splitPane;
 	JPanel fileOrganiserPane;
 	JTextField folderName;
+	
 	public ContentManagementSystem(GUID userID, GUID historyID, final PDWorkingCopy wc){
 
 
@@ -171,36 +173,25 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				String filename = folderName.getText();	  
 				File s = new File(node.toString()+ "/"+filename);
 				if (s.mkdir()){
-					// TODO: if new file, add to PDStore
 					
-			    	// Create operation
-			    	PDDocument doc = PDDocument.load(wc, GUIDGen.generateGUIDs(1).remove(0));
-			    	/*
-			    	op.setOpDocument(pddoc);
-			    	op.setOpUser(user);
-			    	op.setOpType((long)INSERT);
-			    	op.setOpOffset((long)offset);
-			    	op.setOpString(str);
-			    	// Attach to history
-					history.addOperation(op); // needs to be some kind of linked list
-					// Commit
-					wc.commit();
-					*/
-
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
 					tree.addNode(node, filename);
+					// inform others via PDStore
+					//TODO: get the filename from DOCUMENT_ROOT
+					tree.alertPDFileOperation(PDFileBrowser.ADD, filename, null);	
 				}
 
 			}  
 		});
 
 		JButton delete = new JButton("DELETE");
-
-
 		delete.addActionListener(new ActionListener()  
 		{  
 			public void actionPerformed(ActionEvent e)  
 			{  
+
+
+
 				//add new node into the file system
 				//  String filename = folderName.getText();	  
 				//  File s = new File(node.toString()+ "/"+filename);
@@ -220,6 +211,9 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 				File deletefile = new File(selNode.toString());
 				deletefile.delete();
+				
+				// inform others via PDStore
+				tree.alertPDFileOperation(PDFileBrowser.DELETE, selNode.toString(), null); //TODO: get the filename from DOCUMENT_ROOT
 			}  
 		});
 
@@ -254,27 +248,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		// set up the folder tree view.
 
 		// fileOrganiserPane = new JPanel();
-
-
-		DefaultMutableTreeNode defaultTreeNode = initDocumentTree(null, new File(DOCUMENT_ROOT));
-		tree = new PDFileBrowser(defaultTreeNode, DOCUMENT_ROOT);
-		tree.setEditable(true);
-
-		// Add a listener
-		tree.addTreeSelectionListener(new TreeSelectionListener() {
-			public void valueChanged(TreeSelectionEvent e) {
-				node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
-
-				// if node is a file, set current user document in pdstore
-				if (node.isLeaf() && !node.getAllowsChildren()) {
-					System.out.println("User selected file: " + node);
-					// TODO: set in PDStore - fname is path from DOCUMENT_ROOT
-				}
-			}
-		});
-
-
-
+		initFileBrowser();
 
 		// fileOrganiserPane.add(tree);
 
@@ -317,6 +291,30 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	private void initPDObjects(GUID userID, GUID historyID){
 		user = PDUser.load(wc, userID);
 		history = PDHistory.load(wc, historyID);
+	}
+
+	private void initFileBrowser(){
+		DefaultMutableTreeNode defaultTreeNode = initDocumentTree(null, new File(DOCUMENT_ROOT));
+		tree = new PDFileBrowser(defaultTreeNode, DOCUMENT_ROOT, user, history, wc);
+		
+		// Setup PDFileOperation listener
+		GUID role2 = PDFileOperation.roleOpTypeId;
+		wc.getStore().getDetachedListenerList().add(new PDFileBrowserListener(this, role2));
+		tree.setEditable(true);
+
+		// Add selection listener
+		tree.addTreeSelectionListener(new TreeSelectionListener() {
+			public void valueChanged(TreeSelectionEvent e) {
+				node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
+
+				// if node is a file, set current user document in pdstore
+				if (node.isLeaf() && !node.getAllowsChildren()) {
+					System.out.println("User selected file: " + node);
+					// TODO: set in PDStore - fname is path from DOCUMENT_ROOT
+				}
+			}
+		});
+
 	}
 
 	private void initTextEditor(){

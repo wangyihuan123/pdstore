@@ -1,10 +1,7 @@
 
 package cms;
 
-import javax.swing.event.DocumentEvent;
 import javax.swing.text.*;
-import javax.swing.text.DocumentFilter.FilterBypass;
-
 import cms.dal.PDDocument;
 import cms.dal.PDDocumentOperation;
 import cms.dal.PDHistory;
@@ -12,9 +9,6 @@ import cms.dal.PDUser;
 import pdstore.GUID;
 import pdstore.GUIDGen;
 import pdstore.dal.PDWorkingCopy;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 public class PDStoreDocumentFilter extends DocumentFilter {
 
@@ -34,7 +28,6 @@ public class PDStoreDocumentFilter extends DocumentFilter {
 		this.user = user;
 		this.history = history;
 		this.wc = wc;
-		// TODO: get username from PDStore and listen to changes in name
     }
     
     @Override
