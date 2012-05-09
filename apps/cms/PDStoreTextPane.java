@@ -6,17 +6,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.swing.JTextPane;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.Document;
-import javax.swing.text.StyledDocument;
-
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import cms.dal.PDHistory;
-import cms.dal.PDOperation;
 import cms.dal.PDUser;
 
 import pdstore.GUID;

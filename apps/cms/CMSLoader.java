@@ -97,10 +97,10 @@ public class CMSLoader {
 
 		// This is required
 		try {
-			Class.forName("cms.dal.PDCharacter");
 			Class.forName("cms.dal.PDDocument");
 			Class.forName("cms.dal.PDHistory");
-			Class.forName("cms.dal.PDOperation");			
+			Class.forName("cms.dal.PDDocumentOperation");	
+			Class.forName("cms.dal.PDFileOperation");
 			Class.forName("cms.dal.PDUser");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

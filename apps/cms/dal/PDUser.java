@@ -12,13 +12,13 @@ import pdstore.dal.*;
  */
 public class PDUser implements PDInstance {
 
-	public static final GUID typeId = new GUID("e9395461981111e194a9005056c00008"); 
+	public static final GUID typeId = new GUID("0a83d540999e11e18ad8d8a25e8c53de"); 
 
-	public static final GUID roleCaretColorRId = new GUID("e9397b71981111e194a9005056c00008");
-	public static final GUID roleCaretPositionId = new GUID("e9397b74981111e194a9005056c00008");
-	public static final GUID roleCurrentDocumentId = new GUID("e9397b70981111e194a9005056c00008");
-	public static final GUID roleCaretColorBId = new GUID("e9397b73981111e194a9005056c00008");
-	public static final GUID roleCaretColorGId = new GUID("e9397b72981111e194a9005056c00008");
+	public static final GUID roleCurrentDocumentId = new GUID("0a83d546999e11e18ad8d8a25e8c53de");
+	public static final GUID roleCaretColorBId = new GUID("0a83d549999e11e18ad8d8a25e8c53de");
+	public static final GUID roleCaretColorRId = new GUID("0a83d547999e11e18ad8d8a25e8c53de");
+	public static final GUID roleCaretPositionId = new GUID("0a83d54a999e11e18ad8d8a25e8c53de");
+	public static final GUID roleCaretColorGId = new GUID("0a83d548999e11e18ad8d8a25e8c53de");
 
 	static {
 		register();
@@ -171,176 +171,6 @@ public class PDUser implements PDInstance {
 	
 
 	/**
-	 * Returns the instance connected to this instance through the role "CaretColorR".
-	 * @return the connected instance
-	 * @throws PDStoreException
-	 */
-	 public Long getCaretColorR() throws PDStoreException {
-	 	return (Long)pdWorkingCopy.getInstance(this, roleCaretColorRId);
-	 }
-
-	/**
-	 * Returns the instance(s) connected to this instance through the role "CaretColorR".
-	 * @return the connected instance(s)
-	 * @throws PDStoreException
-	 */
-	 public Collection<Long> getCaretColorRs() throws PDStoreException {
-	 	Set<Long> result = new HashSet<Long>();
-	 	GUID LongTypeId = new GUID("4b8a986c4062db11afc0b95b08f50e2f");
-		pdWorkingCopy.getInstances(this, roleCaretColorRId, Long.class, LongTypeId, result);
-	 	return result;
-	 }
-	 
-   /**
-	 * Connects this instance to the given instance using role "CaretColorR".
-	 * If the given instance is null, nothing happens.
-	 * @param caretColorR the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void addCaretColorR(Long caretColorR) throws PDStoreException {
-
-			if (caretColorR != null) {
-				
-				pdWorkingCopy.addLink(this.id, roleCaretColorRId, caretColorR);
-			}
-
-	}
-
-	/**
-	 * Connects this instance to the given instances using role "CaretColorR".
-	 * If the given collection of instances is null, nothing happens.
-	 * @param caretColorR the Collection of instances to connect
-	 * @throws PDStoreException
-	 */
-	public void addCaretColorRs(Collection<Long> caretColorRs) throws PDStoreException {
-		if (caretColorRs == null)
-			return;
-
-		for (Long instance : caretColorRs)
-			addCaretColorR(instance);
-	}
-
-
-	/**
-	 * Removes the link from this instance through role "CaretColorR".
-	 * @throws PDStoreException
-	 */
-	public void removeCaretColorR() throws PDStoreException {
-		pdWorkingCopy.removeLink(this.id, roleCaretColorRId, 
-			pdWorkingCopy.getInstance(this, roleCaretColorRId));
-	}
-
-	/**
-	 * Removes the link from this instance through role "CaretColorR" to the given instance, if the link exists.
-	 * If there is no such link, nothing happens.
-	 * If the given instance is null, nothing happens.
-	 * @throws PDStoreException
-	 */
-	public void removeCaretColorR(Object caretColorR) throws PDStoreException {
-		if (caretColorR == null)
-			return;
-		pdWorkingCopy.removeLink(this.id, roleCaretColorRId, caretColorR);
-	}
-
-
-   /**
-	 * Connects this instance to the given instance using role "CaretColorR".
-	 * If there is already an instance connected to this instance through role "CaretColorR", the link will be overwritten.
-	 * If the given instance is null, an existing link is removed."
-	 * @param caretColorR the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void setCaretColorR(Long caretColorR) throws PDStoreException {
-		pdWorkingCopy.setLink(this.id,  roleCaretColorRId, caretColorR);	
-	}
-
-
-	/**
-	 * Returns the instance connected to this instance through the role "CaretPosition".
-	 * @return the connected instance
-	 * @throws PDStoreException
-	 */
-	 public Long getCaretPosition() throws PDStoreException {
-	 	return (Long)pdWorkingCopy.getInstance(this, roleCaretPositionId);
-	 }
-
-	/**
-	 * Returns the instance(s) connected to this instance through the role "CaretPosition".
-	 * @return the connected instance(s)
-	 * @throws PDStoreException
-	 */
-	 public Collection<Long> getCaretPositions() throws PDStoreException {
-	 	Set<Long> result = new HashSet<Long>();
-	 	GUID LongTypeId = new GUID("4b8a986c4062db11afc0b95b08f50e2f");
-		pdWorkingCopy.getInstances(this, roleCaretPositionId, Long.class, LongTypeId, result);
-	 	return result;
-	 }
-	 
-   /**
-	 * Connects this instance to the given instance using role "CaretPosition".
-	 * If the given instance is null, nothing happens.
-	 * @param caretPosition the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void addCaretPosition(Long caretPosition) throws PDStoreException {
-
-			if (caretPosition != null) {
-				
-				pdWorkingCopy.addLink(this.id, roleCaretPositionId, caretPosition);
-			}
-
-	}
-
-	/**
-	 * Connects this instance to the given instances using role "CaretPosition".
-	 * If the given collection of instances is null, nothing happens.
-	 * @param caretPosition the Collection of instances to connect
-	 * @throws PDStoreException
-	 */
-	public void addCaretPositions(Collection<Long> caretPositions) throws PDStoreException {
-		if (caretPositions == null)
-			return;
-
-		for (Long instance : caretPositions)
-			addCaretPosition(instance);
-	}
-
-
-	/**
-	 * Removes the link from this instance through role "CaretPosition".
-	 * @throws PDStoreException
-	 */
-	public void removeCaretPosition() throws PDStoreException {
-		pdWorkingCopy.removeLink(this.id, roleCaretPositionId, 
-			pdWorkingCopy.getInstance(this, roleCaretPositionId));
-	}
-
-	/**
-	 * Removes the link from this instance through role "CaretPosition" to the given instance, if the link exists.
-	 * If there is no such link, nothing happens.
-	 * If the given instance is null, nothing happens.
-	 * @throws PDStoreException
-	 */
-	public void removeCaretPosition(Object caretPosition) throws PDStoreException {
-		if (caretPosition == null)
-			return;
-		pdWorkingCopy.removeLink(this.id, roleCaretPositionId, caretPosition);
-	}
-
-
-   /**
-	 * Connects this instance to the given instance using role "CaretPosition".
-	 * If there is already an instance connected to this instance through role "CaretPosition", the link will be overwritten.
-	 * If the given instance is null, an existing link is removed."
-	 * @param caretPosition the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void setCaretPosition(Long caretPosition) throws PDStoreException {
-		pdWorkingCopy.setLink(this.id,  roleCaretPositionId, caretPosition);	
-	}
-
-
-	/**
 	 * Returns the instance connected to this instance through the role "CurrentDocument".
 	 * @return the connected instance
 	 * @throws PDStoreException
@@ -356,7 +186,7 @@ public class PDUser implements PDInstance {
 	 */
 	 public Collection<PDDocument> getCurrentDocuments() throws PDStoreException {
 	 	Set<PDDocument> result = new HashSet<PDDocument>();
-	 	GUID PDDocumentTypeId = new GUID("e9395462981111e194a9005056c00008");
+	 	GUID PDDocumentTypeId = new GUID("0a83d541999e11e18ad8d8a25e8c53de");
 		pdWorkingCopy.getInstances(this, roleCurrentDocumentId, PDDocument.class, PDDocumentTypeId, result);
 	 	return result;
 	 }
@@ -543,6 +373,176 @@ public class PDUser implements PDInstance {
 	 */
 	public void setCaretColorB(Long caretColorB) throws PDStoreException {
 		pdWorkingCopy.setLink(this.id,  roleCaretColorBId, caretColorB);	
+	}
+
+
+	/**
+	 * Returns the instance connected to this instance through the role "CaretColorR".
+	 * @return the connected instance
+	 * @throws PDStoreException
+	 */
+	 public Long getCaretColorR() throws PDStoreException {
+	 	return (Long)pdWorkingCopy.getInstance(this, roleCaretColorRId);
+	 }
+
+	/**
+	 * Returns the instance(s) connected to this instance through the role "CaretColorR".
+	 * @return the connected instance(s)
+	 * @throws PDStoreException
+	 */
+	 public Collection<Long> getCaretColorRs() throws PDStoreException {
+	 	Set<Long> result = new HashSet<Long>();
+	 	GUID LongTypeId = new GUID("4b8a986c4062db11afc0b95b08f50e2f");
+		pdWorkingCopy.getInstances(this, roleCaretColorRId, Long.class, LongTypeId, result);
+	 	return result;
+	 }
+	 
+   /**
+	 * Connects this instance to the given instance using role "CaretColorR".
+	 * If the given instance is null, nothing happens.
+	 * @param caretColorR the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void addCaretColorR(Long caretColorR) throws PDStoreException {
+
+			if (caretColorR != null) {
+				
+				pdWorkingCopy.addLink(this.id, roleCaretColorRId, caretColorR);
+			}
+
+	}
+
+	/**
+	 * Connects this instance to the given instances using role "CaretColorR".
+	 * If the given collection of instances is null, nothing happens.
+	 * @param caretColorR the Collection of instances to connect
+	 * @throws PDStoreException
+	 */
+	public void addCaretColorRs(Collection<Long> caretColorRs) throws PDStoreException {
+		if (caretColorRs == null)
+			return;
+
+		for (Long instance : caretColorRs)
+			addCaretColorR(instance);
+	}
+
+
+	/**
+	 * Removes the link from this instance through role "CaretColorR".
+	 * @throws PDStoreException
+	 */
+	public void removeCaretColorR() throws PDStoreException {
+		pdWorkingCopy.removeLink(this.id, roleCaretColorRId, 
+			pdWorkingCopy.getInstance(this, roleCaretColorRId));
+	}
+
+	/**
+	 * Removes the link from this instance through role "CaretColorR" to the given instance, if the link exists.
+	 * If there is no such link, nothing happens.
+	 * If the given instance is null, nothing happens.
+	 * @throws PDStoreException
+	 */
+	public void removeCaretColorR(Object caretColorR) throws PDStoreException {
+		if (caretColorR == null)
+			return;
+		pdWorkingCopy.removeLink(this.id, roleCaretColorRId, caretColorR);
+	}
+
+
+   /**
+	 * Connects this instance to the given instance using role "CaretColorR".
+	 * If there is already an instance connected to this instance through role "CaretColorR", the link will be overwritten.
+	 * If the given instance is null, an existing link is removed."
+	 * @param caretColorR the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void setCaretColorR(Long caretColorR) throws PDStoreException {
+		pdWorkingCopy.setLink(this.id,  roleCaretColorRId, caretColorR);	
+	}
+
+
+	/**
+	 * Returns the instance connected to this instance through the role "CaretPosition".
+	 * @return the connected instance
+	 * @throws PDStoreException
+	 */
+	 public Long getCaretPosition() throws PDStoreException {
+	 	return (Long)pdWorkingCopy.getInstance(this, roleCaretPositionId);
+	 }
+
+	/**
+	 * Returns the instance(s) connected to this instance through the role "CaretPosition".
+	 * @return the connected instance(s)
+	 * @throws PDStoreException
+	 */
+	 public Collection<Long> getCaretPositions() throws PDStoreException {
+	 	Set<Long> result = new HashSet<Long>();
+	 	GUID LongTypeId = new GUID("4b8a986c4062db11afc0b95b08f50e2f");
+		pdWorkingCopy.getInstances(this, roleCaretPositionId, Long.class, LongTypeId, result);
+	 	return result;
+	 }
+	 
+   /**
+	 * Connects this instance to the given instance using role "CaretPosition".
+	 * If the given instance is null, nothing happens.
+	 * @param caretPosition the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void addCaretPosition(Long caretPosition) throws PDStoreException {
+
+			if (caretPosition != null) {
+				
+				pdWorkingCopy.addLink(this.id, roleCaretPositionId, caretPosition);
+			}
+
+	}
+
+	/**
+	 * Connects this instance to the given instances using role "CaretPosition".
+	 * If the given collection of instances is null, nothing happens.
+	 * @param caretPosition the Collection of instances to connect
+	 * @throws PDStoreException
+	 */
+	public void addCaretPositions(Collection<Long> caretPositions) throws PDStoreException {
+		if (caretPositions == null)
+			return;
+
+		for (Long instance : caretPositions)
+			addCaretPosition(instance);
+	}
+
+
+	/**
+	 * Removes the link from this instance through role "CaretPosition".
+	 * @throws PDStoreException
+	 */
+	public void removeCaretPosition() throws PDStoreException {
+		pdWorkingCopy.removeLink(this.id, roleCaretPositionId, 
+			pdWorkingCopy.getInstance(this, roleCaretPositionId));
+	}
+
+	/**
+	 * Removes the link from this instance through role "CaretPosition" to the given instance, if the link exists.
+	 * If there is no such link, nothing happens.
+	 * If the given instance is null, nothing happens.
+	 * @throws PDStoreException
+	 */
+	public void removeCaretPosition(Object caretPosition) throws PDStoreException {
+		if (caretPosition == null)
+			return;
+		pdWorkingCopy.removeLink(this.id, roleCaretPositionId, caretPosition);
+	}
+
+
+   /**
+	 * Connects this instance to the given instance using role "CaretPosition".
+	 * If there is already an instance connected to this instance through role "CaretPosition", the link will be overwritten.
+	 * If the given instance is null, an existing link is removed."
+	 * @param caretPosition the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void setCaretPosition(Long caretPosition) throws PDStoreException {
+		pdWorkingCopy.setLink(this.id,  roleCaretPositionId, caretPosition);	
 	}
 
 
