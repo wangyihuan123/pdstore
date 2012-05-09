@@ -206,7 +206,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 				// inform others via PDStore after the local user has performed the file operation
 				String pdfname = selNode.toString().replace(DOCUMENT_ROOT, "");
-				tree.alertPDFileOperation(PDFileBrowser.DELETE, pdfname, null); //TODO: get the filename from DOCUMENT_ROOT
+				tree.alertPDFileOperation(PDFileBrowser.DELETE, pdfname, null); 
 
 			}  
 		});
@@ -231,6 +231,9 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 						//get the orginal node
 						moveDestNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
 						tree.moveNodeToTree(moveOrgNode, moveDestNode);
+						String pdOrgFname = moveOrgNode.toString().replace(DOCUMENT_ROOT, "");
+						String pdDestFname = moveDestNode.toString().replace(DOCUMENT_ROOT, "");
+						tree.alertPDFileOperation(PDFileBrowser.MOVE, pdOrgFname, pdDestFname);
 					}
 				});
 				
@@ -255,6 +258,9 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				//get the orginal node
 				copyDestNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
 				tree.copyNodeToTree(copyOrgNode, copyDestNode);
+				String pdOrgFname = moveOrgNode.toString().replace(DOCUMENT_ROOT, "");
+				String pdDestFname = moveDestNode.toString().replace(DOCUMENT_ROOT, "");
+				tree.alertPDFileOperation(PDFileBrowser.COPY, pdOrgFname, pdDestFname);
 			}
 		});
 		
