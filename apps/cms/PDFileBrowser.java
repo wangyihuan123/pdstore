@@ -24,6 +24,7 @@ public class PDFileBrowser extends JTree {
 	PDWorkingCopy wc;
 	PDUser user;
 	PDHistory history;
+	TreePath recentlyAdded;
 
 	protected static final int
 	ADD = 0,
@@ -53,14 +54,14 @@ public class PDFileBrowser extends JTree {
 
 			//make the node visible by scroll to it 
 			TreeNode[] nodes = m_model.getPathToRoot(newNode); 
-			TreePath path = new TreePath(nodes); 
-			this.scrollPathToVisible(path); 
-
-			//select the newly added node 
-			this.setSelectionPath(path); 
-
-
+			recentlyAdded = new TreePath(nodes); 
 		} 		
+	}
+	
+	public void scrollAndSelect(){
+		//scroll and select the newly added node 
+		this.scrollPathToVisible(recentlyAdded); 
+		this.setSelectionPath(recentlyAdded); 		
 	}
 
 
@@ -82,10 +83,10 @@ public class PDFileBrowser extends JTree {
 	 * @param selNode
 	 */
 
-	public void copyNodeToTree(DefaultMutableTreeNode orgNode,DefaultMutableTreeNode desNode){
+	public void copyNodeToTree(DefaultMutableTreeNode orgNode, DefaultMutableTreeNode desNode){
 
 		// update the tree after clicking move button
-		addNodeToTree(desNode,orgNode.toString());
+		addNodeToTree(desNode, orgNode.toString());
 
 	}
 

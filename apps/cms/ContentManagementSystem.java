@@ -185,7 +185,8 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				if (s.mkdir()){
 
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-					tree.addNodeToTree(node, filename);	
+					//tree.addNodeToTree(node, filename);
+					//tree.scrollAndSelect();
 					if (s.isFile()) {
 						tree.createPDDocument(pdfname);
 					}
@@ -263,8 +264,8 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				//get the orginal node
 				copyDestNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
 				tree.copyNodeToTree(copyOrgNode, copyDestNode);
-				String pdOrgFname = moveOrgNode.toString().replace(DOCUMENT_ROOT, "");
-				String pdDestFname = moveDestNode.toString().replace(DOCUMENT_ROOT, "");
+				String pdOrgFname = copyOrgNode.toString().replace(DOCUMENT_ROOT, "");
+				String pdDestFname = copyDestNode.toString().replace(DOCUMENT_ROOT, "");
 				tree.alertPDFileOperation(PDFileBrowser.COPY, pdOrgFname, pdDestFname);
 			}
 		});
