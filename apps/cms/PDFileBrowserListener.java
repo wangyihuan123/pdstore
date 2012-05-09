@@ -40,12 +40,11 @@ public class PDFileBrowserListener implements PDListener<GUID, Object, GUID> {
 			if (change.getRole2().equals(role2)){
 				//System.out.println("Found Operation");
 				PDFileOperation op = PDFileOperation.load(cms.wc, (GUID)change.getInstance1());
-				
-				// Check to see if another use has made this operation, if so, refresh the view
 				PDUser otherUser = op.getOpUser();
 				if (otherUser == null){
 					return;
 				}
+				// Check to see if the operation was made by this user
 				if (otherUser.getName().equals(cms.user.getName())){
 					performOperation(op);
 				} else {
