@@ -6,9 +6,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.swing.JTextPane;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.AbstractDocument;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
@@ -28,11 +32,13 @@ public class PDStoreTextPane extends RSyntaxTextArea {
 	private PDWorkingCopy wc;
 	private PDUser user;
 	private ArrayList<UserCaret> carets;
+	private JTextPane htmlEditor;
 
-	public PDStoreTextPane(PDWorkingCopy wc, PDUser user, PDHistory history){
+	public PDStoreTextPane(PDWorkingCopy wc, PDUser user, PDHistory history, JTextPane htmlEditor){
 		super();
 		this.wc = wc;
 		this.user = user;
+		this.htmlEditor = htmlEditor;
 		
 		carets = new ArrayList<UserCaret>();
 		setUserCarets();
@@ -42,6 +48,7 @@ public class PDStoreTextPane extends RSyntaxTextArea {
         if (styledDoc instanceof AbstractDocument) {
             doc = (AbstractDocument)styledDoc;
             doc.setDocumentFilter(new PDStoreDocumentFilter(wc, user, history));
+            doc.addDocumentListener(new DocumentUpdateListener());
         } else {
             System.err.println("Text pane's document isn't an AbstractDocument");
             System.exit(126);
@@ -188,7 +195,35 @@ public class PDStoreTextPane extends RSyntaxTextArea {
 			return r;
 		}		
 		
+	}
+	
+	protected class DocumentUpdateListener implements DocumentListener{
 
+		@Override
+		public void changedUpdate(DocumentEvent dev) {
+			if (htmlEditor != null){
+				Document d = dev.getDocument();
+				try {
+					htmlEditor.setText(d.getText(0, d.getLength()));
+				} catch (BadLocationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
+
+		@Override
+		public void insertUpdate(DocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
 		
 	}
 	
