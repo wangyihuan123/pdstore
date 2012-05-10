@@ -5,16 +5,17 @@ import pdstore.*;
 import pdstore.dal.*;
 
 /**
- * Data access class to represent instances of type "History" in memory.
+ * Data access class to represent instances of type "CMSOperation" in memory.
  * Note that this class needs to be registered with PDCache by calling:
- *    Class.forName("cms.dal.PDHistory");
+ *    Class.forName("cms.dal.PDCMSOperation");
  * @author PDGen
  */
-public class PDHistory implements PDInstance {
+public class PDCMSOperation implements PDInstance {
 
-	public static final GUID typeId = new GUID("599131e59aa311e190cbd8a25e8c53de"); 
+	public static final GUID typeId = new GUID("599131e29aa311e190cbd8a25e8c53de"); 
 
 	public static final GUID roleCMSOperationId = new GUID("599131f89aa311e190cbd8a25e8c53de");
+	public static final GUID roleOpTypeId = new GUID("ee32adf0f68b11df860e1cc1dec00ed3");
 
 	static {
 		register();
@@ -24,7 +25,7 @@ public class PDHistory implements PDInstance {
 	 * Registers this DAL class with the PDStore DAL layer.
 	 */
 	public static void register() {
-		DALClassRegister.addDataClass(typeId, PDHistory.class);
+		DALClassRegister.addDataClass(typeId, PDCMSOperation.class);
 	}
 	
 	private PDWorkingCopy pdWorkingCopy;
@@ -33,25 +34,25 @@ public class PDHistory implements PDInstance {
 	public String toString() {
 		String name = getName();
 		if(name!=null)
-			return "PDHistory:" + name;
+			return "PDCMSOperation:" + name;
 		else
-			return "PDHistory:" + id;
+			return "PDCMSOperation:" + id;
 	}
 	
 	/**
-	 * Creates an PDHistory object representing the given instance in the given cache.
+	 * Creates an PDCMSOperation object representing the given instance in the given cache.
 	 * @param workingCopy the working copy the instance should be in
 	 */
-	public PDHistory(PDWorkingCopy workingCopy) {
+	public PDCMSOperation(PDWorkingCopy workingCopy) {
 		this(workingCopy, new GUID());
 	}
 	
 	/**
-	 * Creates an PDHistory object representing the given instance in the given copy.
+	 * Creates an PDCMSOperation object representing the given instance in the given copy.
 	 * @param workingCopy the working copy the instance should be in
 	 * @param id GUID of the instance
 	 */
-	public PDHistory(PDWorkingCopy workingCopy, GUID id) {
+	public PDCMSOperation(PDWorkingCopy workingCopy, GUID id) {
 		this.pdWorkingCopy = workingCopy;
 		this.id = id;
 		
@@ -67,9 +68,9 @@ public class PDHistory implements PDInstance {
 	 * @param id GUID of the instance
 	 * Do not directly call this method. Use the newInstance() method in PDCache which would call this method
 	 */
-	public static PDHistory load(PDWorkingCopy pdWorkingCopy, GUID id) {
+	public static PDCMSOperation load(PDWorkingCopy pdWorkingCopy, GUID id) {
 		PDInstance instance = pdWorkingCopy.load(typeId, id);
-		return (PDHistory)instance;
+		return (PDCMSOperation)instance;
 	}
 
 	/**
@@ -283,6 +284,127 @@ public class PDHistory implements PDInstance {
 	 */
 	public void setCMSOperation(PDCMSOperation cMSOperation) throws PDStoreException {
 		setCMSOperation(cMSOperation.getId());
+	}
+
+
+
+	/**
+	 * Returns the instance connected to this instance through the role "OpType".
+	 * @return the connected instance
+	 * @throws PDStoreException
+	 */
+	 public PDType getOpType() throws PDStoreException {
+	 	return (PDType)pdWorkingCopy.getInstance(this, roleOpTypeId);
+	 }
+
+	/**
+	 * Returns the instance(s) connected to this instance through the role "OpType".
+	 * @return the connected instance(s)
+	 * @throws PDStoreException
+	 */
+	 public Collection<PDType> getOpTypes() throws PDStoreException {
+	 	Set<PDType> result = new HashSet<PDType>();
+	 	GUID PDTypeTypeId = new GUID("518a986c4062db11afc0b95b08f50e2f");
+		pdWorkingCopy.getInstances(this, roleOpTypeId, PDType.class, PDTypeTypeId, result);
+	 	return result;
+	 }
+	 
+   /**
+	 * Connects this instance to the given instance using role "OpType".
+	 * If the given instance is null, nothing happens.
+	 * @param opType the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void addOpType(GUID opType) throws PDStoreException {
+
+			if (opType != null) {
+				
+				pdWorkingCopy.addLink(this.id, roleOpTypeId, opType);
+			}
+
+	}
+
+
+	/**
+	 * Connects this instance to the given instance using role "OpType".
+	 * If the given instance is null, nothing happens.
+	 * @param opType the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void addOpType(PDType opType) throws PDStoreException {
+		if (opType != null) {
+			addOpType(opType.getId());
+		}		
+	}
+	
+	/**
+	 * Connects this instance to the given instance using role "OpType".
+	 * If the given collection of instances is null, nothing happens.
+	 * @param opType the Collection of instances to connect
+	 * @throws PDStoreException
+	 */
+	public void addOpTypes(Collection<PDType> opTypes) throws PDStoreException {
+		if (opTypes == null)
+			return;
+		
+		for (PDType instance : opTypes)
+			addOpType(instance);	
+	}
+
+	/**
+	 * Removes the link from this instance through role "OpType".
+	 * @throws PDStoreException
+	 */
+	public void removeOpType() throws PDStoreException {
+		pdWorkingCopy.removeLink(this.id, roleOpTypeId, 
+			pdWorkingCopy.getInstance(this, roleOpTypeId));
+	}
+
+	/**
+	 * Removes the link from this instance through role "OpType" to the given instance, if the link exists.
+	 * If there is no such link, nothing happens.
+	 * If the given instance is null, nothing happens.
+	 * @throws PDStoreException
+	 */
+	public void removeOpType(Object opType) throws PDStoreException {
+		if (opType == null)
+			return;
+		pdWorkingCopy.removeLink(this.id, roleOpTypeId, opType);
+	}
+
+	/**
+	 * Removes the links from this instance through role "OpType" to the instances 
+	 * in the given Collection, if the links exist.
+	 * If there are no such links or the collection argument is null, nothing happens.
+	 * @throws PDStoreException
+	 */
+	public void removeOpTypes(Collection<PDType> opTypes) throws PDStoreException {
+		if (opTypes == null)
+			return;
+		
+		for (PDType instance : opTypes)
+			pdWorkingCopy.removeLink(this.id, roleOpTypeId, instance);
+	}
+
+   /**
+	 * Connects this instance to the given instance using role "OpType".
+	 * If there is already an instance connected to this instance through role "OpType", the link will be overwritten.
+	 * If the given instance is null, an existing link is removed."
+	 * @param opType the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void setOpType(GUID opType) throws PDStoreException {
+		pdWorkingCopy.setLink(this.id,  roleOpTypeId, opType);	
+	}
+	/**
+	 * Connects this instance to the given instance using role "OpType".
+	 * If there is already an instance connected to this instance through role "OpType", the link will be overwritten.
+	 * If the given instance is null, an existing link is removed."
+	 * @param opType the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void setOpType(PDType opType) throws PDStoreException {
+		setOpType(opType.getId());
 	}
 
 }

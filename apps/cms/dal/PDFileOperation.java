@@ -12,12 +12,12 @@ import pdstore.dal.*;
  */
 public class PDFileOperation implements PDInstance {
 
-	public static final GUID typeId = new GUID("0a83d543999e11e18ad8d8a25e8c53de"); 
+	public static final GUID typeId = new GUID("599131e49aa311e190cbd8a25e8c53de"); 
 
-	public static final GUID roleOpParamBId = new GUID("0a83d557999e11e18ad8d8a25e8c53de");
-	public static final GUID roleOpUserId = new GUID("0a83d555999e11e18ad8d8a25e8c53de");
-	public static final GUID roleOpParamAId = new GUID("0a83d556999e11e18ad8d8a25e8c53de");
-	public static final GUID roleOpTypeId = new GUID("0a83d554999e11e18ad8d8a25e8c53de");
+	public static final GUID roleOpUserId = new GUID("599131f59aa311e190cbd8a25e8c53de");
+	public static final GUID roleOpParamAId = new GUID("599131f69aa311e190cbd8a25e8c53de");
+	public static final GUID roleOpTypeId = new GUID("599131f49aa311e190cbd8a25e8c53de");
+	public static final GUID roleOpParamBId = new GUID("599131f79aa311e190cbd8a25e8c53de");
 
 	static {
 		register();
@@ -170,91 +170,6 @@ public class PDFileOperation implements PDInstance {
 	
 
 	/**
-	 * Returns the instance connected to this instance through the role "OpParamB".
-	 * @return the connected instance
-	 * @throws PDStoreException
-	 */
-	 public String getOpParamB() throws PDStoreException {
-	 	return (String)pdWorkingCopy.getInstance(this, roleOpParamBId);
-	 }
-
-	/**
-	 * Returns the instance(s) connected to this instance through the role "OpParamB".
-	 * @return the connected instance(s)
-	 * @throws PDStoreException
-	 */
-	 public Collection<String> getOpParamBs() throws PDStoreException {
-	 	Set<String> result = new HashSet<String>();
-	 	GUID StringTypeId = new GUID("4a8a986c4062db11afc0b95b08f50e2f");
-		pdWorkingCopy.getInstances(this, roleOpParamBId, String.class, StringTypeId, result);
-	 	return result;
-	 }
-	 
-   /**
-	 * Connects this instance to the given instance using role "OpParamB".
-	 * If the given instance is null, nothing happens.
-	 * @param opParamB the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void addOpParamB(String opParamB) throws PDStoreException {
-
-			if (opParamB != null) {
-				
-				pdWorkingCopy.addLink(this.id, roleOpParamBId, opParamB);
-			}
-
-	}
-
-	/**
-	 * Connects this instance to the given instances using role "OpParamB".
-	 * If the given collection of instances is null, nothing happens.
-	 * @param opParamB the Collection of instances to connect
-	 * @throws PDStoreException
-	 */
-	public void addOpParamBs(Collection<String> opParamBs) throws PDStoreException {
-		if (opParamBs == null)
-			return;
-
-		for (String instance : opParamBs)
-			addOpParamB(instance);
-	}
-
-
-	/**
-	 * Removes the link from this instance through role "OpParamB".
-	 * @throws PDStoreException
-	 */
-	public void removeOpParamB() throws PDStoreException {
-		pdWorkingCopy.removeLink(this.id, roleOpParamBId, 
-			pdWorkingCopy.getInstance(this, roleOpParamBId));
-	}
-
-	/**
-	 * Removes the link from this instance through role "OpParamB" to the given instance, if the link exists.
-	 * If there is no such link, nothing happens.
-	 * If the given instance is null, nothing happens.
-	 * @throws PDStoreException
-	 */
-	public void removeOpParamB(Object opParamB) throws PDStoreException {
-		if (opParamB == null)
-			return;
-		pdWorkingCopy.removeLink(this.id, roleOpParamBId, opParamB);
-	}
-
-
-   /**
-	 * Connects this instance to the given instance using role "OpParamB".
-	 * If there is already an instance connected to this instance through role "OpParamB", the link will be overwritten.
-	 * If the given instance is null, an existing link is removed."
-	 * @param opParamB the instance to connect
-	 * @throws PDStoreException
-	 */
-	public void setOpParamB(String opParamB) throws PDStoreException {
-		pdWorkingCopy.setLink(this.id,  roleOpParamBId, opParamB);	
-	}
-
-
-	/**
 	 * Returns the instance connected to this instance through the role "OpUser".
 	 * @return the connected instance
 	 * @throws PDStoreException
@@ -270,7 +185,7 @@ public class PDFileOperation implements PDInstance {
 	 */
 	 public Collection<PDUser> getOpUsers() throws PDStoreException {
 	 	Set<PDUser> result = new HashSet<PDUser>();
-	 	GUID PDUserTypeId = new GUID("0a83d540999e11e18ad8d8a25e8c53de");
+	 	GUID PDUserTypeId = new GUID("599131e09aa311e190cbd8a25e8c53de");
 		pdWorkingCopy.getInstances(this, roleOpUserId, PDUser.class, PDUserTypeId, result);
 	 	return result;
 	 }
@@ -542,5 +457,90 @@ public class PDFileOperation implements PDInstance {
 	 */
 	public void setOpType(Long opType) throws PDStoreException {
 		pdWorkingCopy.setLink(this.id,  roleOpTypeId, opType);	
+	}
+
+
+	/**
+	 * Returns the instance connected to this instance through the role "OpParamB".
+	 * @return the connected instance
+	 * @throws PDStoreException
+	 */
+	 public String getOpParamB() throws PDStoreException {
+	 	return (String)pdWorkingCopy.getInstance(this, roleOpParamBId);
+	 }
+
+	/**
+	 * Returns the instance(s) connected to this instance through the role "OpParamB".
+	 * @return the connected instance(s)
+	 * @throws PDStoreException
+	 */
+	 public Collection<String> getOpParamBs() throws PDStoreException {
+	 	Set<String> result = new HashSet<String>();
+	 	GUID StringTypeId = new GUID("4a8a986c4062db11afc0b95b08f50e2f");
+		pdWorkingCopy.getInstances(this, roleOpParamBId, String.class, StringTypeId, result);
+	 	return result;
+	 }
+	 
+   /**
+	 * Connects this instance to the given instance using role "OpParamB".
+	 * If the given instance is null, nothing happens.
+	 * @param opParamB the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void addOpParamB(String opParamB) throws PDStoreException {
+
+			if (opParamB != null) {
+				
+				pdWorkingCopy.addLink(this.id, roleOpParamBId, opParamB);
+			}
+
+	}
+
+	/**
+	 * Connects this instance to the given instances using role "OpParamB".
+	 * If the given collection of instances is null, nothing happens.
+	 * @param opParamB the Collection of instances to connect
+	 * @throws PDStoreException
+	 */
+	public void addOpParamBs(Collection<String> opParamBs) throws PDStoreException {
+		if (opParamBs == null)
+			return;
+
+		for (String instance : opParamBs)
+			addOpParamB(instance);
+	}
+
+
+	/**
+	 * Removes the link from this instance through role "OpParamB".
+	 * @throws PDStoreException
+	 */
+	public void removeOpParamB() throws PDStoreException {
+		pdWorkingCopy.removeLink(this.id, roleOpParamBId, 
+			pdWorkingCopy.getInstance(this, roleOpParamBId));
+	}
+
+	/**
+	 * Removes the link from this instance through role "OpParamB" to the given instance, if the link exists.
+	 * If there is no such link, nothing happens.
+	 * If the given instance is null, nothing happens.
+	 * @throws PDStoreException
+	 */
+	public void removeOpParamB(Object opParamB) throws PDStoreException {
+		if (opParamB == null)
+			return;
+		pdWorkingCopy.removeLink(this.id, roleOpParamBId, opParamB);
+	}
+
+
+   /**
+	 * Connects this instance to the given instance using role "OpParamB".
+	 * If there is already an instance connected to this instance through role "OpParamB", the link will be overwritten.
+	 * If the given instance is null, an existing link is removed."
+	 * @param opParamB the instance to connect
+	 * @throws PDStoreException
+	 */
+	public void setOpParamB(String opParamB) throws PDStoreException {
+		pdWorkingCopy.setLink(this.id,  roleOpParamBId, opParamB);	
 	}
 }

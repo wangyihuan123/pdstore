@@ -152,6 +152,7 @@ public class PDFileBrowser extends JTree {
 		op.setOpParamB(paramB);
 
 		// Attach to history
+		//history.addOperation(op.getId());
 		history.addFileOperation(op); // needs to be some kind of linked list
 		// Commit
 		wc.commit();		
