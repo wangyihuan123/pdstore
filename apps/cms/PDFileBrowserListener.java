@@ -60,16 +60,17 @@ public class PDFileBrowserListener implements PDListener<GUID, Object, GUID> {
 			nodeA = searchNode(cms.tree, fileA.getParent());
 			cms.tree.addNodeToTree(nodeA, fileA.getName());
 			if (otherUser.getName().equals(cms.user.getName())){
+				cms.tree.addFileSystem(fileA.getAbsolutePath());
 				cms.tree.scrollAndSelect();
 			}
 			break;
 		case PDFileBrowser.DELETE:
 			fileA = new File(cms.DOCUMENT_ROOT+"/"+paramA);
 			nodeA = searchNode(cms.tree, fileA.getAbsolutePath());
-			cms.tree.deleteNodeFromTree(nodeA);
+			cms.tree.deleteNodeFromTree(nodeA);		
 			if (otherUser.getName().equals(cms.user.getName())){
-				cms.tree.scrollAndSelect();
-			}		
+				cms.tree.deleteFileSystem(fileA.getAbsolutePath());
+			}			
 			break;
 		case PDFileBrowser.COPY:	
 			fileA = new File(cms.DOCUMENT_ROOT+"/"+paramA);
@@ -77,6 +78,9 @@ public class PDFileBrowserListener implements PDListener<GUID, Object, GUID> {
 			nodeA = searchNode(cms.tree, fileA.getName()); //source file
 			nodeB = searchNode(cms.tree, fileB.getParent()); //destination folder
 			cms.tree.copyNodeToTree(nodeA, nodeB);
+			if (otherUser.getName().equals(cms.user.getName())){
+				cms.tree.copyFileSystem(fileA.getAbsolutePath(), fileB.getAbsolutePath());
+			}			
 			break;		
 		case PDFileBrowser.MOVE:	
 			fileA = new File(cms.DOCUMENT_ROOT+"/"+paramA);
@@ -84,6 +88,9 @@ public class PDFileBrowserListener implements PDListener<GUID, Object, GUID> {
 			nodeA = searchNode(cms.tree, fileA.getName()); //source file
 			nodeB = searchNode(cms.tree, fileB.getParent()); //destination folder
 			cms.tree.moveNodeToTree(nodeA, nodeB);
+			if (otherUser.getName().equals(cms.user.getName())){
+				cms.tree.moveFileSystem(fileA.getAbsolutePath(), fileB.getAbsolutePath());
+			}			
 			break;			
 		}
 
@@ -123,24 +130,6 @@ public class PDFileBrowserListener implements PDListener<GUID, Object, GUID> {
         //tree node with string node found return null 
         return null; 
     } 	
-
-	@Deprecated
-	private void refreshView(PDFileOperation op){
-		cms.tree.refresh();
-		//while (op.getOpType() == null); // seems the get method can return null at first
-		if (op.getOpType() == null){
-			return;
-		}
-		long type = op.getOpType();
-		String paramA = op.getOpParamA();	
-		switch ((int)type){
-			case PDFileBrowser.SELECT:	
-				// TODO: Highlight other user's selection in addition to main user selection
-				// cms.tree.selectFile(paramA);
-				break;			
-		}
-		
-	}
 
 	@Override
 	public Collection<PDChange<GUID, Object, GUID>> getMatchingTemplates() {

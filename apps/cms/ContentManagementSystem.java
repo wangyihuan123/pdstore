@@ -39,7 +39,7 @@ import diagrameditor.HistoryPanel;
 public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 	private static final long serialVersionUID = 1L;
-	protected static final String DOCUMENT_ROOT = System.getenv("HOME")+"/www";
+	protected String DOCUMENT_ROOT = System.getenv("HOME")+"/www";
 
 	// PDStore
 	PDWorkingCopy wc;
@@ -181,8 +181,6 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				if (s.mkdir()){
 
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-					//tree.addNodeToTree(node, filename);
-					//tree.scrollAndSelect();
 					if (s.isFile()) {
 						tree.createPDDocument(pdfname);
 					}
@@ -198,14 +196,10 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		{  
 			public void actionPerformed(ActionEvent e)  
 			{  
-
+				
 				// refresh the tree node after delete
 				DefaultMutableTreeNode selNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
-				tree.deleteNodeFromTree(selNode);
-				
-				//delete the file from file system.
-				deleteFiles(selNode.toString());
-
+			
 				// inform others via PDStore after the local user has performed the file operation
 				String pdfname = selNode.toString().replace(DOCUMENT_ROOT, "");
 				tree.alertPDFileOperation(PDFileBrowser.DELETE, pdfname, null); 
@@ -233,9 +227,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 						if (moveDestNode == null) {
 							return;
 						} else {						
-							//get the orginal node
 							moveDestNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
-							tree.moveNodeToTree(moveOrgNode, moveDestNode);
 							String pdOrgFname = moveOrgNode.toString().replace(DOCUMENT_ROOT, "");
 							String pdDestFname = moveDestNode.toString().replace(DOCUMENT_ROOT, "");
 							tree.alertPDFileOperation(PDFileBrowser.MOVE, pdOrgFname, pdDestFname);
@@ -266,7 +258,6 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				} else {
 					//get the orginal node
 					copyDestNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
-					tree.copyNodeToTree(copyOrgNode, copyDestNode);
 					String pdOrgFname = copyOrgNode.toString().replace(DOCUMENT_ROOT, "");
 					String pdDestFname = copyDestNode.toString().replace(DOCUMENT_ROOT, "");
 					tree.alertPDFileOperation(PDFileBrowser.COPY, pdOrgFname, pdDestFname);

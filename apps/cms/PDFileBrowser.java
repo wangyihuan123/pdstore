@@ -19,8 +19,8 @@ import cms.dal.PDUser;
 
 public class PDFileBrowser extends JTree {
 
-	private static final long serialVersionUID = 1L;
-
+	private static final long serialVersionUID = 8740726184571526994L;
+	
 	PDWorkingCopy wc;
 	PDUser user;
 	PDHistory history;
@@ -33,17 +33,14 @@ public class PDFileBrowser extends JTree {
 	MOVE = 3,
 	SELECT = 4;
 
-	private String DOCUMENT_ROOT;
-
-	public PDFileBrowser(DefaultMutableTreeNode node, String docRoot, PDUser user, PDHistory history, PDWorkingCopy wc){
+	protected PDFileBrowser(DefaultMutableTreeNode node, String docRoot, PDUser user, PDHistory history, PDWorkingCopy wc){
 		super(node);	
-		DOCUMENT_ROOT = docRoot;
 		this.user = user;
 		this.history = history;
 		this.wc = wc;
 	}
 
-	public void addNodeToTree(DefaultMutableTreeNode selNode, String filename){
+	protected void addNodeToTree(DefaultMutableTreeNode selNode, String filename){
 		// refresh tree
 		DefaultTreeModel m_model = (DefaultTreeModel) (this.getModel()); 
 		if (selNode != null) 
@@ -58,7 +55,7 @@ public class PDFileBrowser extends JTree {
 		} 		
 	}
 	
-	public void scrollAndSelect(){
+	protected void scrollAndSelect(){
 		//scroll and select the newly added node 
 		this.scrollPathToVisible(recentlyAdded); 
 		this.setSelectionPath(recentlyAdded); 		
@@ -70,7 +67,7 @@ public class PDFileBrowser extends JTree {
 	 * @param selNode
 	 */
 
-	public void moveNodeToTree(DefaultMutableTreeNode orgNode,DefaultMutableTreeNode desNode){
+	protected void moveNodeToTree(DefaultMutableTreeNode orgNode,DefaultMutableTreeNode desNode){
 
 		// update the tree after clicking move button
 		addNodeToTree(desNode,orgNode.toString());
@@ -83,7 +80,7 @@ public class PDFileBrowser extends JTree {
 	 * @param selNode
 	 */
 
-	public void copyNodeToTree(DefaultMutableTreeNode orgNode, DefaultMutableTreeNode desNode){
+	protected void copyNodeToTree(DefaultMutableTreeNode orgNode, DefaultMutableTreeNode desNode){
 
 		// update the tree after clicking move button
 		addNodeToTree(desNode, orgNode.toString());
@@ -91,7 +88,7 @@ public class PDFileBrowser extends JTree {
 	}
 
 
-	public void deleteNodeFromTree(DefaultMutableTreeNode selNode){
+	protected void deleteNodeFromTree(DefaultMutableTreeNode selNode){
 
 		// refresh the tree after deletion
 
@@ -110,7 +107,7 @@ public class PDFileBrowser extends JTree {
 	 * Method to delete the file from file system
 	 * @param filename
 	 */
-	private static void deleteFilesSystem(String filename){
+	protected static void deleteFileSystem(String filename){
 		File deletefile = new File(filename);
 		deletefile.delete();
 	}
@@ -119,7 +116,7 @@ public class PDFileBrowser extends JTree {
 	 * Method to delete the file from file system
 	 * @param filename
 	 */
-	private static void addFilesSystem(String filename){
+	protected static void addFileSystem(String filename){
 		File newfile = new File(filename);
 		newfile.mkdir();
 
@@ -130,9 +127,9 @@ public class PDFileBrowser extends JTree {
 	 * @param original
 	 * @param destination
 	 */
-	private static void moveFilesSystem(String original,String destination){
-		addFilesSystem(destination);
-		deleteFilesSystem(original);
+	protected static void moveFileSystem(String original,String destination){
+		addFileSystem(destination);
+		deleteFileSystem(original);
 	}
 
 	/**
@@ -140,24 +137,8 @@ public class PDFileBrowser extends JTree {
 	 * @param original
 	 * @param destination
 	 */
-	private static void copyFilesSystem(String original,String destination){
-		addFilesSystem(destination);
-
-	}
-
-
-	// Refreshes view of DOCUMENT_ROOT
-	public void refresh(){
-
-	}
-
-	// Fname is relative to DOCUMENT_ROOT
-	public void addNode(String fname){
-
-	}
-
-	// Fname is relative to DOCUMENT_ROOT
-	public void removeNode(String fname){
+	protected static void copyFileSystem(String original,String destination){
+		addFileSystem(destination);
 
 	}
 
@@ -181,7 +162,7 @@ public class PDFileBrowser extends JTree {
 		PDDocument pddoc = PDDocument.load(wc, GUIDGen.generateGUIDs(1).remove(0));
 		pddoc.setDocumentFileLocation(fname);
 		pddoc.setDocumentFileName(newFile.getName());
-		pddoc.setDocumentType(newFile.getName());
+		pddoc.setDocumentType(getExtension(newFile.getName()));
 		wc.commit();
 	}
 
