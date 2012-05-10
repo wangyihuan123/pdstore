@@ -3,7 +3,6 @@ package cms;
 import java.awt.BorderLayout;
 
 import java.awt.Color;
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -19,6 +18,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Vector;
 
@@ -28,6 +28,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
@@ -38,14 +39,14 @@ import cms.dal.PDHistory;
 import cms.dal.PDUser;
 
 import pdstore.GUID;
-import pdstore.GUIDGen;
+import pdstore.dal.PDInstance;
 import pdstore.dal.PDWorkingCopy;
 import diagrameditor.HistoryPanel;
 
 public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 	private static final long serialVersionUID = 1L;
-	protected static final String DOCUMENT_ROOT = System.getenv("HOME")+"/www";
+	protected String DOCUMENT_ROOT = System.getenv("HOME")+"/www";
 
 	// PDStore
 	PDWorkingCopy wc;
@@ -75,10 +76,10 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	DefaultMutableTreeNode moveDestNode;
 	DefaultMutableTreeNode copyOrgNode;
 	DefaultMutableTreeNode copyDestNode;
-	
+
 	static JTextField folderName;
-	
-	
+
+
 
 	public ContentManagementSystem(GUID userID, GUID historyID, final PDWorkingCopy wc){
 
@@ -93,7 +94,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		setTitle(user.getName()+"'s CMS");
 		setSize(1000,1000);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);			
-		
+
 		// Create history based text editor	
 		initHTMLViewer();
 		initTextEditor();
@@ -183,27 +184,26 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		{  
 			public void actionPerformed(ActionEvent e)  
 			{  
-				
-			
+
+
 				String str = JOptionPane.showInputDialog(null, "Please enter the file or folder name : ", 
 						"Collaborative Content Management System", 1);
-						  if(str != null){
-							  
-							//add new node into the file system
-								String filename = str;	  
-								File s = new File(node.toString()+ "/"+filename);
-								String pdfname = s.getAbsolutePath().replace(DOCUMENT_ROOT, "");
-								if (s.mkdir()){
+				if(str != null){
 
-									DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-									tree.addNodeToTree(node, node.toString()+ "/"+filename);
-									// inform others via PDStore after the local user has performed the file operation
-									tree.alertPDFileOperation(PDFileBrowser.ADD, pdfname, null);	
+					//add new node into the file system
+					String filename = str;	  
+					File s = new File(node.toString()+ "/"+filename);
+					String pdfname = s.getAbsolutePath().replace(DOCUMENT_ROOT, "");
+					if (s.mkdir()){
 
-								}
-								
-							  
-						  }
+						DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+						if (s.isFile()) {
+							tree.createPDDocument(pdfname);
+						}
+						// inform others via PDStore after the local user has performed the file operation
+						tree.alertPDFileOperation(PDFileBrowser.ADD, pdfname, null);
+					}
+				}
 
 			}  
 		});
@@ -216,14 +216,10 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 				// refresh the tree node after delete
 				DefaultMutableTreeNode selNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
-				tree.deleteNodeFromTree(selNode);
-				
-				//delete the file from file system.
-				deleteFiles(selNode.toString());
 
 				// inform others via PDStore after the local user has performed the file operation
 				String pdfname = selNode.toString().replace(DOCUMENT_ROOT, "");
-				tree.alertPDFileOperation(PDFileBrowser.DELETE, pdfname, null); //TODO: get the filename from DOCUMENT_ROOT
+				tree.alertPDFileOperation(PDFileBrowser.DELETE, pdfname, null); 
 
 			}  
 		});
@@ -239,22 +235,27 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				moveOrgNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
 			}
 		});
-		
+
 		//add move to button
-				JButton moveTo = new JButton("MOVE TO");
-				moveTo.addActionListener(new ActionListener(){
-					public void actionPerformed (ActionEvent e)
-					{
-						//get the orginal node
-						moveDestNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
-						tree.moveNodeToTree(moveOrgNode, moveDestNode);
-					}
-				});
-				
-				
+		JButton moveTo = new JButton("MOVE TO");
+		moveTo.addActionListener(new ActionListener(){
+			public void actionPerformed (ActionEvent e)
+			{
+				if (moveDestNode == null) {
+					return;
+				} else {						
+					moveDestNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
+					String pdOrgFname = moveOrgNode.toString().replace(DOCUMENT_ROOT, "");
+					String pdDestFname = moveDestNode.toString().replace(DOCUMENT_ROOT, "");
+					tree.alertPDFileOperation(PDFileBrowser.MOVE, pdOrgFname, pdDestFname);
+				}
+			}
+		});
+
+
 		//add copyFrom button
 		JButton copyFrom = new JButton("COPY FROM");
-		
+
 		copyFrom.addActionListener(new ActionListener(){
 			public void actionPerformed (ActionEvent e)
 			{
@@ -262,22 +263,28 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				copyOrgNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
 			}
 		});
-		
+
 		//add copyTo button
 		JButton copyTo = new JButton("COPY TO");
-		
+
 		copyTo.addActionListener(new ActionListener(){
 			public void actionPerformed (ActionEvent e)
 			{
-				//get the orginal node
-				copyDestNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
-				tree.copyNodeToTree(copyOrgNode, copyDestNode);
+				if (copyOrgNode == null) {
+					return;
+				} else {
+					//get the orginal node
+					copyDestNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent(); 
+					String pdOrgFname = copyOrgNode.toString().replace(DOCUMENT_ROOT, "");
+					String pdDestFname = copyDestNode.toString().replace(DOCUMENT_ROOT, "");
+					tree.alertPDFileOperation(PDFileBrowser.COPY, pdOrgFname, pdDestFname);
+				}
 			}
 		});
-		
-		
 
-//		JButton load = new JButton("LOAD");
+
+
+		//		JButton load = new JButton("LOAD");
 
 
 
@@ -288,7 +295,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		functionalButtonPanel.add(moveTo,gbc);
 		functionalButtonPanel.add(copyFrom,gbc);
 		functionalButtonPanel.add(copyTo,gbc);
-	//	functionalButtonPanel.add(load,gbc);
+		//	functionalButtonPanel.add(load,gbc);
 
 		//set up display area pane
 
@@ -298,7 +305,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		//PDStoreTextPane editTextArea = new PDStoreTextPane(wc, user, history);
 		//editTextArea.addKeyListener(this);
 
-		
+
 		//editTextArea.setText("<span style='font-size: 20pt'>Big</span>");
 		//htmlTextArea.setText(editTextArea.getText());
 
@@ -358,13 +365,13 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 		//david new added 9/5/2012
 		DefaultTreeCellRenderer renderer =
-                (DefaultTreeCellRenderer) tree.getCellRenderer();
-        renderer.setTextSelectionColor(Color.white);
-        renderer.setBackgroundSelectionColor(Color.blue);
-        renderer.setBorderSelectionColor(Color.black);
-        
-        
-        
+				(DefaultTreeCellRenderer) tree.getCellRenderer();
+		renderer.setTextSelectionColor(Color.white);
+		renderer.setBackgroundSelectionColor(Color.blue);
+		renderer.setBorderSelectionColor(Color.black);
+
+
+
 		// Setup PDFileOperation listener
 		GUID role2 = PDFileOperation.roleOpTypeId;
 		wc.getStore().getDetachedListenerList().add(new PDFileBrowserListener(this, role2));
@@ -374,24 +381,36 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent e) {
 				node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
-				
+
 				if (node.toString().contains(".html")){
 					// David 10.5.2012 display the file contents
-				String filepath = node.getParent().toString()+"/"+node.toString();
-				textEditor.setText(readFiles(new File(filepath)));
-				
-				//htmlTextArea.setText("hello");
-				//htmlTextArea.setText(textEditor.getText());
-				//htmlTextArea.repaint();
+					String filepath = node.getParent().toString()+"/"+node.toString();
+					textEditor.setText(readFiles(new File(filepath)));
+
+					//htmlTextArea.setText("hello");
+					//htmlTextArea.setText(textEditor.getText());
+					//htmlTextArea.repaint();
 				}
 				// if node is a file, set current user document in pdstore
 				if (node.isLeaf() && !node.getAllowsChildren()) {
 					String pdfname = node.toString().replace(DOCUMENT_ROOT, "");
-					tree.alertPDFileOperation(PDFileBrowser.SELECT, pdfname, null); //TODO: get the filename from DOCUMENT_ROOT	
-										
+					setCurrentDocument(pdfname);
+					tree.alertPDFileOperation(PDFileBrowser.SELECT, pdfname, null);	
 				}
 			}
 		});
+
+	}
+
+	protected void setCurrentDocument(String fname){
+		Collection<PDInstance> docs = wc.getAllInstancesOfType(PDDocument.typeId);
+		for (PDInstance i : docs){
+			PDDocument d = (PDDocument) i;
+			if (d.getDocumentFileName().equals(fname)){
+				user.setCurrentDocument(d.getId());
+				break;
+			}
+		}
 
 	}
 
@@ -399,7 +418,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		htmlTextArea = new JTextPane();
 		htmlTextArea.setContentType("text/html");
 	}
-	
+
 	private void initTextEditor(){
 
 		// Setup editor
@@ -465,7 +484,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				newPath = thisObject;
 			else
 				newPath = curPath + File.separator + thisObject;
-				//newPath = File.separator+thisObject;
+			//newPath = File.separator+thisObject;
 			if ((f = new File(newPath)).isDirectory())
 				initDocumentTree(curDir, f);
 			else
@@ -476,19 +495,19 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 			curDir.add(new DefaultMutableTreeNode(files.elementAt(fnum)));
 		return curDir;
 	}	
-	
+
 	/**
 	 * node refresh method
 	 */
 
-	
-	
+
+
 	private static void refreshTree(DefaultMutableTreeNode curTop, File dir){
-		
+
 	}
-	
-	
-	
+
+
+
 
 	/**
 	 * Method to create an image
@@ -526,7 +545,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	public void createTree(){
 
 	}
-	
+
 	/**
 	 * Method to delete the file from file system
 	 * @param filename
@@ -543,9 +562,9 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	private static void addFiles(String filename){
 		File newfile = new File(filename);
 		newfile.mkdir();
-		
+
 	}
-	
+
 	/**
 	 * Method to move the file from original position to destination position
 	 * @param original
@@ -555,7 +574,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		addFiles(destination);
 		deleteFiles(original);
 	}
-	
+
 	/**
 	 * Method to copy the file from original position to destination position
 	 * @param original
@@ -563,16 +582,16 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	 */
 	private static void copyFiles(String original,String destination){
 		addFiles(destination);
-		
+
 	}
-	
+
 	/**
 	 * Method to show the dialog box
 	 * 
 	 */
-	
+
 	private static String readFiles(File inputFile){
-		
+
 		StringBuffer fileData = new StringBuffer(1000);
 		try {
 			BufferedReader reader = new BufferedReader( new FileReader(inputFile));
@@ -584,17 +603,17 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				buf=new char[1024];
 			}
 			reader.close();
-			
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return fileData.toString();
-		
+
 	}
-	
-	
-	
+
+
+
 
 }

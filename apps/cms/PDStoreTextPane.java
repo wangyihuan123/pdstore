@@ -151,7 +151,6 @@ public class PDStoreTextPane extends RSyntaxTextArea {
 
 		@Override
 		public Collection<PDChange<GUID, Object, GUID>> getMatchingTemplates() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 		
