@@ -63,7 +63,7 @@ public class PDCMSHistoryListener implements PDListener<GUID, Object, GUID> {
 	}
 
 	private void updateHistoryView(){
-		
+		cms.printHist();
 	}
 	
     /** 

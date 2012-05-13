@@ -28,6 +28,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
 
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -62,7 +63,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	private JButton upButton;
 	private JButton downButton;
 	private JButton deleteButton;
-	public JList list;
+	//public JList list;
 
 	private JLabel theLabel;
 	private JTextPane htmlTextArea;
@@ -73,6 +74,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	DefaultMutableTreeNode node;
 	protected PDFileBrowser tree;
 
+	PDHistoryBrowser historyBrowser;
 	JSplitPane fileOrganiserSplitPane;
 	// JSplitPane splitPane;
 	JPanel fileOrganiserPane;
@@ -92,7 +94,6 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		// Setup PDStore Objects
 		this.wc = wc;
 		initPDObjects(userID, historyID);
-		initHistoryManager();
 
 		// Setup common CMS properties
 		checkDocumentRoot();
@@ -103,18 +104,18 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		// Create history based text editor	
 		initHTMLViewer();
 		initTextEditor();
+		initHistoryListener();
+		initHistoryBrowser();
 
 		// set up and populate history pane
 		//JPanel historyPane = new JPanel();
 		JPanel buttonPane = new JPanel(new GridLayout(1, 3));		
 		JPanel buttonPane1 = new JPanel();
 
-		list = new JList();
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.setSelectedIndex(0);
-		list.setDragEnabled(true);
 		//list.setSize(new Dimension(200,500));
-		JScrollPane listScrollPane = new JScrollPane(list);
+		//JScrollPane listScrollPane = new PDHistoryPane();
+
+		
 
 
 		//up button
@@ -163,7 +164,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 
 		buttonPane1.add(buttonPane);
-		JSplitPane historyPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,buttonPane,listScrollPane);
+		JSplitPane historyPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,buttonPane,historyBrowser);
 		historyPane.setOneTouchExpandable(true);
 		historyPane.setDividerSize(8);
 
@@ -327,10 +328,11 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		//create split panes
 
 		JSplitPane historySplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,historyPane,functionalButtonPanel);
-
 		historySplitPane.setDividerSize(8);
 		historySplitPane.setContinuousLayout(true);
-
+		
+		
+		
 		JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,htmlTextArea,textEditor);
 
 		//JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,jsp2,textEditor);
@@ -365,22 +367,13 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				
 	}
 	
-	private void initHistoryManager(){
-		opHistory = new CMSOperationList(PDCMSOperation.class, history, PDHistory.roleCMSOperationId, PDCMSOperation.typeId, PDCMSOperation.roleNextOpId);	
-		
-		// Setup PDDocumentOperation listener
-		GUID role2 = PDHistory.roleCMSOperationId;
-		wc.getStore().getDetachedListenerList().add(new PDCMSHistoryListener(this, role2));
-		
-	}
 
 	private void initFileBrowser(){
 		DefaultMutableTreeNode defaultTreeNode = initDocumentTree(null, new File(DOCUMENT_ROOT));
 		tree = new PDFileBrowser(defaultTreeNode, DOCUMENT_ROOT, user, history, wc, this);
 
 		//david new added 9/5/2012
-		DefaultTreeCellRenderer renderer =
-				(DefaultTreeCellRenderer) tree.getCellRenderer();
+		DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
 		renderer.setTextSelectionColor(Color.white);
 		renderer.setBackgroundSelectionColor(Color.blue);
 		renderer.setBorderSelectionColor(Color.black);
@@ -475,6 +468,34 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				System.err.println("Unable to create document root '"+DOCUMENT_ROOT+"'");
 			}
 		}
+	}
+	
+	private void initHistoryListener(){
+		opHistory = new CMSOperationList(PDCMSOperation.class, history, PDHistory.roleCMSOperationId, PDCMSOperation.typeId, PDCMSOperation.roleNextOpId);	
+		
+		// Setup PDDocumentOperation listener
+		GUID role2 = PDHistory.roleCMSOperationId;
+		wc.getStore().getDetachedListenerList().add(new PDCMSHistoryListener(this, role2));
+		
+	}	
+	
+	protected void printHist() {
+		//System.out.println("HIST: "+opHistory.size());
+		historyBrowser.refreshTree(opHistory);
+	}
+	
+	protected void initHistoryBrowser(){
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
+		TreeModel historyTreeModel = new DefaultTreeModel(root);
+		DefaultMutableTreeNode child;
+		for (PDCMSOperation	op : opHistory){
+			child = new DefaultMutableTreeNode("Child");
+			root.add(child);
+		}
+		
+		historyBrowser = new PDHistoryBrowser(root);
+		historyBrowser.setEditable(true);
+		
 	}
 
 	/** Add nodes from under "dir" into curTop. Highly recursive. */
