@@ -11,6 +11,7 @@ import cms.dal.PDDocumentOperation;
 import cms.dal.PDUser;
 
 import pdstore.GUID;
+import pdstore.PDStoreException;
 import pdstore.dal.PDInstance;
 import pdstore.generic.PDChange;
 import pdstore.generic.PDCoreI;
@@ -28,7 +29,7 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 	}
 
 	@Override
-	public void transactionCommitted(
+	public void transactionCommitted (
 			List<PDChange<GUID, Object, GUID>> transaction,
 			List<PDChange<GUID, Object, GUID>> matchedChanges, PDCoreI<GUID, Object, GUID> core) {
 		//System.out.println("###### "+cms.getTitle()+" #####");
@@ -51,13 +52,19 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 					return;
 				} else if (userDoc.getId().equals(otherDoc.getId())){
 					// Only perform ops when users are working on the same document
-					performOperation(op);
+					try {
+						performOperation(op);
+					} catch (BadLocationException e) {
+						// TODO Auto-generated catch block
+						//e.printStackTrace();
+						throw new NullPointerException();
+					}
 				}
 			}
 		}
 	}
 	
-	private void performOperation(PDDocumentOperation op){
+	private void performOperation(PDDocumentOperation op) throws BadLocationException, PDStoreException {
 		
 		AbstractDocument doc = (AbstractDocument)cms.textEditor.getDocument();
 		PDStoreDocumentFilter filter = (PDStoreDocumentFilter) doc.getDocumentFilter();
@@ -73,7 +80,7 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 	
 		// Do something appropriate given the OpType
 		filter.setFilter(false);
-		try {
+		//try {
 			switch ((int)type){	
 				case PDStoreDocumentFilter.REMOVE:
 					doc.remove((int) offset, (int) length);
@@ -85,9 +92,9 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 					doc.replace((int) offset, (int) length, str, null);			
 					break;		
 			}
-		} catch (BadLocationException e){
-			System.out.println("Bad location in DoucmentListener");
-		}
+		//} catch (BadLocationException e){
+			//System.out.println("Bad location in DoucmentListener");
+		//}
 		filter.setFilter(true);
 	
 	}

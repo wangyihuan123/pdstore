@@ -57,6 +57,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	PDHistory history;
 	PDUser user;
 	PDStoreTextPane textEditor;
+	//PDStoreRTextPane textEditor;
 	CMSOperationList opHistory;
 
 	// UI
@@ -103,7 +104,8 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 		// Create history based text editor	
 		initHTMLViewer();
-		initTextEditor();
+		initDefaultTextEditor();
+		//initRSyntaxTextEditor();
 		initHistoryListener();
 		initHistoryBrowser();
 
@@ -426,11 +428,34 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		htmlTextArea = new JTextPane();
 		htmlTextArea.setContentType("text/html");
 	}
-
-	private void initTextEditor(){
+	
+	private void initDefaultTextEditor(){
 
 		// Setup editor
 		textEditor = new PDStoreTextPane(wc, user, history, htmlTextArea, this);
+
+		// Set up mulitiple carets
+		CMSCaret caret = new CMSCaret(wc, user);
+		caret.setUpdatePolicy(CMSCaret.ALWAYS_UPDATE);
+		//textEditor.setCaret(caret);	
+
+		// Editor label
+		JLabel text = new JLabel("Text Editor");
+		textEditor.add(text);
+
+		// Setup PDDocumentOperation listener
+		GUID role2 = PDDocumentOperation.roleOpTypeId;
+		wc.getStore().getDetachedListenerList().add(new PDDocumentOperationListener(this, role2));
+
+		// Set key listener to notify html view
+		textEditor.addKeyListener(this);
+
+	}	
+
+	private void initRSyntaxTextEditor(){
+		/*
+		// Setup editor
+		textEditor = new PDStoreRTextPane(wc, user, history, htmlTextArea, this);
 
 		// RSyntax Highlighting
 		JPanel cp = new JPanel(new BorderLayout());
@@ -442,7 +467,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		cp.add(sp);		
 
 		// Set up mulitiple carets
-		CMSCaret caret = new CMSCaret(wc, user);
+		CMSRSyntaxCaret caret = new CMSRSyntaxCaret(wc, user); // has some instability issues
 		caret.setUpdatePolicy(CMSCaret.ALWAYS_UPDATE);
 		textEditor.setCaret(caret);	
 
@@ -456,7 +481,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 		// Set key listener to notify html view
 		textEditor.addKeyListener(this);
-
+	*/
 	}
 
 	private void checkDocumentRoot(){

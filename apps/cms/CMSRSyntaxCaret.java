@@ -16,7 +16,7 @@ import pdstore.dal.PDWorkingCopy;
 import cms.PDStoreTextPane.UserCaret;
 import cms.dal.PDUser;
 
-public class CMSCaret extends DefaultCaret {
+public class CMSRSyntaxCaret extends ConfigurableCaret {
 
 
 	private static final long serialVersionUID = 1L;
@@ -29,7 +29,7 @@ public class CMSCaret extends DefaultCaret {
 	PDUser user;
 
 
-	public CMSCaret(PDWorkingCopy wc, PDUser user)
+	public CMSRSyntaxCaret(PDWorkingCopy wc, PDUser user)
 	{
 		super();
 		super.setBlinkRate(500);

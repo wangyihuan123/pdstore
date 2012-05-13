@@ -27,7 +27,7 @@ import pdstore.generic.PDChange;
 import pdstore.generic.PDCoreI;
 import pdstore.notify.PDListener;
 
-public class PDStoreTextPane extends JTextPane {
+public class PDStoreRTextPane extends RSyntaxTextArea {
 	
 	private static final long serialVersionUID = 1L;
 	private PDWorkingCopy wc;
@@ -36,7 +36,7 @@ public class PDStoreTextPane extends JTextPane {
 	private JTextPane htmlEditor;
 	private ContentManagementSystem cms;
 
-	public PDStoreTextPane(PDWorkingCopy wc, PDUser user, PDHistory history, JTextPane htmlEditor, ContentManagementSystem cms){
+	public PDStoreRTextPane(PDWorkingCopy wc, PDUser user, PDHistory history, JTextPane htmlEditor, ContentManagementSystem cms){
 		super();
 		this.wc = wc;
 		this.user = user;

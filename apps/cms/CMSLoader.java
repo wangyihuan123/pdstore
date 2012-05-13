@@ -16,6 +16,7 @@ public class CMSLoader {
 	private static final String STORE_NAME = "ContentManagementSystem";
 	private int instances;
 	private static PDStore store;
+	protected ArrayList<ContentManagementSystem> cmsList;
 	ArrayList<PDWorkingCopy> copies;
 	List<GUID> userIDs;
 	List<GUID> historyIDs;
@@ -28,6 +29,7 @@ public class CMSLoader {
 
 		userIDs = GUIDGen.generateGUIDs(instances);
 		historyIDs = GUIDGen.generateGUIDs(instances);
+		cmsList = new ArrayList<ContentManagementSystem>(); 
 		
 		copies = new ArrayList<PDWorkingCopy>(instances);
 		if (network) {
@@ -64,6 +66,7 @@ public class CMSLoader {
 		for (int i = 0; i < instances; i++){
 			ContentManagementSystem cms = new ContentManagementSystem(userIDs.get(i), historyIDs.get(i), copies.get(i));
 			cms.setVisible(true);
+			cmsList.add(cms);
 		}
 	}
 
@@ -99,6 +102,7 @@ public class CMSLoader {
 		try {
 			Class.forName("cms.dal.PDDocument");
 			Class.forName("cms.dal.PDHistory");
+			Class.forName("cms.dal.PDCMSOperation");
 			Class.forName("cms.dal.PDDocumentOperation");	
 			Class.forName("cms.dal.PDFileOperation");
 			Class.forName("cms.dal.PDUser");
@@ -106,12 +110,12 @@ public class CMSLoader {
 			e.printStackTrace();
 		}		
 		
-		try {
+		//try {
 			CMSLoader cmsl = new CMSLoader(NETWORK_ACCESS, NUM_USERS);
 			cmsl.init();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		//} catch (Exception e) {
+		//	e.printStackTrace();
+		//}
 
 	}
 }

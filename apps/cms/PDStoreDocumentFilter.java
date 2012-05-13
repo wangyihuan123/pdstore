@@ -43,11 +43,11 @@ public class PDStoreDocumentFilter extends DocumentFilter {
 				e.printStackTrace();
 			}    		
     	} else {
-    		try {
+    		//try {
     			super.remove(fb, offset, length);
-    		} catch (BadLocationException e){
-    			System.out.println("Bad location in DocumentFilter");
-    		}	
+    		//} catch (BadLocationException e){
+    		//	System.out.println("Bad location in DocumentFilter");
+    		//}	
     	}
     	
     }
@@ -55,34 +55,34 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     @Override
     public void insertString(FilterBypass fb, int offset, String str, AttributeSet attr) throws BadLocationException {
     	if (filter){
-	    	try{
+	    	//try{
 	    		PDInsertString(fb, offset, str, attr);
-			} catch (Exception e){
-				e.printStackTrace();
-			}
+			//} catch (Exception e){
+			//	e.printStackTrace();
+			//}
     	} else {
-    		try {
+    		//try {
     			super.insertString(fb, offset, str, attr);
-    		} catch (BadLocationException e){
-    			System.out.println("Bad location in DocumentFilter");
-    		}	
+    		//} catch (BadLocationException e){
+    		//	System.out.println("Bad location in DocumentFilter");
+    		//}	
     	}
     }
     
     @Override
     public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet attr) throws BadLocationException {
     	if (filter){
-    		try {
+    		//try {
     			PDReplace(fb, offset, length, str, attr);
-    		} catch (Exception e){
-    			e.printStackTrace();
-    		}
+    		//} catch (Exception e){
+    			//e.printStackTrace();
+    		//}
     	} else {
-    		try {
+    		//try {
     			super.replace(fb, offset, length, str, attr);
-    		} catch (Exception e){
-    			System.out.println("Bad location in DocumentFilter");
-    		}
+    		//} catch (Exception e){
+    			//System.out.println("Bad location in DocumentFilter");
+    		//}
     	}
     	
     }
