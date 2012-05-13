@@ -32,6 +32,7 @@ import javax.swing.tree.DefaultTreeModel;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
+import cms.dal.PDCMSOperation;
 import cms.dal.PDDocument;
 import cms.dal.PDDocumentOperation;
 import cms.dal.PDFileOperation;
@@ -42,6 +43,8 @@ import pdstore.GUID;
 import pdstore.dal.PDInstance;
 import pdstore.dal.PDWorkingCopy;
 import diagrameditor.HistoryPanel;
+import diagrameditor.OperationList;
+import diagrameditor.dal.PDOperation;
 
 public class ContentManagementSystem extends JFrame implements KeyListener   {
 
@@ -53,6 +56,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	PDHistory history;
 	PDUser user;
 	PDStoreTextPane textEditor;
+	CMSOperationList opHistory;
 
 	// UI
 	private JButton upButton;
@@ -88,6 +92,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		// Setup PDStore Objects
 		this.wc = wc;
 		initPDObjects(userID, historyID);
+		initHistoryManager();
 
 		// Setup common CMS properties
 		checkDocumentRoot();
@@ -357,11 +362,21 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	private void initPDObjects(GUID userID, GUID historyID){
 		user = PDUser.load(wc, userID);
 		history = PDHistory.load(wc, historyID);
+				
+	}
+	
+	private void initHistoryManager(){
+		opHistory = new CMSOperationList(PDCMSOperation.class, history, PDHistory.roleCMSOperationId, PDCMSOperation.typeId, PDCMSOperation.roleNextOpId);	
+		
+		// Setup PDDocumentOperation listener
+		GUID role2 = PDHistory.roleCMSOperationId;
+		wc.getStore().getDetachedListenerList().add(new PDCMSHistoryListener(this, role2));
+		
 	}
 
 	private void initFileBrowser(){
 		DefaultMutableTreeNode defaultTreeNode = initDocumentTree(null, new File(DOCUMENT_ROOT));
-		tree = new PDFileBrowser(defaultTreeNode, DOCUMENT_ROOT, user, history, wc);
+		tree = new PDFileBrowser(defaultTreeNode, DOCUMENT_ROOT, user, history, wc, this);
 
 		//david new added 9/5/2012
 		DefaultTreeCellRenderer renderer =
@@ -422,7 +437,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	private void initTextEditor(){
 
 		// Setup editor
-		textEditor = new PDStoreTextPane(wc, user, history, htmlTextArea);
+		textEditor = new PDStoreTextPane(wc, user, history, htmlTextArea, this);
 
 		// RSyntax Highlighting
 		JPanel cp = new JPanel(new BorderLayout());

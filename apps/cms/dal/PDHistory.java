@@ -12,9 +12,9 @@ import pdstore.dal.*;
  */
 public class PDHistory implements PDInstance {
 
-	public static final GUID typeId = new GUID("599131e59aa311e190cbd8a25e8c53de"); 
+	public static final GUID typeId = new GUID("bc0f5b559ccc11e1ae94d8a25e8c53de"); 
 
-	public static final GUID roleCMSOperationId = new GUID("599131f89aa311e190cbd8a25e8c53de");
+	public static final GUID roleCMSOperationId = new GUID("bc0f5b689ccc11e1ae94d8a25e8c53de");
 
 	static {
 		register();
@@ -182,7 +182,7 @@ public class PDHistory implements PDInstance {
 	 */
 	 public Collection<PDCMSOperation> getCMSOperations() throws PDStoreException {
 	 	Set<PDCMSOperation> result = new HashSet<PDCMSOperation>();
-	 	GUID PDCMSOperationTypeId = new GUID("599131e29aa311e190cbd8a25e8c53de");
+	 	GUID PDCMSOperationTypeId = new GUID("bc0f5b529ccc11e1ae94d8a25e8c53de");
 		pdWorkingCopy.getInstances(this, roleCMSOperationId, PDCMSOperation.class, PDCMSOperationTypeId, result);
 	 	return result;
 	 }

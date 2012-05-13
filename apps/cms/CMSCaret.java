@@ -75,6 +75,7 @@ public class CMSCaret extends ConfigurableCaret {
 		Rectangle r = null;
 
 		// Iterate over user carets
+		// TODO: Check for current document
 		for (UserCaret uc: carets) {
 
 			try {

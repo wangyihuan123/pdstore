@@ -47,6 +47,8 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 				PDDocument otherDoc = otherUser.getCurrentDocument();
 				if (otherDoc == null){
 					return;
+				} else if (userDoc == null)  {
+					return;
 				} else if (userDoc.getId().equals(otherDoc.getId())){
 					// Only perform ops when users are working on the same document
 					performOperation(op);

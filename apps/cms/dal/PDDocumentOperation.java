@@ -12,14 +12,14 @@ import pdstore.dal.*;
  */
 public class PDDocumentOperation implements PDInstance {
 
-	public static final GUID typeId = new GUID("599131e39aa311e190cbd8a25e8c53de"); 
+	public static final GUID typeId = new GUID("bc0f5b539ccc11e1ae94d8a25e8c53de"); 
 
-	public static final GUID roleOpLengthId = new GUID("599131f19aa311e190cbd8a25e8c53de");
-	public static final GUID roleOpUserId = new GUID("599131ef9aa311e190cbd8a25e8c53de");
-	public static final GUID roleOpStringId = new GUID("599131f29aa311e190cbd8a25e8c53de");
-	public static final GUID roleOpTypeId = new GUID("599131ee9aa311e190cbd8a25e8c53de");
-	public static final GUID roleOpOffsetId = new GUID("599131f09aa311e190cbd8a25e8c53de");
-	public static final GUID roleOpDocumentId = new GUID("599131f39aa311e190cbd8a25e8c53de");
+	public static final GUID roleOpLengthId = new GUID("bc0f5b619ccc11e1ae94d8a25e8c53de");
+	public static final GUID roleOpUserId = new GUID("bc0f5b5f9ccc11e1ae94d8a25e8c53de");
+	public static final GUID roleOpStringId = new GUID("bc0f5b629ccc11e1ae94d8a25e8c53de");
+	public static final GUID roleOpTypeId = new GUID("bc0f5b5e9ccc11e1ae94d8a25e8c53de");
+	public static final GUID roleOpOffsetId = new GUID("bc0f5b609ccc11e1ae94d8a25e8c53de");
+	public static final GUID roleOpDocumentId = new GUID("bc0f5b639ccc11e1ae94d8a25e8c53de");
 
 	static {
 		register();
@@ -272,7 +272,7 @@ public class PDDocumentOperation implements PDInstance {
 	 */
 	 public Collection<PDUser> getOpUsers() throws PDStoreException {
 	 	Set<PDUser> result = new HashSet<PDUser>();
-	 	GUID PDUserTypeId = new GUID("599131e09aa311e190cbd8a25e8c53de");
+	 	GUID PDUserTypeId = new GUID("bc0f5b509ccc11e1ae94d8a25e8c53de");
 		pdWorkingCopy.getInstances(this, roleOpUserId, PDUser.class, PDUserTypeId, result);
 	 	return result;
 	 }
@@ -648,7 +648,7 @@ public class PDDocumentOperation implements PDInstance {
 	 */
 	 public Collection<PDDocument> getOpDocuments() throws PDStoreException {
 	 	Set<PDDocument> result = new HashSet<PDDocument>();
-	 	GUID PDDocumentTypeId = new GUID("599131e19aa311e190cbd8a25e8c53de");
+	 	GUID PDDocumentTypeId = new GUID("bc0f5b519ccc11e1ae94d8a25e8c53de");
 		pdWorkingCopy.getInstances(this, roleOpDocumentId, PDDocument.class, PDDocumentTypeId, result);
 	 	return result;
 	 }

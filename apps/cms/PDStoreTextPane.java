@@ -33,12 +33,14 @@ public class PDStoreTextPane extends RSyntaxTextArea {
 	private PDUser user;
 	private ArrayList<UserCaret> carets;
 	private JTextPane htmlEditor;
+	private ContentManagementSystem cms;
 
-	public PDStoreTextPane(PDWorkingCopy wc, PDUser user, PDHistory history, JTextPane htmlEditor){
+	public PDStoreTextPane(PDWorkingCopy wc, PDUser user, PDHistory history, JTextPane htmlEditor, ContentManagementSystem cms){
 		super();
 		this.wc = wc;
 		this.user = user;
 		this.htmlEditor = htmlEditor;
+		this.cms = cms;
 		
 		carets = new ArrayList<UserCaret>();
 		setUserCarets();
@@ -47,7 +49,7 @@ public class PDStoreTextPane extends RSyntaxTextArea {
         Document styledDoc = getDocument();
         if (styledDoc instanceof AbstractDocument) {
             doc = (AbstractDocument)styledDoc;
-            doc.setDocumentFilter(new PDStoreDocumentFilter(wc, user, history));
+            doc.setDocumentFilter(new PDStoreDocumentFilter(wc, user, history, cms));
             doc.addDocumentListener(new DocumentUpdateListener());
         } else {
             System.err.println("Text pane's document isn't an AbstractDocument");

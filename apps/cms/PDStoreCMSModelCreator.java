@@ -52,6 +52,9 @@ public class PDStoreCMSModelCreator {
 	
 	// CMS Operation roles
 	protected static final GUID CMS_OPERATION_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
+	protected static final GUID CMS_NEXT_OPERATION_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
+	protected static final GUID CMS_DOCUMENT_OPERATION_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
+	protected static final GUID CMS_FILE_OPERATION_ROLEID = GUIDGen.generateGUIDs(1).remove(0);
 	
 	public PDStoreCMSModelCreator(String DBFilename){
 		
@@ -80,8 +83,10 @@ public class PDStoreCMSModelCreator {
 		store.createRelation(transaction, DOCUMENT_TYPEID, null, "DocumentFileName", DOCUMENT_FILENAME_ROLEID, PDStore.STRING_TYPEID);
 		store.createRelation(transaction, DOCUMENT_TYPEID, null, "DocumentFileLocation", DOCUMENT_LOCATION_ROLEID ,PDStore.STRING_TYPEID);		
 		
-		store.createRelation(transaction, CMS_OPERATION_TYPEID, null, "OpType", PDStore.HAS_TYPE_ROLEID, PDStore.TYPE_TYPEID);
-		store.createRelation(transaction, CMS_OPERATION_TYPEID, null, "NextOp", CMS_OPERATION_ROLEID, CMS_OPERATION_TYPEID);
+		store.createRelation(transaction, CMS_OPERATION_TYPEID, null, "OpType",PDStore.HAS_TYPE_ROLEID, PDStore.TYPE_TYPEID);
+		store.createRelation(transaction, CMS_OPERATION_TYPEID, null, "DocumentOp",CMS_DOCUMENT_OPERATION_ROLEID, DOCUMENT_OPERATION_TYPEID);
+		store.createRelation(transaction, CMS_OPERATION_TYPEID, null, "FileOp", CMS_FILE_OPERATION_ROLEID, FILE_OPERATION_TYPEID);
+		store.createRelation(transaction, CMS_OPERATION_TYPEID, null, "NextOp", CMS_NEXT_OPERATION_ROLEID, CMS_OPERATION_TYPEID);
 		
 		store.createRelation(transaction, DOCUMENT_OPERATION_TYPEID, null, "OpType", DOCUMENT_OPERATION_TYPE_ROLEID, PDStore.INTEGER_TYPEID);
 		store.createRelation(transaction, DOCUMENT_OPERATION_TYPEID, null, "OpOffset", DOCUMENT_OPERATION_OFFSET_ROLEID, PDStore.INTEGER_TYPEID);

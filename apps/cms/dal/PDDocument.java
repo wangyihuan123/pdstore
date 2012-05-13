@@ -12,11 +12,11 @@ import pdstore.dal.*;
  */
 public class PDDocument implements PDInstance {
 
-	public static final GUID typeId = new GUID("599131e19aa311e190cbd8a25e8c53de"); 
+	public static final GUID typeId = new GUID("bc0f5b519ccc11e1ae94d8a25e8c53de"); 
 
-	public static final GUID roleDocumentFileNameId = new GUID("599131ec9aa311e190cbd8a25e8c53de");
-	public static final GUID roleDocumentTypeId = new GUID("599131eb9aa311e190cbd8a25e8c53de");
-	public static final GUID roleDocumentFileLocationId = new GUID("599131ed9aa311e190cbd8a25e8c53de");
+	public static final GUID roleDocumentFileLocationId = new GUID("bc0f5b5d9ccc11e1ae94d8a25e8c53de");
+	public static final GUID roleDocumentTypeId = new GUID("bc0f5b5b9ccc11e1ae94d8a25e8c53de");
+	public static final GUID roleDocumentFileNameId = new GUID("bc0f5b5c9ccc11e1ae94d8a25e8c53de");
 
 	static {
 		register();
@@ -169,87 +169,87 @@ public class PDDocument implements PDInstance {
 	
 
 	/**
-	 * Returns the instance connected to this instance through the role "DocumentFileName".
+	 * Returns the instance connected to this instance through the role "DocumentFileLocation".
 	 * @return the connected instance
 	 * @throws PDStoreException
 	 */
-	 public String getDocumentFileName() throws PDStoreException {
-	 	return (String)pdWorkingCopy.getInstance(this, roleDocumentFileNameId);
+	 public String getDocumentFileLocation() throws PDStoreException {
+	 	return (String)pdWorkingCopy.getInstance(this, roleDocumentFileLocationId);
 	 }
 
 	/**
-	 * Returns the instance(s) connected to this instance through the role "DocumentFileName".
+	 * Returns the instance(s) connected to this instance through the role "DocumentFileLocation".
 	 * @return the connected instance(s)
 	 * @throws PDStoreException
 	 */
-	 public Collection<String> getDocumentFileNames() throws PDStoreException {
+	 public Collection<String> getDocumentFileLocations() throws PDStoreException {
 	 	Set<String> result = new HashSet<String>();
 	 	GUID StringTypeId = new GUID("4a8a986c4062db11afc0b95b08f50e2f");
-		pdWorkingCopy.getInstances(this, roleDocumentFileNameId, String.class, StringTypeId, result);
+		pdWorkingCopy.getInstances(this, roleDocumentFileLocationId, String.class, StringTypeId, result);
 	 	return result;
 	 }
 	 
    /**
-	 * Connects this instance to the given instance using role "DocumentFileName".
+	 * Connects this instance to the given instance using role "DocumentFileLocation".
 	 * If the given instance is null, nothing happens.
-	 * @param documentFileName the instance to connect
+	 * @param documentFileLocation the instance to connect
 	 * @throws PDStoreException
 	 */
-	public void addDocumentFileName(String documentFileName) throws PDStoreException {
+	public void addDocumentFileLocation(String documentFileLocation) throws PDStoreException {
 
-			if (documentFileName != null) {
+			if (documentFileLocation != null) {
 				
-				pdWorkingCopy.addLink(this.id, roleDocumentFileNameId, documentFileName);
+				pdWorkingCopy.addLink(this.id, roleDocumentFileLocationId, documentFileLocation);
 			}
 
 	}
 
 	/**
-	 * Connects this instance to the given instances using role "DocumentFileName".
+	 * Connects this instance to the given instances using role "DocumentFileLocation".
 	 * If the given collection of instances is null, nothing happens.
-	 * @param documentFileName the Collection of instances to connect
+	 * @param documentFileLocation the Collection of instances to connect
 	 * @throws PDStoreException
 	 */
-	public void addDocumentFileNames(Collection<String> documentFileNames) throws PDStoreException {
-		if (documentFileNames == null)
+	public void addDocumentFileLocations(Collection<String> documentFileLocations) throws PDStoreException {
+		if (documentFileLocations == null)
 			return;
 
-		for (String instance : documentFileNames)
-			addDocumentFileName(instance);
+		for (String instance : documentFileLocations)
+			addDocumentFileLocation(instance);
 	}
 
 
 	/**
-	 * Removes the link from this instance through role "DocumentFileName".
+	 * Removes the link from this instance through role "DocumentFileLocation".
 	 * @throws PDStoreException
 	 */
-	public void removeDocumentFileName() throws PDStoreException {
-		pdWorkingCopy.removeLink(this.id, roleDocumentFileNameId, 
-			pdWorkingCopy.getInstance(this, roleDocumentFileNameId));
+	public void removeDocumentFileLocation() throws PDStoreException {
+		pdWorkingCopy.removeLink(this.id, roleDocumentFileLocationId, 
+			pdWorkingCopy.getInstance(this, roleDocumentFileLocationId));
 	}
 
 	/**
-	 * Removes the link from this instance through role "DocumentFileName" to the given instance, if the link exists.
+	 * Removes the link from this instance through role "DocumentFileLocation" to the given instance, if the link exists.
 	 * If there is no such link, nothing happens.
 	 * If the given instance is null, nothing happens.
 	 * @throws PDStoreException
 	 */
-	public void removeDocumentFileName(Object documentFileName) throws PDStoreException {
-		if (documentFileName == null)
+	public void removeDocumentFileLocation(Object documentFileLocation) throws PDStoreException {
+		if (documentFileLocation == null)
 			return;
-		pdWorkingCopy.removeLink(this.id, roleDocumentFileNameId, documentFileName);
+		pdWorkingCopy.removeLink(this.id, roleDocumentFileLocationId, documentFileLocation);
 	}
 
 
    /**
-	 * Connects this instance to the given instance using role "DocumentFileName".
-	 * If there is already an instance connected to this instance through role "DocumentFileName", the link will be overwritten.
+	 * Connects this instance to the given instance using role "DocumentFileLocation".
+	 * If there is already an instance connected to this instance through role "DocumentFileLocation", the link will be overwritten.
 	 * If the given instance is null, an existing link is removed."
-	 * @param documentFileName the instance to connect
+	 * @param documentFileLocation the instance to connect
 	 * @throws PDStoreException
 	 */
-	public void setDocumentFileName(String documentFileName) throws PDStoreException {
-		pdWorkingCopy.setLink(this.id,  roleDocumentFileNameId, documentFileName);	
+	public void setDocumentFileLocation(String documentFileLocation) throws PDStoreException {
+		pdWorkingCopy.setLink(this.id,  roleDocumentFileLocationId, documentFileLocation);	
 	}
 
 
@@ -339,86 +339,86 @@ public class PDDocument implements PDInstance {
 
 
 	/**
-	 * Returns the instance connected to this instance through the role "DocumentFileLocation".
+	 * Returns the instance connected to this instance through the role "DocumentFileName".
 	 * @return the connected instance
 	 * @throws PDStoreException
 	 */
-	 public String getDocumentFileLocation() throws PDStoreException {
-	 	return (String)pdWorkingCopy.getInstance(this, roleDocumentFileLocationId);
+	 public String getDocumentFileName() throws PDStoreException {
+	 	return (String)pdWorkingCopy.getInstance(this, roleDocumentFileNameId);
 	 }
 
 	/**
-	 * Returns the instance(s) connected to this instance through the role "DocumentFileLocation".
+	 * Returns the instance(s) connected to this instance through the role "DocumentFileName".
 	 * @return the connected instance(s)
 	 * @throws PDStoreException
 	 */
-	 public Collection<String> getDocumentFileLocations() throws PDStoreException {
+	 public Collection<String> getDocumentFileNames() throws PDStoreException {
 	 	Set<String> result = new HashSet<String>();
 	 	GUID StringTypeId = new GUID("4a8a986c4062db11afc0b95b08f50e2f");
-		pdWorkingCopy.getInstances(this, roleDocumentFileLocationId, String.class, StringTypeId, result);
+		pdWorkingCopy.getInstances(this, roleDocumentFileNameId, String.class, StringTypeId, result);
 	 	return result;
 	 }
 	 
    /**
-	 * Connects this instance to the given instance using role "DocumentFileLocation".
+	 * Connects this instance to the given instance using role "DocumentFileName".
 	 * If the given instance is null, nothing happens.
-	 * @param documentFileLocation the instance to connect
+	 * @param documentFileName the instance to connect
 	 * @throws PDStoreException
 	 */
-	public void addDocumentFileLocation(String documentFileLocation) throws PDStoreException {
+	public void addDocumentFileName(String documentFileName) throws PDStoreException {
 
-			if (documentFileLocation != null) {
+			if (documentFileName != null) {
 				
-				pdWorkingCopy.addLink(this.id, roleDocumentFileLocationId, documentFileLocation);
+				pdWorkingCopy.addLink(this.id, roleDocumentFileNameId, documentFileName);
 			}
 
 	}
 
 	/**
-	 * Connects this instance to the given instances using role "DocumentFileLocation".
+	 * Connects this instance to the given instances using role "DocumentFileName".
 	 * If the given collection of instances is null, nothing happens.
-	 * @param documentFileLocation the Collection of instances to connect
+	 * @param documentFileName the Collection of instances to connect
 	 * @throws PDStoreException
 	 */
-	public void addDocumentFileLocations(Collection<String> documentFileLocations) throws PDStoreException {
-		if (documentFileLocations == null)
+	public void addDocumentFileNames(Collection<String> documentFileNames) throws PDStoreException {
+		if (documentFileNames == null)
 			return;
 
-		for (String instance : documentFileLocations)
-			addDocumentFileLocation(instance);
+		for (String instance : documentFileNames)
+			addDocumentFileName(instance);
 	}
 
 
 	/**
-	 * Removes the link from this instance through role "DocumentFileLocation".
+	 * Removes the link from this instance through role "DocumentFileName".
 	 * @throws PDStoreException
 	 */
-	public void removeDocumentFileLocation() throws PDStoreException {
-		pdWorkingCopy.removeLink(this.id, roleDocumentFileLocationId, 
-			pdWorkingCopy.getInstance(this, roleDocumentFileLocationId));
+	public void removeDocumentFileName() throws PDStoreException {
+		pdWorkingCopy.removeLink(this.id, roleDocumentFileNameId, 
+			pdWorkingCopy.getInstance(this, roleDocumentFileNameId));
 	}
 
 	/**
-	 * Removes the link from this instance through role "DocumentFileLocation" to the given instance, if the link exists.
+	 * Removes the link from this instance through role "DocumentFileName" to the given instance, if the link exists.
 	 * If there is no such link, nothing happens.
 	 * If the given instance is null, nothing happens.
 	 * @throws PDStoreException
 	 */
-	public void removeDocumentFileLocation(Object documentFileLocation) throws PDStoreException {
-		if (documentFileLocation == null)
+	public void removeDocumentFileName(Object documentFileName) throws PDStoreException {
+		if (documentFileName == null)
 			return;
-		pdWorkingCopy.removeLink(this.id, roleDocumentFileLocationId, documentFileLocation);
+		pdWorkingCopy.removeLink(this.id, roleDocumentFileNameId, documentFileName);
 	}
 
 
    /**
-	 * Connects this instance to the given instance using role "DocumentFileLocation".
-	 * If there is already an instance connected to this instance through role "DocumentFileLocation", the link will be overwritten.
+	 * Connects this instance to the given instance using role "DocumentFileName".
+	 * If there is already an instance connected to this instance through role "DocumentFileName", the link will be overwritten.
 	 * If the given instance is null, an existing link is removed."
-	 * @param documentFileLocation the instance to connect
+	 * @param documentFileName the instance to connect
 	 * @throws PDStoreException
 	 */
-	public void setDocumentFileLocation(String documentFileLocation) throws PDStoreException {
-		pdWorkingCopy.setLink(this.id,  roleDocumentFileLocationId, documentFileLocation);	
+	public void setDocumentFileName(String documentFileName) throws PDStoreException {
+		pdWorkingCopy.setLink(this.id,  roleDocumentFileNameId, documentFileName);	
 	}
 }
