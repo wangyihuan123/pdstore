@@ -1,6 +1,9 @@
 package cms;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Vector;
 
@@ -111,7 +114,7 @@ public class PDFileBrowser extends JTree {
 	 * Method to delete the file from file system
 	 * @param filename
 	 */
-	protected static void deleteFileSystem(String filename){
+	protected void deleteFileSystem(String filename){
 		File deletefile = new File(filename);
 		deletefile.delete();
 	}
@@ -120,9 +123,16 @@ public class PDFileBrowser extends JTree {
 	 * Method to delete the file from file system
 	 * @param filename
 	 */
-	protected static void addFileSystem(String filename){
+	protected void addFileSystem(String filename){
 		File newfile = new File(filename);
-		newfile.mkdir();
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(newfile));
+			writer.write(cms.textEditor.getText());
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -131,7 +141,7 @@ public class PDFileBrowser extends JTree {
 	 * @param original
 	 * @param destination
 	 */
-	protected static void moveFileSystem(String original,String destination){
+	protected void moveFileSystem(String original,String destination){
 		addFileSystem(destination);
 		deleteFileSystem(original);
 	}
@@ -141,7 +151,7 @@ public class PDFileBrowser extends JTree {
 	 * @param original
 	 * @param destination
 	 */
-	protected static void copyFileSystem(String original,String destination){
+	protected void copyFileSystem(String original,String destination){
 		addFileSystem(destination);
 
 	}

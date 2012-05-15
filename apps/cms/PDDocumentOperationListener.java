@@ -78,7 +78,7 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 		}
 		long type = op.getOpType();
 		long offset = op.getOpOffset();
-		long length = op.getOpLength();
+		long length = 0;
 		String str = op.getOpString();
 	
 		// Do something appropriate given the OpType
@@ -86,12 +86,14 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 		//try {
 			switch ((int)type){	
 				case PDStoreDocumentFilter.REMOVE:
+					length = op.getOpLength();
 					doc.remove((int) offset, (int) length);
 					break;
 				case PDStoreDocumentFilter.INSERT:
 					doc.insertString((int) offset, str, null);					
 					break;
 				case PDStoreDocumentFilter.REPLACE:	
+					length = op.getOpLength();
 					doc.replace((int) offset, (int) length, str, null);			
 					break;		
 			}

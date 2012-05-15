@@ -217,15 +217,10 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 					
 					File s = new File(node.toString()+ "/"+filename);
 					String pdfname = s.getAbsolutePath().replace(DOCUMENT_ROOT, "");
-					if (s.mkdir()){
-
-						DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-						if (s.isFile()) {
-							tree.createPDDocument(pdfname);
-						}
-						// inform others via PDStore after the local user has performed the file operation
-						tree.alertPDFileOperation(PDFileBrowser.ADD, pdfname, null);
-					}
+					DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+					tree.createPDDocument(pdfname);
+					// inform others via PDStore after the local user has performed the file operation
+					tree.alertPDFileOperation(PDFileBrowser.ADD, pdfname, null);
 				}
 
 			}  
@@ -412,18 +407,14 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent e) {
 				node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
-
+				String filepath = "";
 				if (node.toString().contains(".html")){
 					// David 10.5.2012 display the file contents
-					String filepath = node.getParent().toString()+"/"+node.toString();
+					filepath = node.getParent().toString()+"/"+node.toString();
 					textEditor.setText(readFiles(new File(filepath)));
-
-					//htmlTextArea.setText("hello");
-					//htmlTextArea.setText(textEditor.getText());
-					//htmlTextArea.repaint();
 				}
 				// if node is a file, set current user document in pdstore
-				if (node.isLeaf() && !node.getAllowsChildren()) {
+				if (new File(filepath).isFile()) {
 					String pdfname = node.toString().replace(DOCUMENT_ROOT, "");
 					setCurrentDocument(pdfname);
 					tree.alertPDFileOperation(PDFileBrowser.SELECT, pdfname, null);	
@@ -437,8 +428,10 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		Collection<PDInstance> docs = wc.getAllInstancesOfType(PDDocument.typeId);
 		for (PDInstance i : docs){
 			PDDocument d = (PDDocument) i;
-			if (d.getDocumentFileName().equals(fname)){
+			String s = d.getDocumentFileName();
+			if (s != null && s.equals(fname)){
 				user.setCurrentDocument(d.getId());
+				wc.commit();
 				break;
 			}
 		}
