@@ -415,7 +415,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 				if (node.toString().contains(".html")){
 					// David 10.5.2012 display the file contents
-					String filepath = node.toString();
+					String filepath = node.getParent().toString()+"/"+node.toString();
 					textEditor.setText(readFiles(new File(filepath)));
 
 					//htmlTextArea.setText("hello");
