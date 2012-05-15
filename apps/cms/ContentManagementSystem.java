@@ -3,6 +3,7 @@ package cms;
 import java.awt.BorderLayout;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -179,6 +180,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		JSplitPane historyPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,buttonPane,historyBrowser);
 		historyPane.setOneTouchExpandable(true);
 		historyPane.setDividerSize(8);
+		historyPane.setMinimumSize(new Dimension(175, 450));
 
 
 		//set up function button pane
@@ -327,8 +329,9 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		historySplitPane.setContinuousLayout(true);
 		
 		
-		
+		htmlTextArea.setMinimumSize(new Dimension(450,450));
 		JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,htmlTextArea,textEditor);
+		
 
 		//JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,jsp2,textEditor);
 
@@ -354,6 +357,8 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 		getContentPane().add(fileOrganiserSplitPane,BorderLayout.CENTER);
 		
+		
+		/**
 		new java.util.Timer().schedule( 
 		        new java.util.TimerTask() {
 		            @Override
@@ -372,7 +377,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		        5000 
 		);
 		
-		
+		*/
 
 	}
 
