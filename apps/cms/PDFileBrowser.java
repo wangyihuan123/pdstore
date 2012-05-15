@@ -12,7 +12,9 @@ import javax.swing.tree.TreePath;
 
 import pdstore.GUIDGen;
 import pdstore.dal.PDWorkingCopy;
+import cms.dal.PDCMSOperation;
 import cms.dal.PDDocument;
+import cms.dal.PDDocumentOperation;
 import cms.dal.PDFileOperation;
 import cms.dal.PDHistory;
 import cms.dal.PDUser;
@@ -25,6 +27,7 @@ public class PDFileBrowser extends JTree {
 	PDUser user;
 	PDHistory history;
 	TreePath recentlyAdded;
+	ContentManagementSystem cms;
 
 	protected static final int
 	ADD = 0,
@@ -33,11 +36,12 @@ public class PDFileBrowser extends JTree {
 	MOVE = 3,
 	SELECT = 4;
 
-	protected PDFileBrowser(DefaultMutableTreeNode node, String docRoot, PDUser user, PDHistory history, PDWorkingCopy wc){
+	protected PDFileBrowser(DefaultMutableTreeNode node, String docRoot, PDUser user, PDHistory history, PDWorkingCopy wc, ContentManagementSystem cms){
 		super(node);	
 		this.user = user;
 		this.history = history;
 		this.wc = wc;
+		this.cms = cms;
 	}
 
 	protected void addNodeToTree(DefaultMutableTreeNode selNode, String filename){
@@ -152,7 +156,12 @@ public class PDFileBrowser extends JTree {
 		op.setOpParamB(paramB);
 
 		// Attach to history
-		history.addFileOperation(op); // needs to be some kind of linked list
+    	PDCMSOperation cmso = PDCMSOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
+    	cmso.setFileOp(op);
+    	cmso.setOpType(op.getTypeId());
+    	cms.opHistory.add(cmso);
+    	//history.addCMSOperation(cmso);  
+		//history.addFileOperation(op); // needs to be some kind of linked list
 		// Commit
 		wc.commit();		
 	}

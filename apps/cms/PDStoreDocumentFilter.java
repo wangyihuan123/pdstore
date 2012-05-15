@@ -2,6 +2,8 @@
 package cms;
 
 import javax.swing.text.*;
+
+import cms.dal.PDCMSOperation;
 import cms.dal.PDDocument;
 import cms.dal.PDDocumentOperation;
 import cms.dal.PDHistory;
@@ -23,11 +25,13 @@ public class PDStoreDocumentFilter extends DocumentFilter {
 	PDHistory history;
 	PDWorkingCopy wc;
 	GUID transaction;
+	ContentManagementSystem cms;
 	
-    public PDStoreDocumentFilter(PDWorkingCopy wc, PDUser user, PDHistory history) {
+    public PDStoreDocumentFilter(PDWorkingCopy wc, PDUser user, PDHistory history, ContentManagementSystem cms) {
 		this.user = user;
 		this.history = history;
 		this.wc = wc;
+		this.cms = cms;
     }
     
     @Override
@@ -39,11 +43,11 @@ public class PDStoreDocumentFilter extends DocumentFilter {
 				e.printStackTrace();
 			}    		
     	} else {
-    		try {
+    		//try {
     			super.remove(fb, offset, length);
-    		} catch (BadLocationException e){
-    			System.out.println("Bad location in DocumentFilter");
-    		}	
+    		//} catch (BadLocationException e){
+    		//	System.out.println("Bad location in DocumentFilter");
+    		//}	
     	}
     	
     }
@@ -51,34 +55,34 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     @Override
     public void insertString(FilterBypass fb, int offset, String str, AttributeSet attr) throws BadLocationException {
     	if (filter){
-	    	try{
+	    	//try{
 	    		PDInsertString(fb, offset, str, attr);
-			} catch (Exception e){
-				e.printStackTrace();
-			}
+			//} catch (Exception e){
+			//	e.printStackTrace();
+			//}
     	} else {
-    		try {
+    		//try {
     			super.insertString(fb, offset, str, attr);
-    		} catch (BadLocationException e){
-    			System.out.println("Bad location in DocumentFilter");
-    		}	
+    		//} catch (BadLocationException e){
+    		//	System.out.println("Bad location in DocumentFilter");
+    		//}	
     	}
     }
     
     @Override
     public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet attr) throws BadLocationException {
     	if (filter){
-    		try {
+    		//try {
     			PDReplace(fb, offset, length, str, attr);
-    		} catch (Exception e){
-    			e.printStackTrace();
-    		}
+    		//} catch (Exception e){
+    			//e.printStackTrace();
+    		//}
     	} else {
-    		try {
+    		//try {
     			super.replace(fb, offset, length, str, attr);
-    		} catch (Exception e){
-    			System.out.println("Bad location in DocumentFilter");
-    		}
+    		//} catch (Exception e){
+    			//System.out.println("Bad location in DocumentFilter");
+    		//}
     	}
     	
     }
@@ -98,7 +102,12 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	op.setOpOffset((long)offset);
     	op.setOpLength((long)length);
     	// Attach to history
-		history.addDocumentOperation(op); // needs to be some kind of linked list
+    	PDCMSOperation cmso = PDCMSOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
+    	cmso.setDocumentOp(op);
+    	cmso.setOpType(op.getTypeId());
+    	cms.opHistory.add(cmso);
+    	//history.addCMSOperation(cmso);    	
+		//history.addDocumentOperation(op); // needs to be some kind of linked list
 		// Commit
 		wc.commit();
     }    
@@ -118,7 +127,12 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	op.setOpOffset((long)offset);
     	op.setOpString(str);
     	// Attach to history
-		history.addDocumentOperation(op); // needs to be some kind of linked list
+    	PDCMSOperation cmso = PDCMSOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
+    	cmso.setDocumentOp(op);
+    	cmso.setOpType(op.getTypeId());
+    	cms.opHistory.add(cmso);
+    	//history.addCMSOperation(cmso);    	
+		//history.addDocumentOperation(op); // needs to be some kind of linked list
 		// Commit
 		wc.commit();
     }  
@@ -139,7 +153,12 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	op.setOpLength((long)length);
     	op.setOpString(str);
     	// Attach to history
-		history.addDocumentOperation(op); // needs to be some kind of linked list
+    	PDCMSOperation cmso = PDCMSOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
+    	cmso.setDocumentOp(op);
+    	cmso.setOpType(op.getTypeId());
+    	cms.opHistory.add(cmso);
+    	//history.addCMSOperation(cmso);
+		//history.addDocumentOperation(op); // needs to be some kind of linked list
 		// Commit
 		wc.commit();
 		//System.out.println("THREAD: "+Thread.currentThread().getId()+" OP TYPE: "+op.getOpType());
