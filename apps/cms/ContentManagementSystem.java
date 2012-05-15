@@ -14,12 +14,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.TimerTask;
 import java.util.Vector;
 
 import javax.swing.*;
@@ -67,6 +70,13 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	//public JList list;
 
 	private JLabel theLabel;
+	
+	JLabel saveStatus;
+	String editingFileName;
+	
+	//JScrollPane htmlScroll;
+	//JScrollPane editScroll;
+	
 	private JTextPane htmlTextArea;
 	JTextPane editTextArea;
 
@@ -303,24 +313,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		functionalButtonPanel.add(moveTo,gbc);
 		functionalButtonPanel.add(copyFrom,gbc);
 		functionalButtonPanel.add(copyTo,gbc);
-		//	functionalButtonPanel.add(load,gbc);
-
-		//set up display area pane
-
-		//JPanel displayAreaPanel = new JPanel();
-
-
-		//PDStoreTextPane editTextArea = new PDStoreTextPane(wc, user, history);
-		//editTextArea.addKeyListener(this);
-
-
-		//editTextArea.setText("<span style='font-size: 20pt'>Big</span>");
-		//htmlTextArea.setText(editTextArea.getText());
-
-
-		// set up the folder tree view.
-
-		// fileOrganiserPane = new JPanel();
+	
 
 		initFileBrowser();
 
@@ -360,6 +353,26 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		//fileOrganiserSplitPane.repaint();
 
 		getContentPane().add(fileOrganiserSplitPane,BorderLayout.CENTER);
+		
+		new java.util.Timer().schedule( 
+		        new java.util.TimerTask() {
+		            @Override
+		            public void run() {
+		                
+		            	//save all the content to the file
+		            	if (editingFileName != null){
+		            		
+		            		saveFile(editTextArea.getText(),node.getParent().toString()+"/"+node.toString());
+		            	}
+		            	
+		            	
+		            	
+		            }
+		        }, 
+		        5000 
+		);
+		
+		
 
 	}
 
@@ -426,6 +439,9 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 	private void initHTMLViewer(){
 		htmlTextArea = new JTextPane();
+		//htmlScroll = new JScrollPane();
+		//htmlScroll.add(htmlTextArea);
+		
 		htmlTextArea.setContentType("text/html");
 	}
 	
@@ -647,7 +663,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	}
 
 	/**
-	 * Method to show the dialog box
+	 * Method to read the content of the file
 	 * 
 	 */
 
@@ -672,6 +688,31 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 		return fileData.toString();
 
+	}
+	
+	/**
+	 *  Save the file every 5 seconds
+	 */
+	
+	private static void saveEditingFile(String content,	File file){
+		
+		
+		
+		
+	}
+	
+	
+	public void saveFile(String content,String filename){
+		
+		 try{
+		  FileWriter fstream = new FileWriter(filename,true);
+		  BufferedWriter out = new BufferedWriter(fstream);
+		  out.write(content);
+		  //Close the output stream
+		  out.close();
+		  }catch (Exception e){//Catch exception if any
+		 
+		  }
 	}
 
 
