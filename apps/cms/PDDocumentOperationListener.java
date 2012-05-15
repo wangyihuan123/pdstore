@@ -38,6 +38,9 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 			if (change.getRole2().equals(role2)){
 				//System.out.println("Found Operation");
 				PDDocumentOperation op = PDDocumentOperation.load(cms.wc, (GUID)change.getInstance1());
+				if (op == null){
+					return;
+				}
 				// Check if they are working on the same document
 				PDDocument userDoc = cms.user.getCurrentDocument();
 				PDUser otherUser = op.getOpUser();
