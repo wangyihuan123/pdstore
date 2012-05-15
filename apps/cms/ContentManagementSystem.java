@@ -203,13 +203,16 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 			public void actionPerformed(ActionEvent e)  
 			{  
 
-
-				String str = JOptionPane.showInputDialog(null, "Please enter the file or folder name : ", 
-						"Collaborative Content Management System", 1);
+				if (node == null){
+					node = (DefaultMutableTreeNode)tree.getModel().getRoot();
+				} else {
+					node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+				}
+				String str = JOptionPane.showInputDialog(null, "Please enter the file or folder name : ", "Collaborative Content Management System", 1);
 				if(str != null){
-
 					//add new node into the file system
-					String filename = str;	  
+					String filename = str;	
+					
 					File s = new File(node.toString()+ "/"+filename);
 					String pdfname = s.getAbsolutePath().replace(DOCUMENT_ROOT, "");
 					if (s.mkdir()){
@@ -407,7 +410,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 				if (node.toString().contains(".html")){
 					// David 10.5.2012 display the file contents
-					String filepath = node.getParent().toString()+"/"+node.toString();
+					String filepath = node.toString();
 					textEditor.setText(readFiles(new File(filepath)));
 
 					//htmlTextArea.setText("hello");
