@@ -75,7 +75,7 @@ public class CMSPerformanceTest {
 		
 		// CMS propeties: {int users, int trials, int sleep}
 		Object[][] params = new Object[][] { 
-				{2, 100, 200}, {2, 100, 100}, {2, 100, 50}, {2, 100, 25}
+				{2, 100, 100}, {2, 100, 50}, {2, 100, 25}
 		};
 		return Arrays.asList(params);
 	}
