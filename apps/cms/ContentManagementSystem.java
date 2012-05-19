@@ -29,6 +29,7 @@ import java.util.Vector;
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.text.DefaultCaret;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -449,11 +450,12 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 		// Setup editor
 		textEditor = new PDStoreTextPane(wc, user, history, htmlTextArea, this);
-
+		DefaultCaret c = (DefaultCaret) textEditor.getCaret();
+		c.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		// Set up mulitiple carets
-		CMSCaret caret = new CMSCaret(wc, user);
-		caret.setUpdatePolicy(CMSCaret.ALWAYS_UPDATE);
-		//textEditor.setCaret(caret);	
+		//CMSCaret caret = new CMSCaret(wc, user);
+		//caret.setUpdatePolicy(CMSCaret.UPDATE_WHEN_ON_EDT);
+		textEditor.setCaret(c);	
 
 		// Editor label
 		JLabel text = new JLabel("Text Editor");

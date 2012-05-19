@@ -48,7 +48,7 @@ public class PDCMSHistoryListener implements PDListener<GUID, Object, GUID> {
 					return;
 				}					
 				
-				cms.refreshHistory();
+				//cms.refreshHistory();
 				// This is used for future user filtering / highlighting of other users operations
 				GUID typeID = op.getOpType().getId();
 				if (typeID.equals(PDDocumentOperation.typeId)) {
