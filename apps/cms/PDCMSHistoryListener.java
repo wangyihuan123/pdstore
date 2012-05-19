@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Enumeration; 
 
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import cms.dal.PDCMSOperation;
@@ -35,7 +36,10 @@ public class PDCMSHistoryListener implements PDListener<GUID, Object, GUID> {
 	public void transactionCommitted(
 			List<PDChange<GUID, Object, GUID>> transaction,
 			List<PDChange<GUID, Object, GUID>> matchedChanges, PDCoreI<GUID, Object, GUID> core) {
-		for (PDChange<GUID, Object, GUID> change : transaction) {
+		
+		Object[] copy = transaction.toArray();
+		for (Object o : copy) {
+			PDChange<GUID, Object, GUID> change = (PDChange<GUID, Object, GUID>) o;
 			if (change.getRole2().equals(role2)){
 				//System.out.println(transaction.toString());
 				
@@ -46,9 +50,17 @@ public class PDCMSHistoryListener implements PDListener<GUID, Object, GUID> {
 				PDCMSOperation op = history.getCMSOperation();
 				if (op == null){
 					return;
-				}					
+				}
 				
-				//cms.refreshHistory();
+		    	SwingUtilities.invokeLater(new Runnable (){
+
+					@Override
+					public void run() {
+						cms.refreshHistory();
+					}
+		    		
+		    	});				
+				
 				// This is used for future user filtering / highlighting of other users operations
 				GUID typeID = op.getOpType().getId();
 				if (typeID.equals(PDDocumentOperation.typeId)) {

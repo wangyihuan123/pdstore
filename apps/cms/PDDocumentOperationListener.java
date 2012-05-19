@@ -21,7 +21,7 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 
 	private ContentManagementSystem cms;
 	private GUID role2;
-	
+
 	public PDDocumentOperationListener(ContentManagementSystem cms, GUID role2) {
 		super();
 		this.cms = cms;
@@ -32,8 +32,9 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 	public void transactionCommitted (
 			List<PDChange<GUID, Object, GUID>> transaction,
 			List<PDChange<GUID, Object, GUID>> matchedChanges, PDCoreI<GUID, Object, GUID> core) {
-		//System.out.println("###### "+cms.getTitle()+" #####");
-		for (PDChange<GUID, Object, GUID> change : transaction) {
+		Object[] copy = transaction.toArray();
+		for (Object o : copy) {
+			PDChange<GUID, Object, GUID> change = (PDChange<GUID, Object, GUID>) o;
 			//System.out.println("Change: " + change);
 			if (change.getRole2().equals(role2)){
 				//System.out.println("Found Operation");
@@ -47,7 +48,7 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 				if (otherUser == null){
 					return;
 				}
-				
+
 				PDDocument otherDoc = otherUser.getCurrentDocument();
 				if (otherDoc == null){
 					return;
@@ -66,12 +67,12 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 			}
 		}
 	}
-	
+
 	private void performOperation(PDDocumentOperation op) throws BadLocationException, PDStoreException {
-		
+
 		AbstractDocument doc = (AbstractDocument)cms.textEditor.getDocument();
 		PDStoreDocumentFilter filter = (PDStoreDocumentFilter) doc.getDocumentFilter();
-		
+
 		//while (op.getOpType() == null); // seems the get method can return null at first
 		if (op.getOpType() == null){
 			return;
@@ -80,30 +81,30 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 		long offset = op.getOpOffset();
 		long length = 0;
 		String str = op.getOpString();
-	
+
 		// Do something appropriate given the OpType
 		filter.setFilter(false);
 		//try {
-			switch ((int)type){	
-				case PDStoreDocumentFilter.REMOVE:
-					length = op.getOpLength();
-					doc.remove((int) offset, (int) length);
-					break;
-				case PDStoreDocumentFilter.INSERT:
-					doc.insertString((int) offset, str, null);					
-					break;
-				case PDStoreDocumentFilter.REPLACE:	
-					length = op.getOpLength();
-					doc.replace((int) offset, (int) length, str, null);			
-					break;		
-			}
+		switch ((int)type){	
+		case PDStoreDocumentFilter.REMOVE:
+			length = op.getOpLength();
+			doc.remove((int) offset, (int) length);
+			break;
+		case PDStoreDocumentFilter.INSERT:
+			doc.insertString((int) offset, str, null);					
+			break;
+		case PDStoreDocumentFilter.REPLACE:	
+			length = op.getOpLength();
+			doc.replace((int) offset, (int) length, str, null);			
+			break;		
+		}
 		//} catch (BadLocationException e){
-			//System.out.println("Bad location in DoucmentListener");
+		//System.out.println("Bad location in DoucmentListener");
 		//}
 		filter.setFilter(true);
-	
+
 	}
-	
+
 	/*
 	 * Broadcast methods were used to keep relative distances between carets but it is currently unstable with many bad location errors.
 	 */
@@ -124,7 +125,7 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 		}
 		//cms.wc.commit();		
 	}
-	
+
 	@Deprecated
 	private void broadcastCaretChange(int oldPos, int newPos){
 		int change = newPos - oldPos;

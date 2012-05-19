@@ -29,7 +29,9 @@ public class PDFileBrowserListener implements PDListener<GUID, Object, GUID> {
 	public void transactionCommitted(
 			List<PDChange<GUID, Object, GUID>> transaction,
 			List<PDChange<GUID, Object, GUID>> matchedChanges, PDCoreI<GUID, Object, GUID> core) {
-		for (PDChange<GUID, Object, GUID> change : transaction) {
+		Object[] copy = transaction.toArray();
+		for (Object o : copy) {
+			PDChange<GUID, Object, GUID> change = (PDChange<GUID, Object, GUID>) o;
 			if (change.getRole2().equals(role2)){
 				PDFileOperation op = PDFileOperation.load(cms.wc, (GUID)change.getInstance1());
 				PDUser otherUser = op.getOpUser();

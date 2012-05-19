@@ -71,7 +71,7 @@ public class CMSLoader {
 	public void init(){
 
 		for (int i = 0; i < instances; i++){
-			ContentManagementSystem cms = new ContentManagementSystem(userIDs.get(i), historyIDs.get(i), copies.get(i));
+			ContentManagementSystem cms = new ContentManagementSystem(userIDs.get(i), historyIDs.get(0), copies.get(i));
 			cms.setVisible(true);
 			cmsList.add(cms);
 		}
