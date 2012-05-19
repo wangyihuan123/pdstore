@@ -50,7 +50,7 @@ public class CMSLoader {
 			store = new PDStore(STORE_NAME);
 			addData();
 			PDWorkingCopy sharedCopy = new PDSimpleWorkingCopy(store);
-			//sharedCopy.setAutocommit(true);
+			sharedCopy.setAutocommit(true);
 			for (int i = 0; i < instances; i++){
 				copies.add(sharedCopy);
 			}			

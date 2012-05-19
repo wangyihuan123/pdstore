@@ -118,6 +118,7 @@ public class PDStoreTextPane extends JTextPane {
 		
 		@Override
 		public void caretUpdate(CaretEvent event) {
+			/*
 			try {	
 				int dot = event.getDot();
 				carets.get(carets.size()-1).setPosition(dot);
@@ -128,6 +129,7 @@ public class PDStoreTextPane extends JTextPane {
 			} catch (PDStoreException e) {
 				throw e;
 			}
+			*/
 		}
 
 		@Override

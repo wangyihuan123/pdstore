@@ -409,7 +409,6 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
 				String filepath = "";
 				if (node.toString().contains(".html")){
-					// David 10.5.2012 display the file contents
 					filepath = node.getParent().toString()+"/"+node.toString();
 					textEditor.setText(readFiles(new File(filepath)));
 				}
@@ -430,7 +429,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 			PDDocument d = (PDDocument) i;
 			String s = d.getDocumentFileName();
 			if (s != null && s.equals(fname)){
-				user.setCurrentDocument(d.getId());
+				//user.setCurrentDocument(d.getId());
 				wc.commit();
 				break;
 			}

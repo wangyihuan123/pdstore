@@ -178,7 +178,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	if (pddoc == null){
     		// Need to create a document and set as current resource
     		pddoc = PDDocument.load(wc, GUIDGen.generateGUIDs(1).remove(0));
-    		pddoc.setDocumentFileName(user.getName()+"_temp");
+    		pddoc.setDocumentFileName(user.getName()+".temp");
     		user.setCurrentDocument(pddoc);
     	} 
     	
