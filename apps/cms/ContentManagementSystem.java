@@ -527,7 +527,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	}
 	
 	protected void initHistoryBrowser(){
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Document History");
 		TreeModel historyTreeModel = new DefaultTreeModel(root);
 		DefaultMutableTreeNode child;
 		for (PDCMSOperation	op : opHistory){
@@ -535,7 +535,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 			root.add(child);
 		}
 		
-		historyBrowser = new PDHistoryBrowser(root);
+		historyBrowser = new PDHistoryBrowser(root, wc);
 		historyBrowser.setEditable(true);
 		
 	}

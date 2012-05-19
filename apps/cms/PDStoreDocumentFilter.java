@@ -99,6 +99,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	op.setOpDocument(pddoc);
     	op.setOpUser(user);
     	op.setOpType((long)REMOVE);
+    	op.setName("Remove: "+length);
     	op.setOpOffset((long)offset);
     	op.setOpLength((long)length);
     	// Attach to history
@@ -124,6 +125,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	op.setOpDocument(pddoc);
     	op.setOpUser(user);
     	op.setOpType((long)INSERT);
+    	op.setName("Insert: "+str);
     	op.setOpOffset((long)offset);
     	op.setOpString(str);
     	// Attach to history
@@ -149,6 +151,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	op.setOpDocument(pddoc);
     	op.setOpUser(user);
     	op.setOpType((long)REPLACE);
+    	op.setName("Replace: "+str);
     	op.setOpOffset((long)offset);
     	op.setOpLength((long)length);
     	op.setOpString(str);
@@ -175,6 +178,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	if (pddoc == null){
     		// Need to create a document and set as current resource
     		pddoc = PDDocument.load(wc, GUIDGen.generateGUIDs(1).remove(0));
+    		pddoc.setDocumentFileName(user.getName()+"_temp");
     		user.setCurrentDocument(pddoc);
     	} 
     	

@@ -32,6 +32,7 @@ import pdstore.PDStoreException;
 public class CMSPerformanceTest {
 
 	private final static DecimalFormat DP3 = new DecimalFormat("#.###");
+	private final static String DOUCMENT_ROOT = System.getenv("HOME")+"/www";
 	
 	final boolean NETWORK_ACCESS = false;	
 	
@@ -90,7 +91,7 @@ public class CMSPerformanceTest {
 		othere = new AtomicInteger(0);
 		
 		try {
-			CMSLoader cmsl = new CMSLoader(NETWORK_ACCESS, users);
+			CMSLoader cmsl = new CMSLoader(NETWORK_ACCESS, users, DOUCMENT_ROOT);
 			cmsl.init();
 			cmsList = cmsl.cmsList;
 		} catch (Exception e) {

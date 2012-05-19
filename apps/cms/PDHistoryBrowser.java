@@ -1,6 +1,7 @@
 package cms;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 
@@ -8,7 +9,12 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
+import pdstore.GUID;
+import pdstore.dal.PDInstance;
+import pdstore.dal.PDWorkingCopy;
+
 import cms.dal.PDCMSOperation;
+import cms.dal.PDDocument;
 import cms.dal.PDDocumentOperation;
 
 public class PDHistoryBrowser extends JTree {
@@ -17,47 +23,72 @@ public class PDHistoryBrowser extends JTree {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private PDWorkingCopy wc;
 
 	
-	public PDHistoryBrowser(DefaultMutableTreeNode root){
+	public PDHistoryBrowser(DefaultMutableTreeNode root, PDWorkingCopy wc){
 		super(root);
+		this.wc = wc;
 	}
 	
 	public void refreshTree(CMSOperationList opHistory){
 
 		// Clean tree
 		DefaultTreeModel m_model = (DefaultTreeModel) this.getModel();
-		DefaultMutableTreeNode target = (DefaultMutableTreeNode) m_model.getRoot(); //searchNode("Root");
-		target.removeAllChildren();
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode) m_model.getRoot(); //searchNode("Root");
+		root.removeAllChildren();
 		
 		// Iterate over opHistory and filter by criterion e.g User, Date, File, Operation, Document
-		DefaultMutableTreeNode node = new DefaultMutableTreeNode(Math.random());
-		
+
 		// Default Filter: Document - Sorted  by Time
-		for (PDCMSOperation op : opHistory){
-			
+		HashMap<String, ArrayList<PDCMSOperation>> docs = mapDocumentOpertions(opHistory);
+		DefaultMutableTreeNode parent, child;
+		for (String s : docs.keySet()){
+			parent = new DefaultMutableTreeNode(s);
+			root.add(parent);
+			ArrayList<PDCMSOperation> oplist = docs.get(s);
+			for (PDCMSOperation op: docs.get(s)) {			
+				child = new DefaultMutableTreeNode(op.getDocumentOp().getName());
+				parent.add(child);
+			}
 		}
-		
-		target.add(node);
-		
+				
 		// Notify tree changed
-		m_model.nodeStructureChanged(target);
+		m_model.nodeStructureChanged(root);
 		
 	}
 	
-	public HashMap<String, ArrayList<PDCMSOperation>> mapDocumentOpertions(ArrayList<String> filters, CMSOperationList opHistory){
+	public HashMap<String, ArrayList<PDCMSOperation>> mapDocumentOpertions(CMSOperationList opHistory){
+		
+		Collection<PDInstance> instances = wc.getAllInstancesOfType(PDDocument.typeId);
+		
 		HashMap<String, ArrayList<PDCMSOperation>> map = new HashMap<String, ArrayList<PDCMSOperation>>();
 		// Enter map keys
-		for (String s: filters){
-			map.put(s, new ArrayList<PDCMSOperation>());
-		}
-		// Enter key values
-		for (PDCMSOperation op: opHistory){
-			if (op.getOpType().equals(PDDocumentOperation.typeId)){
-				
+		PDDocument d;
+		ArrayList<PDCMSOperation> ops;
+		for (PDInstance i: instances){
+			d = (PDDocument) i;
+			String s = d.getDocumentFileName();
+			//System.out.println("Document: '"+s.toString()+"'");
+			ops = new ArrayList<PDCMSOperation>();
+			
+			// Enter key values
+			
+			for (int j = 0; j < opHistory.size(); j++){
+				PDCMSOperation op = opHistory.get(j);
+				//System.out.println("OP: "+op.getOpType().getId());
+				//System.out.println("PD: "+PDDocumentOperation.typeId);
+				if (op.getOpType().getId().equals(PDDocumentOperation.typeId)){
+					PDDocumentOperation dop = op.getDocumentOp();
+					if (dop.getOpDocument().getDocumentFileName().equals(s)){
+						ops.add(op);
+					}
+				}
 			}
+			map.put(s, ops);
 		}
-		return null;
+
+		return map;
 	}
 
 /** 
