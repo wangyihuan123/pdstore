@@ -1,6 +1,7 @@
 
 package cms;
 
+import javax.swing.SwingUtilities;
 import javax.swing.text.*;
 
 import cms.dal.PDCMSOperation;
@@ -92,7 +93,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	
     	// Get current document
     	PDDocument pddoc = getCurrentDocument();
-    	wc.commit();
+    	//wc.commit();
 
     	// Create operation
     	PDDocumentOperation op = PDDocumentOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
@@ -103,14 +104,22 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	op.setOpOffset((long)offset);
     	op.setOpLength((long)length);
     	// Attach to history
-    	PDCMSOperation cmso = PDCMSOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
+    	final PDCMSOperation cmso = PDCMSOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
     	cmso.setDocumentOp(op);
     	cmso.setOpType(op.getTypeId());
-    	cms.opHistory.add(cmso);
+    	SwingUtilities.invokeLater(new Runnable (){
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				cms.opHistory.add(cmso);
+			}
+    		
+    	});
     	//history.addCMSOperation(cmso);    	
 		//history.addDocumentOperation(op); // needs to be some kind of linked list
 		// Commit
-		wc.commit();
+		//wc.commit();
     }    
     
     public void PDInsertString(FilterBypass fb, int offset, String str, AttributeSet attr) throws BadLocationException {
@@ -118,7 +127,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	
     	// Get current document
     	PDDocument pddoc = getCurrentDocument();
-    	wc.commit();
+    	//wc.commit();
     	
     	// Create operation
     	PDDocumentOperation op = PDDocumentOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
@@ -129,14 +138,23 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	op.setOpOffset((long)offset);
     	op.setOpString(str);
     	// Attach to history
-    	PDCMSOperation cmso = PDCMSOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
+    	final PDCMSOperation cmso = PDCMSOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
     	cmso.setDocumentOp(op);
     	cmso.setOpType(op.getTypeId());
-    	cms.opHistory.add(cmso);
+    	SwingUtilities.invokeLater(new Runnable (){
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				cms.opHistory.add(cmso);
+			}
+    		
+    	});
+    	
     	//history.addCMSOperation(cmso);    	
 		//history.addDocumentOperation(op); // needs to be some kind of linked list
 		// Commit
-		wc.commit();
+		//wc.commit();
     }  
 
     public void PDReplace(FilterBypass fb, int offset, int length, String str, AttributeSet attr) throws BadLocationException {
@@ -144,7 +162,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	
     	// Get current document
     	PDDocument pddoc = getCurrentDocument();
-    	wc.commit();
+    	//wc.commit();
     	
     	// Create operation
     	PDDocumentOperation op = PDDocumentOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
@@ -156,14 +174,22 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	op.setOpLength((long)length);
     	op.setOpString(str);
     	// Attach to history
-    	PDCMSOperation cmso = PDCMSOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
+    	final PDCMSOperation cmso = PDCMSOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
     	cmso.setDocumentOp(op);
     	cmso.setOpType(op.getTypeId());
-    	cms.opHistory.add(cmso);
+    	SwingUtilities.invokeLater(new Runnable (){
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				cms.opHistory.add(cmso);
+			}
+    		
+    	});
     	//history.addCMSOperation(cmso);
 		//history.addDocumentOperation(op); // needs to be some kind of linked list
 		// Commit
-		wc.commit();
+		//wc.commit();
 		//System.out.println("THREAD: "+Thread.currentThread().getId()+" OP TYPE: "+op.getOpType());
     }
     

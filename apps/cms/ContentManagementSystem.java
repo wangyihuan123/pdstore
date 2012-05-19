@@ -429,8 +429,8 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 			PDDocument d = (PDDocument) i;
 			String s = d.getDocumentFileName();
 			if (s != null && s.equals(fname)){
-				//user.setCurrentDocument(d.getId());
-				wc.commit();
+				user.setCurrentDocument(d.getId());
+				//wc.commit();
 				break;
 			}
 		}

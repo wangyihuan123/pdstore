@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Vector;
 
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
@@ -166,14 +167,23 @@ public class PDFileBrowser extends JTree {
 		op.setOpParamB(paramB);
 
 		// Attach to history
-    	PDCMSOperation cmso = PDCMSOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
+    	final PDCMSOperation cmso = PDCMSOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
     	cmso.setFileOp(op);
     	cmso.setOpType(op.getTypeId());
-    	cms.opHistory.add(cmso);
+    	SwingUtilities.invokeLater(new Runnable (){
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				cms.opHistory.add(cmso);
+			}
+    		
+    	});
+    	
     	//history.addCMSOperation(cmso);  
 		//history.addFileOperation(op); // needs to be some kind of linked list
 		// Commit
-		wc.commit();		
+		//wc.commit();		
 	}
 
 	protected void createPDDocument(String fname){
@@ -182,7 +192,7 @@ public class PDFileBrowser extends JTree {
 		pddoc.setDocumentFileLocation(fname);
 		pddoc.setDocumentFileName(newFile.getName());
 		pddoc.setDocumentType(getExtension(newFile.getName()));
-		wc.commit();
+		//wc.commit();
 	}
 
 	private String getExtension(String fname){

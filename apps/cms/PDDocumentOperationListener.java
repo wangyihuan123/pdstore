@@ -122,7 +122,7 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 				u.setCaretPosition(new Long(pos));
 			}
 		}
-		cms.wc.commit();		
+		//cms.wc.commit();		
 	}
 	
 	@Deprecated
@@ -139,7 +139,7 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 				u.setCaretPosition(new Long(pos));
 			}
 		}
-		cms.wc.commit();
+		//cms.wc.commit();
 	}
 
 	@Override

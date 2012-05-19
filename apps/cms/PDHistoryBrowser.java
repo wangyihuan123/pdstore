@@ -76,7 +76,7 @@ public class PDHistoryBrowser extends JTree {
 			for (int j = 0; j < opHistory.size(); j++){
 				PDCMSOperation op = opHistory.get(j);
 				if (op.getOpType().getId().equals(PDDocumentOperation.typeId)){
-					PDDocumentOperation dop = PDDocumentOperation.load(wc, op.getDocumentOp().getId() );
+					PDDocumentOperation dop = op.getDocumentOp();
 					if (dop.getOpDocument().getDocumentFileName().equals(s)){
 						ops.add(op);
 					}

@@ -124,7 +124,7 @@ public class PDStoreRTextPane extends RSyntaxTextArea {
 				
 				// Inform others
 				user.setCaretPosition(new Long(dot));
-				wc.commit();
+				//wc.commit();
 			} catch (PDStoreException e) {
 				throw e;
 			}
