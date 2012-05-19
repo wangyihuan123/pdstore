@@ -408,19 +408,35 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 			public void valueChanged(TreeSelectionEvent e) {
 				node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
 				String filepath = "";
-				if (node.toString().contains(".html")){
+				String ext = node.toString().substring(node.toString().lastIndexOf('.'));
+				String pdfname = node.toString().replace(DOCUMENT_ROOT, "");
+				if (ext.contains(".html") || ext.contains(".css") || ext.contains(".js")){
 					filepath = node.getParent().toString()+"/"+node.toString();
-					textEditor.setText(readFiles(new File(filepath)));
+					// if history is empty for this doc	
+					if (noDocHistory(pdfname)) {
+						textEditor.setText(readFiles(new File(filepath)));
+					} else {
+						// load string from history
+					}
+					
 				}
 				// if node is a file, set current user document in pdstore
 				if (new File(filepath).isFile()) {
-					String pdfname = node.toString().replace(DOCUMENT_ROOT, "");
 					setCurrentDocument(pdfname);
 					tree.alertPDFileOperation(PDFileBrowser.SELECT, pdfname, null);	
 				}
 			}
 		});
 
+	}
+	
+	protected boolean noDocHistory(String fname){
+		DefaultMutableTreeNode node = historyBrowser.searchNode(fname);
+		if (node == null || node.getChildCount() == 0){
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	protected void setCurrentDocument(String fname){
