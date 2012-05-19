@@ -69,15 +69,12 @@ public class PDHistoryBrowser extends JTree {
 		for (PDInstance i: instances){
 			d = (PDDocument) i;
 			String s = d.getDocumentFileName();
-			//System.out.println("Document: '"+s.toString()+"'");
 			ops = new ArrayList<PDCMSOperation>();
 			
 			// Enter key values
 			
 			for (int j = 0; j < opHistory.size(); j++){
 				PDCMSOperation op = opHistory.get(j);
-				//System.out.println("OP: "+op.getOpType().getId());
-				//System.out.println("PD: "+PDDocumentOperation.typeId);
 				if (op.getOpType().getId().equals(PDDocumentOperation.typeId)){
 					PDDocumentOperation dop = op.getDocumentOp();
 					if (dop.getOpDocument().getDocumentFileName().equals(s)){

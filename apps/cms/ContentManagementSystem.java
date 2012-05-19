@@ -117,7 +117,6 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		initHTMLViewer();
 		initDefaultTextEditor();
 		//initRSyntaxTextEditor();
-		initHistoryListener();
 		initHistoryBrowser();
 
 		// set up and populate history pane
@@ -521,12 +520,14 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		
 	}	
 	
-	protected void printHist() {
+	protected void refreshHistory() {
 		//System.out.println("HIST: "+opHistory.size());
 		historyBrowser.refreshTree(opHistory);
 	}
 	
 	protected void initHistoryBrowser(){
+		initHistoryListener();
+		
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Document History");
 		TreeModel historyTreeModel = new DefaultTreeModel(root);
 		DefaultMutableTreeNode child;
@@ -537,6 +538,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		
 		historyBrowser = new PDHistoryBrowser(root, wc);
 		historyBrowser.setEditable(true);
+		refreshHistory();
 		
 	}
 
