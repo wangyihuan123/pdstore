@@ -18,8 +18,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.html2.HTMLElement;
 import org.xml.sax.SAXException;
 
-/*
+/**
+ * The web page renderer.
  * Mostly derived from the example at: http://lobobrowser.org/cobra/getting-started.jsp
+ * 
+ * @author Sina Masoud-Ansari (s.ansari@auckland.ac.nz)
+ *
  */
 public class PDHtmlPanel extends HtmlPanel{
 	
@@ -35,6 +39,11 @@ public class PDHtmlPanel extends HtmlPanel{
 		//render("<html>Hello</html>");
 	}
 	
+	/**
+	 * Called by other classes to update the html view upon text edits
+	 * 
+	 * @param s the html text
+	 */
 	protected void render(String s){
 		Document document = null;
 		try {
@@ -93,21 +102,6 @@ public class PDHtmlPanel extends HtmlPanel{
 			// This may be removed: 
 			System.out.println("## Link clicked: " + linkNode);
 		}
-
-		/*
-	public HtmlRendererContext open(URL url, 
-		String windowName, String windowFeatures, 
-		boolean replace) {
-		// This is called on window.open().
-		HtmlPanel newPanel = new HtmlPanel();
-		JFrame frame = new JFrame();
-		frame.setSize(600, 400);
-		frame.getContentPane().add(newPanel);
-		HtmlRendererContext newCtx = new LocalHtmlRendererContext(newPanel, this.getUserAgentContext());
-		newCtx.navigate(url, "_this");
-		return newCtx;
-	}
-		 */
 	}	
 
 }

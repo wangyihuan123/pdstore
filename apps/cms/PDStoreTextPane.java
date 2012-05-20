@@ -29,6 +29,14 @@ import pdstore.generic.PDChange;
 import pdstore.generic.PDCoreI;
 import pdstore.notify.PDListener;
 
+/**
+ * The is an implementation of the JTextPane to show collaborative edits in real-time.
+ * 
+ * Note: This is mostly used for debugging problems in the PDStoreRTextPane.
+ * 
+ * @author Sina Masoud-Ansari (s.ansari@auckland.ac.nz)
+ *
+ */
 public class PDStoreTextPane extends JTextPane {
 	
 	private static final long serialVersionUID = 1L;

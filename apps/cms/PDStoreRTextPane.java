@@ -37,6 +37,7 @@ import pdstore.notify.PDListener;
 
 /**
  * The is an implementation of the RSyntaxTextArea to show collaborative edits in real-time.
+ * @see PDStoreRTextPane for more information on methods.
  * 
  * @author Sina Masoud-Ansari (s.ansari@auckland.ac.nz)
  *

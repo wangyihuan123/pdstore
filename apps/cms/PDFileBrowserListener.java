@@ -14,6 +14,12 @@ import pdstore.generic.PDChange;
 import pdstore.generic.PDCoreI;
 import pdstore.notify.PDListener;
 
+/**
+ * Listens for file operations made by multiple users and updates the file tree view.
+ * 
+ * @author Sina Masoud-Ansari (s.ansari@auckland.ac.nz)
+ *
+ */
 public class PDFileBrowserListener implements PDListener<GUID, Object, GUID> {
 
 	private ContentManagementSystem cms;
@@ -43,6 +49,13 @@ public class PDFileBrowserListener implements PDListener<GUID, Object, GUID> {
 		}
 	}
 
+	/**
+	 * Perform the operation. If it is a filesystem operation, only the owner should make the change, 
+	 * the others just update their view.
+	 * 
+	 * @param op the operation to perform
+	 * @param otherUser the user who initiated this operation
+	 */
 	private void performOperation(PDFileOperation op, PDUser otherUser){
 		
 		//while (op.getOpType() == null); // seems the get method can return null at first

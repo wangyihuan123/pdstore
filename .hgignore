@@ -11,3 +11,5 @@ glob:pddata/PDStoreTest-*.pds
 glob:.metadata/*
 glob:.settings/*
 glob:pddata/*
+glob:.git/*
+.gitignore

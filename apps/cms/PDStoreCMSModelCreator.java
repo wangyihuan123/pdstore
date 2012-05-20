@@ -8,6 +8,14 @@ import pdstore.PDStore;
 import pdstore.dal.PDGen;
 import pdstore.dal.PDSimpleWorkingCopy;
 
+/**
+ * Builds the Content Management System PDStore model.
+ * 
+ * Schmema currently models users, user locations within the workspace, documents and opertation on files and documents.
+ * 
+ * @author Sina Masoud-Ansari (s.ansari@auckland.ac.nz)
+ *
+ */
 public class PDStoreCMSModelCreator {
 	
 	protected PDStore store;

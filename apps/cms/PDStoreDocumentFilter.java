@@ -1,7 +1,6 @@
 
 package cms;
 
-import javax.swing.SwingUtilities;
 import javax.swing.text.*;
 
 import cms.dal.PDCMSOperation;
@@ -13,6 +12,12 @@ import pdstore.GUID;
 import pdstore.GUIDGen;
 import pdstore.dal.PDWorkingCopy;
 
+/**
+ * Filters Document operations and sends them to PDStore where they are implemented by each CMS instance.
+ * 
+ * @author Sina Masoud-Ansari (s.ansari@auckland.ac.nz)
+ *
+ */
 public class PDStoreDocumentFilter extends DocumentFilter {
 
 	protected static final int
@@ -21,7 +26,6 @@ public class PDStoreDocumentFilter extends DocumentFilter {
 		REPLACE = 2;	
 	
 	private boolean filter = true;
-	private boolean replay = false;
 	
 	PDUser user;
 	PDHistory history;
@@ -39,17 +43,9 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     @Override
     public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
     	if (filter){
-	    	//try{	
-	    		PDRemove(fb, offset, length);
-			//} catch (Exception e){
-			//	e.printStackTrace();
-			//}    		
+	    		PDRemove(fb, offset, length); 		
     	} else {
-    		//try {
     			super.remove(fb, offset, length);
-    		//} catch (BadLocationException e){
-    		//	System.out.println("Bad location in DocumentFilter");
-    		//}	
     	}
     	
     }
@@ -57,34 +53,18 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     @Override
     public void insertString(FilterBypass fb, int offset, String str, AttributeSet attr) throws BadLocationException {
     	if (filter){
-	    	//try{
 	    		PDInsertString(fb, offset, str, attr);
-			//} catch (Exception e){
-			//	e.printStackTrace();
-			//}
     	} else {
-    		//try {
     			super.insertString(fb, offset, str, attr);
-    		//} catch (BadLocationException e){
-    		//	System.out.println("Bad location in DocumentFilter");
-    		//}	
     	}
     }
     
     @Override
     public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet attr) throws BadLocationException {
     	if (filter){
-    		//try {
     			PDReplace(fb, offset, length, str, attr);
-    		//} catch (Exception e){
-    			//e.printStackTrace();
-    		//}
     	} else {
-    		//try {
     			super.replace(fb, offset, length, str, attr);
-    		//} catch (Exception e){
-    			//System.out.println("Bad location in DocumentFilter");
-    		//}
     	}
     	
     }
@@ -111,21 +91,6 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	synchronized (cms.opHistory) {
     		cms.opHistory.add(cmso);
     	}
-    	/*
-    	SwingUtilities.invokeLater(new Runnable (){
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				cms.opHistory.add(cmso);
-			}
-    		
-    	});
-    	*/
-    	//history.addCMSOperation(cmso);    	
-		//history.addDocumentOperation(op); // needs to be some kind of linked list
-		// Commit
-		//wc.commit();
     }    
     
     public void PDInsertString(FilterBypass fb, int offset, String str, AttributeSet attr) throws BadLocationException {
@@ -150,22 +115,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	synchronized (cms.opHistory) {
     		cms.opHistory.add(cmso);
     	}
-    	/*
-    	SwingUtilities.invokeLater(new Runnable (){
 
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				cms.opHistory.add(cmso);
-			}
-    		
-    	});
-    	*/
-    	
-    	//history.addCMSOperation(cmso);    	
-		//history.addDocumentOperation(op); // needs to be some kind of linked list
-		// Commit
-		//wc.commit();
     }  
 
     public void PDReplace(FilterBypass fb, int offset, int length, String str, AttributeSet attr) throws BadLocationException {
@@ -188,38 +138,16 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	PDCMSOperation cmso = PDCMSOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
     	cmso.setDocumentOp(op);
     	cmso.setOpType(op.getTypeId());
-    	
-    	
+    		
     	synchronized (cms.opHistory) {
     		cms.opHistory.add(cmso);
     	}
-    	
-    
-    	/*
-    	SwingUtilities.invokeLater(new Runnable (){
 
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				
-			}
-    		
-    	});
-    	*/
-    	//history.addCMSOperation(cmso);
-		//history.addDocumentOperation(op); // needs to be some kind of linked list
-		// Commit
-		//wc.commit();
-		//System.out.println("THREAD: "+Thread.currentThread().getId()+" OP TYPE: "+op.getOpType());
     }
     
     public synchronized void setFilter(boolean b) {
     	filter = b;
     }
-   
-    public synchronized void setReplay(boolean b) {
-    	replay = b;
-    }    
     
     protected PDDocument getCurrentDocument(){
     	
