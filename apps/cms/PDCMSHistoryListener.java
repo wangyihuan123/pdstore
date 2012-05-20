@@ -45,14 +45,23 @@ public class PDCMSHistoryListener implements PDListener<GUID, Object, GUID> {
 				
 				PDHistory history = PDHistory.load(cms.wc, (GUID)change.getInstance1());
 				if (history == null){
-					return;
-				}				
+					System.err.println("User: "+cms.user.getName()+" HistoryListener: history was null");
+					//return;
+				} else {
+					System.out.println("User: "+cms.user.getName()+" HistoryListener: history was recieved");
+				}	
+				
 				PDCMSOperation op = history.getCMSOperation();
 				if (op == null){
-					return;
+					System.err.println("User: "+cms.user.getName()+" HistoryListener: op was null");
+					//return;
+				} else {
+					System.out.println("User: "+cms.user.getName()+" HistoryListener: op was recieved");
 				}
+				
 		    	synchronized (cms.opHistory) {
-		    		//cms.refreshHistory();
+		    		cms.updateDocument();
+		    		cms.refreshHistory();
 		    	}
 				/*
 		    	SwingUtilities.invokeLater(new Runnable (){

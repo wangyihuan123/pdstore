@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.lobobrowser.html.HtmlRendererContext;
 import org.lobobrowser.html.UserAgentContext;
@@ -28,8 +30,9 @@ public class PDHtmlPanel extends HtmlPanel{
 		super();
 		UserAgentContext ucontext = new LocalUserAgentContext();
 		rendererContext = new LocalHtmlRendererContext(this, ucontext);
+		Logger.getLogger("org.lobobrowser").setLevel(Level.SEVERE);
 		builder = new DocumentBuilderImpl(rendererContext.getUserAgentContext(), rendererContext);	
-		render("<html>Hello</html>");
+		//render("<html>Hello</html>");
 	}
 	
 	protected void render(String s){

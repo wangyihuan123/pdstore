@@ -449,9 +449,6 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 						//textEditor.setText("<html><body>Hello</body></html>");
 
 						filter.setFilter(true);
-
-
-
 					}
 					//} else {
 					// load string from history
@@ -576,8 +573,8 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		textEditor.add(text);
 
 		// Setup PDDocumentOperation listener
-		GUID role2 = PDDocumentOperation.roleOpTypeId;
-		wc.getStore().getDetachedListenerList().add(new PDDocumentOperationListener(this, role2));
+		//GUID role2 = PDDocumentOperation.roleOpTypeId;
+		//wc.getStore().getDetachedListenerList().add(new PDDocumentOperationListener(this, role2));
 
 		// Set key listener to notify html view
 		textEditor.addKeyListener(this);
@@ -602,7 +599,11 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		GUID role2 = PDHistory.roleCMSOperationId;
 		wc.getStore().getDetachedListenerList().add(new PDCMSHistoryListener(this, role2));
 
-	}	
+	}
+	
+	protected void updateDocument(){
+		textEditor.updateFromHistory(opHistory);
+	}
 
 	protected void refreshHistory() {
 		//System.out.println("HIST: "+opHistory.size());
@@ -699,7 +700,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 	/** Handle the key pressed event from the text field. */
 	public void keyPressed(KeyEvent e) {
-		htmlTextArea.render(textEditor.getText());
+		//htmlTextArea.render(textEditor.getText());
 	}
 
 	/** Handle the key released event from the text field. */

@@ -41,6 +41,8 @@ public class PDHistoryBrowser extends JTree {
 			return;
 		}
 		
+		//System.out.println("User: "+cms.user.getName()+" opHistory: "+opHistory.size());
+		
 		// Clean tree
 		DefaultTreeModel m_model = (DefaultTreeModel) this.getModel();
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) m_model.getRoot(); //searchNode("Root");
@@ -107,6 +109,7 @@ public class PDHistoryBrowser extends JTree {
 		return map;
 	}
 	
+	@Deprecated
 	public CMSOperationList copyOperationList(CMSOperationList list){
 		synchronized (list){
 			CMSOperationList copy = new CMSOperationList(PDCMSOperation.class, cms.history, PDHistory.roleCMSOperationId, PDCMSOperation.typeId, PDCMSOperation.roleNextOpId);

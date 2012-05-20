@@ -17,6 +17,7 @@ import pdstore.generic.PDChange;
 import pdstore.generic.PDCoreI;
 import pdstore.notify.PDListener;
 
+@Deprecated
 public class PDDocumentOperationListener implements PDListener<GUID, Object, GUID> {
 
 	private ContentManagementSystem cms;
@@ -41,7 +42,10 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 				//while(PDDocumentOperation.load(cms.wc, (GUID)change.getInstance1()) == null);
 				PDDocumentOperation op = PDDocumentOperation.load(cms.wc, (GUID)change.getInstance1());
 				if (op == null){
+					//System.err.println("User: "+cms.user.getName()+" OpListener: Op was null");
 					return;
+				} else {
+					//System.out.println("User: "+cms.user.getName()+" OpListener: Op was recieved");
 				}
 			
 				// Check if they are working on the same document
@@ -50,7 +54,10 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 				//while(otherUser == null);
 				
 				if (otherUser == null){
+					//System.err.println("User: "+cms.user.getName()+" OpListener: otherUser was null");
 					return;
+				} else {
+					//System.out.println("User: "+cms.user.getName()+" OpListener: otherUser was recieved");
 				}
 				
 				PDDocument otherDoc = otherUser.getCurrentDocument();
