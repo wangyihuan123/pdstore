@@ -15,7 +15,9 @@ import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.lobobrowser.html.gui.HtmlPanel;
 
+import cms.PDStoreTextPane.DocumentUpdateListener;
 import cms.dal.PDHistory;
 import cms.dal.PDUser;
 
@@ -33,29 +35,23 @@ public class PDStoreRTextPane extends RSyntaxTextArea {
 	private PDWorkingCopy wc;
 	private PDUser user;
 	private ArrayList<UserCaret> carets;
-	private JTextPane htmlEditor;
+	private PDHtmlPanel htmlEditor;
 	private ContentManagementSystem cms;
+	private AbstractDocument doc;
+	private PDHistory history;	
 
-	public PDStoreRTextPane(PDWorkingCopy wc, PDUser user, PDHistory history, JTextPane htmlEditor, ContentManagementSystem cms){
+	public PDStoreRTextPane(PDWorkingCopy wc, PDUser user, PDHistory history, PDHtmlPanel htmlTextArea, ContentManagementSystem cms){
 		super();
 		this.wc = wc;
 		this.user = user;
-		this.htmlEditor = htmlEditor;
+		this.htmlEditor = htmlTextArea;
 		this.cms = cms;
+		this.history = history;
 		
 		carets = new ArrayList<UserCaret>();
 		setUserCarets();
 		
-		AbstractDocument doc;
-        Document styledDoc = getDocument();
-        if (styledDoc instanceof AbstractDocument) {
-            doc = (AbstractDocument)styledDoc;
-            doc.setDocumentFilter(new PDStoreDocumentFilter(wc, user, history, cms));
-            doc.addDocumentListener(new DocumentUpdateListener());
-        } else {
-            System.err.println("Text pane's document isn't an AbstractDocument");
-            System.exit(126);
-        }
+		setupDoc();
         
         // Add listeners
         GUID role2 = PDUser.roleCaretPositionId;
@@ -64,6 +60,19 @@ public class PDStoreRTextPane extends RSyntaxTextArea {
 		wc.getStore().getDetachedListenerList().add(listener);
         
 	}
+	
+	protected void setupDoc(){
+		
+        Document styledDoc = getDocument();
+        if (styledDoc instanceof AbstractDocument) {
+        	doc = (AbstractDocument)styledDoc;    		
+            doc.setDocumentFilter(new PDStoreDocumentFilter(wc, user, history, cms));
+            doc.addDocumentListener(new DocumentUpdateListener());
+        } else {
+            System.err.println("Text pane's document isn't an AbstractDocument");
+            System.exit(126);
+        }	
+	}	
 	
 	private void setUserCarets(){
 		
@@ -118,6 +127,7 @@ public class PDStoreRTextPane extends RSyntaxTextArea {
 		
 		@Override
 		public void caretUpdate(CaretEvent event) {
+			//System.out.println("View: "+user.getName()+"User: "+user.getName()+" caret updated: "+event.getDot());
 			try {	
 				int dot = event.getDot();
 				carets.get(carets.size()-1).setPosition(dot);
@@ -146,6 +156,7 @@ public class PDStoreRTextPane extends RSyntaxTextArea {
 						int position = other.getCaretPosition().intValue();
 						UserCaret uc = getUserCaret(username);
 						if (uc != null){
+							//System.out.println("View: "+user.getName()+"User: "+other.getName()+" caret updated: "+position);
 							uc.setPosition(position);
 						}						
 					}
@@ -208,13 +219,15 @@ public class PDStoreRTextPane extends RSyntaxTextArea {
 		public void changedUpdate(DocumentEvent dev) {
 			if (htmlEditor != null){
 				Document d = dev.getDocument();
+				
 				try {
-					htmlEditor.setText(d.getText(0, d.getLength()));
+					htmlEditor.render(d.getText(0, d.getLength()));
 				} catch (BadLocationException e) {
 					// TODO Auto-generated catch block
 					//e.printStackTrace();
 					throw new NullPointerException();
 				}
+				
 			}
 			
 		}

@@ -38,17 +38,21 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 			//System.out.println("Change: " + change);
 			if (change.getRole2().equals(role2)){
 				//System.out.println("Found Operation");
+				//while(PDDocumentOperation.load(cms.wc, (GUID)change.getInstance1()) == null);
 				PDDocumentOperation op = PDDocumentOperation.load(cms.wc, (GUID)change.getInstance1());
 				if (op == null){
 					return;
 				}
+			
 				// Check if they are working on the same document
 				PDDocument userDoc = cms.user.getCurrentDocument();
 				PDUser otherUser = op.getOpUser();
+				//while(otherUser == null);
+				
 				if (otherUser == null){
 					return;
 				}
-
+				
 				PDDocument otherDoc = otherUser.getCurrentDocument();
 				if (otherDoc == null){
 					return;
@@ -60,8 +64,8 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 						performOperation(op);
 					} catch (BadLocationException e) {
 						// TODO Auto-generated catch block
-						//e.printStackTrace();
-						throw new NullPointerException();
+						e.printStackTrace();
+						//throw new NullPointerException();
 					}
 				}
 			}
@@ -72,11 +76,16 @@ public class PDDocumentOperationListener implements PDListener<GUID, Object, GUI
 
 		AbstractDocument doc = (AbstractDocument)cms.textEditor.getDocument();
 		PDStoreDocumentFilter filter = (PDStoreDocumentFilter) doc.getDocumentFilter();
+		if (doc == null || filter == null){
+			return;
+		}
 
 		//while (op.getOpType() == null); // seems the get method can return null at first
+		
 		if (op.getOpType() == null){
 			return;
 		}
+		
 		long type = op.getOpType();
 		long offset = op.getOpOffset();
 		long length = 0;

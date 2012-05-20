@@ -20,23 +20,42 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Scanner;
 import java.util.TimerTask;
 import java.util.Vector;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
+import javax.swing.text.DefaultEditorKit;
+import javax.swing.text.Document;
+import javax.swing.text.EditorKit;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
+import org.apache.commons.io.FileUtils;
+import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import org.lobobrowser.html.HtmlRendererContext;
+import org.lobobrowser.html.UserAgentContext;
+import org.lobobrowser.html.gui.HtmlPanel;
+import org.lobobrowser.html.test.SimpleHtmlRendererContext;
+import org.lobobrowser.html.test.SimpleUserAgentContext;
+import org.lobobrowser.html.*;
+import org.lobobrowser.html.gui.*;
+import org.lobobrowser.html.parser.*;
+import org.lobobrowser.html.test.*;
 
 import cms.dal.PDCMSOperation;
 import cms.dal.PDDocument;
@@ -61,8 +80,8 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	PDWorkingCopy wc;
 	PDHistory history;
 	PDUser user;
-	PDStoreTextPane textEditor;
-	//PDStoreRTextPane textEditor;
+	//PDStoreTextPane textEditor;
+	PDStoreRTextPane textEditor;
 	CMSOperationList opHistory;
 
 	// UI
@@ -72,14 +91,15 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	//public JList list;
 
 	private JLabel theLabel;
-	
+
 	JLabel saveStatus;
 	String editingFileName;
-	
+
 	//JScrollPane htmlScroll;
 	//JScrollPane editScroll;
-	
-	private JTextPane htmlTextArea;
+
+	//private JTextPane htmlTextArea;
+	private PDHtmlPanel htmlTextArea;
 	JTextPane editTextArea;
 
 	File dir = new File(System.getenv("HOME")+"/www");
@@ -116,8 +136,8 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 		// Create history based text editor	
 		initHTMLViewer();
-		initDefaultTextEditor();
-		//initRSyntaxTextEditor();
+		//initDefaultTextEditor();
+		initRSyntaxTextEditor();
 		initHistoryBrowser();
 
 		// set up and populate history pane
@@ -128,7 +148,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		//list.setSize(new Dimension(200,500));
 		//JScrollPane listScrollPane = new PDHistoryPane();
 
-		
+
 
 
 		//up button
@@ -177,10 +197,10 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 
 		buttonPane1.add(buttonPane);
-		JSplitPane historyPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,buttonPane,historyBrowser);
+		JSplitPane historyPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,buttonPane,new JScrollPane(historyBrowser));
 		historyPane.setOneTouchExpandable(true);
 		historyPane.setDividerSize(8);
-		historyPane.setMinimumSize(new Dimension(175, 450));
+		historyPane.setMinimumSize(new Dimension(250, 450));
 
 
 		//set up function button pane
@@ -214,7 +234,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				if(str != null){
 					//add new node into the file system
 					String filename = str;	
-					
+
 					File s = new File(node.toString()+ "/"+filename);
 					String pdfname = s.getAbsolutePath().replace(DOCUMENT_ROOT, "");
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
@@ -313,7 +333,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		functionalButtonPanel.add(moveTo,gbc);
 		functionalButtonPanel.add(copyFrom,gbc);
 		functionalButtonPanel.add(copyTo,gbc);
-	
+
 
 		initFileBrowser();
 
@@ -325,11 +345,11 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		JSplitPane historySplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,historyPane,functionalButtonPanel);
 		historySplitPane.setDividerSize(8);
 		historySplitPane.setContinuousLayout(true);
-		
-		
-		htmlTextArea.setMinimumSize(new Dimension(450,450));
-		JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,htmlTextArea,textEditor);
-		
+
+
+		htmlTextArea.setPreferredSize(new Dimension(450,450));
+		JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,htmlTextArea, new JScrollPane(textEditor));
+
 
 		//JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,jsp2,textEditor);
 
@@ -354,37 +374,37 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		//fileOrganiserSplitPane.repaint();
 
 		getContentPane().add(fileOrganiserSplitPane,BorderLayout.CENTER);
-		
-		
+
+
 		/**
 		new java.util.Timer().schedule( 
 		        new java.util.TimerTask() {
 		            @Override
 		            public void run() {
-		                
+
 		            	//save all the content to the file
 		            	if (editingFileName != null){
-		            		
+
 		            		saveFile(editTextArea.getText(),node.getParent().toString()+"/"+node.toString());
 		            	}
-		            	
-		            	
-		            	
+
+
+
 		            }
 		        }, 
 		        5000 
 		);
-		
-		*/
+
+		 */
 
 	}
 
 	private void initPDObjects(GUID userID, GUID historyID){
 		user = PDUser.load(wc, userID);
 		history = PDHistory.load(wc, historyID);
-				
+
 	}
-	
+
 
 	private void initFileBrowser(){
 		DefaultMutableTreeNode defaultTreeNode = initDocumentTree(null, new File(DOCUMENT_ROOT));
@@ -413,23 +433,66 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				if (ext.contains(".html") || ext.contains(".css") || ext.contains(".js")){
 					filepath = node.getParent().toString()+"/"+node.toString();
 					// if history is empty for this doc	
-					if (noDocHistory(pdfname)) {
-						textEditor.setText(readFiles(new File(filepath)));
-					} else {
-						// load string from history
+					//if (noDocHistory(pdfname)) {
+					synchronized (opHistory) {
+						//textEditor.setText(readFiles(new File(filepath)));
+						//htmlTextArea.setText("");
+						htmlTextArea.render("");
+						RSyntaxDocument doc = new RSyntaxDocument( getStyle(ext) );
+
+						textEditor.setDocument(doc);
+						textEditor.setupDoc();		
+
+						PDStoreDocumentFilter filter = (PDStoreDocumentFilter) doc.getDocumentFilter();		
+						filter.setFilter(false);
+						textEditor.setText(readFromFile(filepath));
+						//textEditor.setText("<html><body>Hello</body></html>");
+
+						filter.setFilter(true);
+
+
+
 					}
-					
+					//} else {
+					// load string from history
+					//textEditor.replayHistory(pdfname);
+					//}
+
 				}
 				// if node is a file, set current user document in pdstore
 				if (new File(filepath).isFile()) {
 					setCurrentDocument(pdfname);
-					tree.alertPDFileOperation(PDFileBrowser.SELECT, pdfname, null);	
+					//tree.alertPDFileOperation(PDFileBrowser.SELECT, pdfname, null);	
 				}
 			}
 		});
 
 	}
-	
+
+	private String readFromFile(String filepath){
+		File f = new File(filepath);
+		String s = "";
+		try {
+			s = FileUtils.readFileToString(f);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return s;
+	}
+
+	private String getStyle(String ext){
+		if (ext.toLowerCase().contains("html")) {
+			return RSyntaxTextArea.SYNTAX_STYLE_HTML;
+		} else if (ext.toLowerCase().contains("css")) {
+			return RSyntaxTextArea.SYNTAX_STYLE_CSS;
+		} else if (ext.toLowerCase().contains("js")) {
+			return RSyntaxTextArea.SYNTAX_STYLE_JAVASCRIPT;
+		} else {
+			return RSyntaxTextArea.SYNTAX_STYLE_NONE;
+		}
+	}
+
 	protected boolean noDocHistory(String fname){
 		DefaultMutableTreeNode node = historyBrowser.searchNode(fname);
 		if (node == null || node.getChildCount() == 0){
@@ -454,15 +517,18 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	}
 
 	private void initHTMLViewer(){
-		htmlTextArea = new JTextPane();
+		//htmlTextArea = new JTextPane();
+		htmlTextArea = new PDHtmlPanel();
+
 		//htmlScroll = new JScrollPane();
 		//htmlScroll.add(htmlTextArea);
-		
-		htmlTextArea.setContentType("text/html");
+
+		//htmlTextArea.setContentType("text/html");
 	}
-	
+
 	private void initDefaultTextEditor(){
 
+		/*
 		// Setup editor
 		textEditor = new PDStoreTextPane(wc, user, history, htmlTextArea, this);
 		DefaultCaret c = (DefaultCaret) textEditor.getCaret();
@@ -482,11 +548,12 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 		// Set key listener to notify html view
 		textEditor.addKeyListener(this);
+		 */
 
 	}	
 
 	private void initRSyntaxTextEditor(){
-		/*
+
 		// Setup editor
 		textEditor = new PDStoreRTextPane(wc, user, history, htmlTextArea, this);
 
@@ -514,7 +581,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 		// Set key listener to notify html view
 		textEditor.addKeyListener(this);
-	*/
+
 	}
 
 	private void checkDocumentRoot(){
@@ -527,24 +594,24 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 			}
 		}
 	}
-	
+
 	private void initHistoryListener(){
 		opHistory = new CMSOperationList(PDCMSOperation.class, history, PDHistory.roleCMSOperationId, PDCMSOperation.typeId, PDCMSOperation.roleNextOpId);	
-		
+
 		// Setup PDDocumentOperation listener
 		GUID role2 = PDHistory.roleCMSOperationId;
 		wc.getStore().getDetachedListenerList().add(new PDCMSHistoryListener(this, role2));
-		
+
 	}	
-	
+
 	protected void refreshHistory() {
 		//System.out.println("HIST: "+opHistory.size());
 		historyBrowser.refreshTree(opHistory);
 	}
-	
+
 	protected void initHistoryBrowser(){
 		initHistoryListener();
-		
+
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Document History");
 		TreeModel historyTreeModel = new DefaultTreeModel(root);
 		DefaultMutableTreeNode child;
@@ -552,11 +619,12 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 			child = new DefaultMutableTreeNode("Child");
 			root.add(child);
 		}
-		
-		historyBrowser = new PDHistoryBrowser(root, wc);
+
+		historyBrowser = new PDHistoryBrowser(root, wc, this);
 		historyBrowser.setEditable(true);
+		historyBrowser.setScrollsOnExpand(true);
 		refreshHistory();
-		
+
 	}
 
 	/** Add nodes from under "dir" into curTop. Highly recursive. */
@@ -631,7 +699,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 	/** Handle the key pressed event from the text field. */
 	public void keyPressed(KeyEvent e) {
-		htmlTextArea.setText(textEditor.getText());
+		htmlTextArea.render(textEditor.getText());
 	}
 
 	/** Handle the key released event from the text field. */
@@ -709,30 +777,30 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		return fileData.toString();
 
 	}
-	
+
 	/**
 	 *  Save the file every 5 seconds
 	 */
-	
+
 	private static void saveEditingFile(String content,	File file){
-		
-		
-		
-		
+
+
+
+
 	}
-	
-	
+
+
 	public void saveFile(String content,String filename){
-		
-		 try{
-		  FileWriter fstream = new FileWriter(filename,true);
-		  BufferedWriter out = new BufferedWriter(fstream);
-		  out.write(content);
-		  //Close the output stream
-		  out.close();
-		  }catch (Exception e){//Catch exception if any
-		 
-		  }
+
+		try{
+			FileWriter fstream = new FileWriter(filename,true);
+			BufferedWriter out = new BufferedWriter(fstream);
+			out.write(content);
+			//Close the output stream
+			out.close();
+		}catch (Exception e){//Catch exception if any
+
+		}
 	}
 
 

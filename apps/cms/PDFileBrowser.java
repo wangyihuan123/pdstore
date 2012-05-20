@@ -170,6 +170,12 @@ public class PDFileBrowser extends JTree {
     	final PDCMSOperation cmso = PDCMSOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
     	cmso.setFileOp(op);
     	cmso.setOpType(op.getTypeId());
+    	if (cms.opHistory != null){
+	    	synchronized (cms.opHistory){
+	    		cms.opHistory.add(cmso);
+	    	}
+    	}
+    	/*
     	SwingUtilities.invokeLater(new Runnable (){
 
 			@Override
@@ -179,7 +185,7 @@ public class PDFileBrowser extends JTree {
 			}
     		
     	});
-    	
+    	*/
     	//history.addCMSOperation(cmso);  
 		//history.addFileOperation(op); // needs to be some kind of linked list
 		// Commit

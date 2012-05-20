@@ -67,16 +67,16 @@ public class CMSRSyntaxCaret extends ConfigurableCaret {
 	@Override
 	public void paint(Graphics g) {
 
-		PDStoreTextPane component = (PDStoreTextPane) getComponent();
+		PDStoreRTextPane component = (PDStoreRTextPane) getComponent();
 		TextUI mapper = component.getUI();
 
-		ArrayList<UserCaret> carets = component.getUserCarets();
+		ArrayList<cms.PDStoreRTextPane.UserCaret> carets = component.getUserCarets();
 		Rectangle clip = g.getClipBounds();
 		Rectangle r = null;
 
 		// Iterate over user carets
 		// TODO: Check for current document
-		for (UserCaret uc: carets) {
+		for (cms.PDStoreRTextPane.UserCaret uc: carets) {
 
 			try {
 				r = mapper.modelToView(component, uc.getPosition(), Position.Bias.Forward);
@@ -97,7 +97,7 @@ public class CMSRSyntaxCaret extends ConfigurableCaret {
 			}										
 		}
 		// Draw successful carets
-		for (UserCaret uc : carets){
+		for (cms.PDStoreRTextPane.UserCaret uc : carets){
 
 			// if user caret
 			if (uc.getName().equals(user.getName())){
@@ -112,10 +112,12 @@ public class CMSRSyntaxCaret extends ConfigurableCaret {
 
 	}
 
-	private void paintUserCaret(Graphics g, UserCaret uc){
+	private void paintUserCaret(Graphics g, cms.PDStoreRTextPane.UserCaret uc) {
 		Rectangle rect = uc.getRect();
 		g.setColor(uc.getColor());
 		int paintWidth = getCaretWidth(rect.height);
-		g.fillRect(rect.x, rect.y, paintWidth, rect.height);		
+		g.fillRect(rect.x, rect.y, paintWidth, rect.height);
+		
 	}
+
 }

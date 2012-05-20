@@ -16,6 +16,7 @@ import pdstore.dal.PDWorkingCopy;
 import cms.dal.PDCMSOperation;
 import cms.dal.PDDocument;
 import cms.dal.PDDocumentOperation;
+import cms.dal.PDHistory;
 
 public class PDHistoryBrowser extends JTree {
 
@@ -24,15 +25,22 @@ public class PDHistoryBrowser extends JTree {
 	 */
 	private static final long serialVersionUID = 1L;
 	private PDWorkingCopy wc;
+	private ContentManagementSystem cms;
 
 	
-	public PDHistoryBrowser(DefaultMutableTreeNode root, PDWorkingCopy wc){
+	public PDHistoryBrowser(DefaultMutableTreeNode root, PDWorkingCopy wc, ContentManagementSystem cms){
 		super(root);
 		this.wc = wc;
+		this.cms = cms;
+		
 	}
 	
 	public void refreshTree(CMSOperationList opHistory){
 
+		if (opHistory == null){
+			return;
+		}
+		
 		// Clean tree
 		DefaultTreeModel m_model = (DefaultTreeModel) this.getModel();
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) m_model.getRoot(); //searchNode("Root");
@@ -42,6 +50,9 @@ public class PDHistoryBrowser extends JTree {
 
 		// Default Filter: Document - Sorted  by Time
 		HashMap<String, ArrayList<PDCMSOperation>> docs = mapDocumentOpertions(opHistory);
+		if (docs == null){
+			return;
+		}
 		DefaultMutableTreeNode parent, child;
 		for (String s : docs.keySet()){
 			parent = new DefaultMutableTreeNode(s);
@@ -72,13 +83,21 @@ public class PDHistoryBrowser extends JTree {
 			ops = new ArrayList<PDCMSOperation>();
 			
 			// Enter key values
-			
-			for (int j = 0; j < opHistory.size(); j++){
-				PDCMSOperation op = opHistory.get(j);
-				if (op.getOpType().getId().equals(PDDocumentOperation.typeId)){
-					PDDocumentOperation dop = op.getDocumentOp();
-					if (dop.getOpDocument().getDocumentFileName().equals(s)){
-						ops.add(op);
+			//CMSOperationList opcopy = copyOperationList(opHistory);		
+			synchronized (opHistory){
+				for (int j = 0; j < opHistory.size(); j++){
+					PDCMSOperation op = opHistory.get(j);
+					if (op == null){
+						return null;
+					}
+					if (op.getOpType().getId().equals(PDDocumentOperation.typeId)){
+						PDDocumentOperation dop = op.getDocumentOp();
+						if (dop == null){
+							return null;
+						}
+						if (dop.getOpDocument().getDocumentFileName().equals(s)){
+							ops.add(op);
+						}
 					}
 				}
 			}
@@ -86,6 +105,16 @@ public class PDHistoryBrowser extends JTree {
 		}
 
 		return map;
+	}
+	
+	public CMSOperationList copyOperationList(CMSOperationList list){
+		synchronized (list){
+			CMSOperationList copy = new CMSOperationList(PDCMSOperation.class, cms.history, PDHistory.roleCMSOperationId, PDCMSOperation.typeId, PDCMSOperation.roleNextOpId);
+			for (PDCMSOperation op : list){
+				copy.add(op);
+			}
+			return copy;
+		}
 	}
 
 /** 

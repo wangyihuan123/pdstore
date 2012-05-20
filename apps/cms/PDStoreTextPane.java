@@ -16,6 +16,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
+import cms.dal.PDCMSOperation;
+import cms.dal.PDDocumentOperation;
 import cms.dal.PDHistory;
 import cms.dal.PDUser;
 
@@ -35,6 +37,8 @@ public class PDStoreTextPane extends JTextPane {
 	private ArrayList<UserCaret> carets;
 	private JTextPane htmlEditor;
 	private ContentManagementSystem cms;
+	private AbstractDocument doc;
+	private PDHistory history;
 
 	public PDStoreTextPane(PDWorkingCopy wc, PDUser user, PDHistory history, JTextPane htmlEditor, ContentManagementSystem cms){
 		super();
@@ -42,20 +46,12 @@ public class PDStoreTextPane extends JTextPane {
 		this.user = user;
 		this.htmlEditor = htmlEditor;
 		this.cms = cms;
+		this.history = history;
 		
 		carets = new ArrayList<UserCaret>();
 		setUserCarets();
 		
-		AbstractDocument doc;
-        Document styledDoc = getDocument();
-        if (styledDoc instanceof AbstractDocument) {
-            doc = (AbstractDocument)styledDoc;
-            doc.setDocumentFilter(new PDStoreDocumentFilter(wc, user, history, cms));
-            doc.addDocumentListener(new DocumentUpdateListener());
-        } else {
-            System.err.println("Text pane's document isn't an AbstractDocument");
-            System.exit(126);
-        }
+		setupDoc();
         
         // Add listeners
         GUID role2 = PDUser.roleCaretPositionId;
@@ -63,6 +59,19 @@ public class PDStoreTextPane extends JTextPane {
         this.addCaretListener(listener);
 		wc.getStore().getDetachedListenerList().add(listener);
         
+	}
+	
+	protected void setupDoc(){
+	
+        Document styledDoc = getDocument();
+        if (styledDoc instanceof AbstractDocument) {
+        	doc = (AbstractDocument)styledDoc;    		
+            doc.setDocumentFilter(new PDStoreDocumentFilter(wc, user, history, cms));
+            doc.addDocumentListener(new DocumentUpdateListener());
+        } else {
+            System.err.println("Text pane's document isn't an AbstractDocument");
+            System.exit(126);
+        }	
 	}
 	
 	private void setUserCarets(){
@@ -106,6 +115,21 @@ public class PDStoreTextPane extends JTextPane {
 			}
 		}
 		return null;
+	}
+	
+	public synchronized void replayHistory(String fname){
+		//CMSOperationList ops = cms.historyBrowser.copyOperationList(cms.opHistory);
+		synchronized (cms.opHistory){
+			for (int j = 0; j < cms.opHistory.size(); j++){
+				PDCMSOperation op = cms.opHistory.get(j);
+				if (op.getOpType().getId().equals(PDDocumentOperation.typeId)){
+					PDDocumentOperation dop = op.getDocumentOp();
+					if (dop.getOpDocument().getDocumentFileName().equals(fname)){
+						
+					}
+				}
+			}	
+		}
 	}
 	
 	class PDCaretListener implements CaretListener, PDListener<GUID, Object, GUID> {

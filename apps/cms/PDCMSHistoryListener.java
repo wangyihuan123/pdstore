@@ -51,7 +51,10 @@ public class PDCMSHistoryListener implements PDListener<GUID, Object, GUID> {
 				if (op == null){
 					return;
 				}
-				
+		    	synchronized (cms.opHistory) {
+		    		//cms.refreshHistory();
+		    	}
+				/*
 		    	SwingUtilities.invokeLater(new Runnable (){
 
 					@Override
@@ -59,7 +62,8 @@ public class PDCMSHistoryListener implements PDListener<GUID, Object, GUID> {
 						cms.refreshHistory();
 					}
 		    		
-		    	});				
+		    	});	
+		    	*/			
 				
 				// This is used for future user filtering / highlighting of other users operations
 				GUID typeID = op.getOpType().getId();

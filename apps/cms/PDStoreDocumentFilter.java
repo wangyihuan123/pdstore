@@ -21,6 +21,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
 		REPLACE = 2;	
 	
 	private boolean filter = true;
+	private boolean replay = false;
 	
 	PDUser user;
 	PDHistory history;
@@ -38,11 +39,11 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     @Override
     public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
     	if (filter){
-	    	try{	
+	    	//try{	
 	    		PDRemove(fb, offset, length);
-			} catch (Exception e){
-				e.printStackTrace();
-			}    		
+			//} catch (Exception e){
+			//	e.printStackTrace();
+			//}    		
     	} else {
     		//try {
     			super.remove(fb, offset, length);
@@ -107,6 +108,10 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	final PDCMSOperation cmso = PDCMSOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
     	cmso.setDocumentOp(op);
     	cmso.setOpType(op.getTypeId());
+    	synchronized (cms.opHistory) {
+    		cms.opHistory.add(cmso);
+    	}
+    	/*
     	SwingUtilities.invokeLater(new Runnable (){
 
 			@Override
@@ -116,6 +121,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
 			}
     		
     	});
+    	*/
     	//history.addCMSOperation(cmso);    	
 		//history.addDocumentOperation(op); // needs to be some kind of linked list
 		// Commit
@@ -141,6 +147,10 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	final PDCMSOperation cmso = PDCMSOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
     	cmso.setDocumentOp(op);
     	cmso.setOpType(op.getTypeId());
+    	synchronized (cms.opHistory) {
+    		cms.opHistory.add(cmso);
+    	}
+    	/*
     	SwingUtilities.invokeLater(new Runnable (){
 
 			@Override
@@ -150,6 +160,7 @@ public class PDStoreDocumentFilter extends DocumentFilter {
 			}
     		
     	});
+    	*/
     	
     	//history.addCMSOperation(cmso);    	
 		//history.addDocumentOperation(op); // needs to be some kind of linked list
@@ -174,18 +185,27 @@ public class PDStoreDocumentFilter extends DocumentFilter {
     	op.setOpLength((long)length);
     	op.setOpString(str);
     	// Attach to history
-    	final PDCMSOperation cmso = PDCMSOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
+    	PDCMSOperation cmso = PDCMSOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
     	cmso.setDocumentOp(op);
     	cmso.setOpType(op.getTypeId());
+    	
+    	
+    	synchronized (cms.opHistory) {
+    		cms.opHistory.add(cmso);
+    	}
+    	
+    
+    	/*
     	SwingUtilities.invokeLater(new Runnable (){
 
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				cms.opHistory.add(cmso);
+				
 			}
     		
     	});
+    	*/
     	//history.addCMSOperation(cmso);
 		//history.addDocumentOperation(op); // needs to be some kind of linked list
 		// Commit
@@ -193,9 +213,13 @@ public class PDStoreDocumentFilter extends DocumentFilter {
 		//System.out.println("THREAD: "+Thread.currentThread().getId()+" OP TYPE: "+op.getOpType());
     }
     
-    public void setFilter(boolean on) {
-    	filter = on;
+    public synchronized void setFilter(boolean b) {
+    	filter = b;
     }
+   
+    public synchronized void setReplay(boolean b) {
+    	replay = b;
+    }    
     
     protected PDDocument getCurrentDocument(){
     	
