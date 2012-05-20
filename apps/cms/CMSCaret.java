@@ -16,6 +16,13 @@ import pdstore.dal.PDWorkingCopy;
 import cms.PDStoreTextPane.UserCaret;
 import cms.dal.PDUser;
 
+/**
+ * An extension of the DefaultCaret to display multiple carets with information from PDStore.
+ * May be useful in checking any performance issues with CMSRSyntaxCaret.
+ * 
+ * @author Sina Masoud-Ansari (s.ansari@auckland.ac.nz)
+ *
+ */
 public class CMSCaret extends DefaultCaret {
 
 
@@ -28,7 +35,11 @@ public class CMSCaret extends DefaultCaret {
 	PDWorkingCopy wc;
 	PDUser user;
 
-
+	/**
+	 * 
+	 * @param wc the shared working copy.
+	 * @param user the local user.
+	 */
 	public CMSCaret(PDWorkingCopy wc, PDUser user)
 	{
 		super();
@@ -37,6 +48,11 @@ public class CMSCaret extends DefaultCaret {
 		this.user = user;
 	}
 
+	/**
+	 * 
+	 * @param height the caret height
+	 * @return the width given the height
+	 */
 	int getCaretWidth(int height) {
 		if (aspectRatio > -1) {
 			return (int) (aspectRatio * height) + 1;
@@ -49,6 +65,11 @@ public class CMSCaret extends DefaultCaret {
 		return 1;
 	}	
 
+	/**
+	 * Used to repaint when carets don't fit.
+	 * 
+	 * @param list the list of caret rectangles
+	 */
 	protected synchronized void damage(ArrayList<Rectangle> list) {
 		for (Rectangle r : list){
 			if (r != null) {
@@ -112,6 +133,12 @@ public class CMSCaret extends DefaultCaret {
 
 	}
 
+	/**
+	 * Draws a given users caret.
+	 * 
+	 * @param g the Graphics object for the text area
+	 * @param uc the user caret information
+	 */
 	private void paintUserCaret(Graphics g, UserCaret uc){
 		Rectangle rect = uc.getRect();
 		g.setColor(uc.getColor());

@@ -71,6 +71,20 @@ import diagrameditor.HistoryPanel;
 import diagrameditor.OperationList;
 import diagrameditor.dal.PDOperation;
 
+/**
+ * 
+ * A prototype collaborative Content Mananagent System using PDStore.
+ * 
+ * Basic system architecture: 
+ * 
+ * Edits are made to document by multiple authors on multiple 
+ * Content Management System instances. These edits are recorded in a shared history and then 
+ * replayed on each instance to create a shared view of a document.
+ * 
+ * @author Sina Masoud-Ansari (s.ansari@auckland.ac.nz)
+ * @author David Chen
+ *
+ */
 public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 	private static final long serialVersionUID = 1L;
@@ -80,7 +94,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	PDWorkingCopy wc;
 	PDHistory history;
 	PDUser user;
-	//PDStoreTextPane textEditor;
+	//PDStoreTextPane textEditor; // Useful for debugging RSyntaxArea problems
 	PDStoreRTextPane textEditor;
 	CMSOperationList opHistory;
 
@@ -88,28 +102,17 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	private JButton upButton;
 	private JButton downButton;
 	private JButton deleteButton;
-	//public JList list;
-
 	private JLabel theLabel;
-
 	JLabel saveStatus;
 	String editingFileName;
-
-	//JScrollPane htmlScroll;
-	//JScrollPane editScroll;
-
-	//private JTextPane htmlTextArea;
 	private PDHtmlPanel htmlTextArea;
 	JTextPane editTextArea;
-
-	File dir = new File(System.getenv("HOME")+"/www");
-
+	// TODO: make the file view use DOCUMENT_ROOT
+	File dir = new File(System.getenv("HOME")+"/www"); // used by the file view 
 	DefaultMutableTreeNode node;
 	protected PDFileBrowser tree;
-
 	PDHistoryBrowser historyBrowser;
 	JSplitPane fileOrganiserSplitPane;
-	// JSplitPane splitPane;
 	JPanel fileOrganiserPane;
 	DefaultMutableTreeNode moveOrgNode;
 	DefaultMutableTreeNode moveDestNode;
@@ -118,11 +121,13 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 	static JTextField folderName;
 
-
-
+	/**
+	 * 
+	 * @param userID the user of this CMS
+	 * @param historyID the shared history
+	 * @param wc the shared working copy
+	 */
 	public ContentManagementSystem(GUID userID, GUID historyID, final PDWorkingCopy wc){
-
-
 
 		// Setup PDStore Objects
 		this.wc = wc;
@@ -141,16 +146,10 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		initHistoryBrowser();
 
 		// set up and populate history pane
-		//JPanel historyPane = new JPanel();
 		JPanel buttonPane = new JPanel(new GridLayout(1, 3));		
 		JPanel buttonPane1 = new JPanel();
 
-		//list.setSize(new Dimension(200,500));
-		//JScrollPane listScrollPane = new PDHistoryPane();
-
-
-
-
+		// TODO: move this code out of the constructor.
 		//up button
 		ImageIcon icon = createImageIcon("up");
 
@@ -195,16 +194,13 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		//this.deleteButton.setActionCommand("Delete");
 		buttonPane.add(this.deleteButton);
 
-
 		buttonPane1.add(buttonPane);
 		JSplitPane historyPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,buttonPane,new JScrollPane(historyBrowser));
 		historyPane.setOneTouchExpandable(true);
 		historyPane.setDividerSize(8);
 		historyPane.setMinimumSize(new Dimension(250, 450));
 
-
 		//set up function button pane
-
 		JPanel functionalButtonPanel = new JPanel();
 		functionalButtonPanel.setLayout( new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints ();
@@ -220,6 +216,10 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		// folderName.enableInputMethods(true);
 		folderName.setEditable(true);
 		//folderName.setSize(1000, 1000);
+
+		/**
+		 * Responds to a user adding a file.
+		 */
 		add.addActionListener(new ActionListener()  
 		{  
 			public void actionPerformed(ActionEvent e)  
@@ -247,6 +247,9 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		});
 
 		JButton delete = new JButton("DELETE");
+		/**
+		 * Responds to a user deleting a file
+		 */
 		delete.addActionListener(new ActionListener()  
 		{  
 			public void actionPerformed(ActionEvent e)  
@@ -266,6 +269,11 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 		//add move from button
 		JButton moveFrom = new JButton("MOVE FROM");
+
+		/**
+		 * Responds to a user moving a file.
+		 */
+		// TODO: rethink how this should be done i.e via menus
 		moveFrom.addActionListener(new ActionListener(){
 			public void actionPerformed (ActionEvent e)
 			{
@@ -276,6 +284,11 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 		//add move to button
 		JButton moveTo = new JButton("MOVE TO");
+
+		/**
+		 * Responds to a user moving a file
+		 */
+		// TODO: rethink how this should be done i.e via menus
 		moveTo.addActionListener(new ActionListener(){
 			public void actionPerformed (ActionEvent e)
 			{
@@ -294,6 +307,10 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		//add copyFrom button
 		JButton copyFrom = new JButton("COPY FROM");
 
+		/**
+		 * Responds to a user copying a file
+		 */
+		// TODO: rethink how this should be done i.e via menus				
 		copyFrom.addActionListener(new ActionListener(){
 			public void actionPerformed (ActionEvent e)
 			{
@@ -305,6 +322,10 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		//add copyTo button
 		JButton copyTo = new JButton("COPY TO");
 
+		/**
+		 * Responds to a user copying a file
+		 */
+		// TODO: rethink how this should be done i.e via menus		
 		copyTo.addActionListener(new ActionListener(){
 			public void actionPerformed (ActionEvent e)
 			{
@@ -323,9 +344,6 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 
 		//		JButton load = new JButton("LOAD");
-
-
-
 		functionalButtonPanel.add(add,gbc);
 		//functionalButtonPanel.add(folderName,gbc);
 		functionalButtonPanel.add(delete,gbc);
@@ -334,31 +352,23 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		functionalButtonPanel.add(copyFrom,gbc);
 		functionalButtonPanel.add(copyTo,gbc);
 
-
 		initFileBrowser();
 
 		// fileOrganiserPane.add(tree);
-
-
 		//create split panes
 
 		JSplitPane historySplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,historyPane,functionalButtonPanel);
 		historySplitPane.setDividerSize(8);
 		historySplitPane.setContinuousLayout(true);
 
-
 		htmlTextArea.setPreferredSize(new Dimension(450,450));
 		JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,htmlTextArea, new JScrollPane(textEditor));
 
-
 		//JSplitPane editTextSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,jsp2,textEditor);
-
-
 		editTextSplitPane.setDividerSize(8);
 		editTextSplitPane.setContinuousLayout(true);
 
 		JSplitPane	splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,historySplitPane,editTextSplitPane);
-
 
 		splitPane.setContinuousLayout(false);
 		splitPane.setOneTouchExpandable(true);
@@ -367,16 +377,14 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		editTextSplitPane.setOneTouchExpandable(true);
 
 		fileOrganiserSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true,splitPane,tree);
-
 		fileOrganiserSplitPane.setContinuousLayout(false);
 		fileOrganiserSplitPane.setOneTouchExpandable(true);
-
 		//fileOrganiserSplitPane.repaint();
 
 		getContentPane().add(fileOrganiserSplitPane,BorderLayout.CENTER);
 
 
-		/**
+		/*
 		new java.util.Timer().schedule( 
 		        new java.util.TimerTask() {
 		            @Override
@@ -399,6 +407,12 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 	}
 
+	/**
+	 * Load the PDStore instances by the CMS
+	 * 
+	 * @param userID the local user
+	 * @param historyID the shared history
+	 */
 	private void initPDObjects(GUID userID, GUID historyID){
 		user = PDUser.load(wc, userID);
 		history = PDHistory.load(wc, historyID);
@@ -406,24 +420,27 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	}
 
 
+	/**
+	 * Show the files in the DOCUMENT_ROOT
+	 */
 	private void initFileBrowser(){
 		DefaultMutableTreeNode defaultTreeNode = initDocumentTree(null, new File(DOCUMENT_ROOT));
 		tree = new PDFileBrowser(defaultTreeNode, DOCUMENT_ROOT, user, history, wc, this);
 
-		//david new added 9/5/2012
 		DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
 		renderer.setTextSelectionColor(Color.white);
 		renderer.setBackgroundSelectionColor(Color.blue);
 		renderer.setBorderSelectionColor(Color.black);
-
-
 
 		// Setup PDFileOperation listener
 		GUID role2 = PDFileOperation.roleOpTypeId;
 		wc.getStore().getDetachedListenerList().add(new PDFileBrowserListener(this, role2));
 		tree.setEditable(true);
 
-		// Add selection listener
+		/**
+		 * Setup the behavior of file selections. Currently they load in the text view and are rendered in the 
+		 * HTML view.
+		 */
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent e) {
 				node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
@@ -431,41 +448,32 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 				String ext = node.toString().substring(node.toString().lastIndexOf('.'));
 				String pdfname = node.toString().replace(DOCUMENT_ROOT, "");
 				if (ext.contains(".html") || ext.contains(".css") || ext.contains(".js")){
+					setCurrentDocument(pdfname);	
 					filepath = node.getParent().toString()+"/"+node.toString();
-					// if history is empty for this doc	
-					//if (noDocHistory(pdfname)) {
 					synchronized (opHistory) {
-						//textEditor.setText(readFiles(new File(filepath)));
-						//htmlTextArea.setText("");
 						htmlTextArea.render("");
 						RSyntaxDocument doc = new RSyntaxDocument( getStyle(ext) );
-
 						textEditor.setDocument(doc);
 						textEditor.setupDoc();		
 
 						PDStoreDocumentFilter filter = (PDStoreDocumentFilter) doc.getDocumentFilter();		
 						filter.setFilter(false);
 						textEditor.setText(readFromFile(filepath));
-						//textEditor.setText("<html><body>Hello</body></html>");
-
 						filter.setFilter(true);
+						textEditor.updateFromHistory(opHistory);
 					}
-					//} else {
-					// load string from history
-					//textEditor.replayHistory(pdfname);
-					//}
-
-				}
-				// if node is a file, set current user document in pdstore
-				if (new File(filepath).isFile()) {
-					setCurrentDocument(pdfname);
-					//tree.alertPDFileOperation(PDFileBrowser.SELECT, pdfname, null);	
 				}
 			}
 		});
 
 	}
 
+	/**
+	 * Basic file content reading using FileUtils
+	 * 
+	 * @param filepath the file path string
+	 * @return the String contents of the file
+	 */
 	private String readFromFile(String filepath){
 		File f = new File(filepath);
 		String s = "";
@@ -478,6 +486,11 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		return s;
 	}
 
+	/**
+	 * Determine the content type for use with syntax highlighting
+	 * @param ext the filename extention
+	 * @return the RSyntaxTextArea style
+	 */
 	private String getStyle(String ext){
 		if (ext.toLowerCase().contains("html")) {
 			return RSyntaxTextArea.SYNTAX_STYLE_HTML;
@@ -490,6 +503,7 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		}
 	}
 
+	@Deprecated
 	protected boolean noDocHistory(String fname){
 		DefaultMutableTreeNode node = historyBrowser.searchNode(fname);
 		if (node == null || node.getChildCount() == 0){
@@ -499,6 +513,12 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		}
 	}
 
+	/**
+	 * Sets the current document for the local user.
+	 * Used to determine which document operations should be applied to the current view.
+	 * 
+	 * @param fname the filename
+	 */
 	protected void setCurrentDocument(String fname){
 		Collection<PDInstance> docs = wc.getAllInstancesOfType(PDDocument.typeId);
 		for (PDInstance i : docs){
@@ -513,16 +533,17 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 	}
 
+	/**
+	 * Sets up the html view
+	 */
+	// TODO: refactor, this is no longer a textArea
 	private void initHTMLViewer(){
-		//htmlTextArea = new JTextPane();
 		htmlTextArea = new PDHtmlPanel();
-
-		//htmlScroll = new JScrollPane();
-		//htmlScroll.add(htmlTextArea);
-
-		//htmlTextArea.setContentType("text/html");
 	}
 
+	/**
+	 * Used for debugging the RSyntax editor
+	 */
 	private void initDefaultTextEditor(){
 
 		/*
@@ -549,6 +570,9 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 	}	
 
+	/**
+	 * Init the syntax highlighting document editor
+	 */
 	private void initRSyntaxTextEditor(){
 
 		// Setup editor
@@ -572,15 +596,14 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		JLabel text = new JLabel("Text Editor");
 		textEditor.add(text);
 
-		// Setup PDDocumentOperation listener
-		//GUID role2 = PDDocumentOperation.roleOpTypeId;
-		//wc.getStore().getDetachedListenerList().add(new PDDocumentOperationListener(this, role2));
-
 		// Set key listener to notify html view
 		textEditor.addKeyListener(this);
 
 	}
 
+	/**
+	 * Create the document root if it doesn't exist.
+	 */
 	private void checkDocumentRoot(){
 		File root = new File(DOCUMENT_ROOT);
 		if (!root.isDirectory()){
@@ -592,6 +615,9 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		}
 	}
 
+	/**
+	 * Setup the listener for history events
+	 */
 	private void initHistoryListener(){
 		opHistory = new CMSOperationList(PDCMSOperation.class, history, PDHistory.roleCMSOperationId, PDCMSOperation.typeId, PDCMSOperation.roleNextOpId);	
 
@@ -600,16 +626,25 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		wc.getStore().getDetachedListenerList().add(new PDCMSHistoryListener(this, role2));
 
 	}
-	
+
+	/**
+	 * Called by other classes to update the text of the textEditor
+	 */
 	protected void updateDocument(){
 		textEditor.updateFromHistory(opHistory);
 	}
 
+	/**
+	 * Called by other classes to refresh the view of the history browser
+	 */
 	protected void refreshHistory() {
 		//System.out.println("HIST: "+opHistory.size());
 		historyBrowser.refreshTree(opHistory);
 	}
 
+	/**
+	 * Initialise the history browser using a tree view
+	 */
 	protected void initHistoryBrowser(){
 		initHistoryListener();
 
@@ -662,18 +697,6 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 		return curDir;
 	}	
 
-	/**
-	 * node refresh method
-	 */
-
-
-
-	private static void refreshTree(DefaultMutableTreeNode curTop, File dir){
-
-	}
-
-
-
 
 	/**
 	 * Method to create an image
@@ -692,7 +715,6 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	}
 
 
-
 	/** Handle the key typed event from the text field. */
 	public void keyTyped(KeyEvent e) {
 
@@ -705,10 +727,6 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 
 	/** Handle the key released event from the text field. */
 	public void keyReleased(KeyEvent e) {
-
-	}
-
-	public void createTree(){
 
 	}
 
@@ -784,9 +802,6 @@ public class ContentManagementSystem extends JFrame implements KeyListener   {
 	 */
 
 	private static void saveEditingFile(String content,	File file){
-
-
-
 
 	}
 

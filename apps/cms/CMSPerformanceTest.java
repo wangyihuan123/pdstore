@@ -28,6 +28,16 @@ import pdstore.GUID;
 import pdstore.GUIDGen;
 import pdstore.PDStoreException;
 
+/**
+ * Uses parameterized tests to see how a group of connected Content Management Systems perform under
+ * various conditions using PDStore.
+ * 
+ * Note: the general architecture of the document updates has changed to use history instead of signalling each member when
+ * the document has been modified. As such, these tests are likely outdated.
+ * 
+ * @author Sina Masoud-Ansari (s.ansari@auckland.ac.nz)
+ *
+ */
 @RunWith(value = Parameterized.class)
 public class CMSPerformanceTest {
 
@@ -47,6 +57,12 @@ public class CMSPerformanceTest {
 	private AtomicInteger cmode;
 	private AtomicInteger othere;
 	
+	/**
+	 * 
+	 * @param users the number of concurrent users to simulate
+	 * @param numTrials the number of events to generate
+	 * @param sleep the time between events, less is more stressful for the CMS
+	 */
 	public CMSPerformanceTest(int users, int numTrials, long sleep) {	
 		this.users = users;
 		this.numTrials = numTrials;
@@ -71,6 +87,10 @@ public class CMSPerformanceTest {
 			
 	}
 
+	/**
+	 * 
+	 * @return the initial conditions for the test object
+	 */
 	@Parameters
 	public static Collection<Object[]> testParams() {
 		
@@ -81,6 +101,9 @@ public class CMSPerformanceTest {
 		return Arrays.asList(params);
 	}
 	
+	/**
+	 * Currently used to count exceptions thrown in the CMSs.
+	 */
 	@Before
 	public void setUp(){
 		
@@ -100,7 +123,9 @@ public class CMSPerformanceTest {
 		}		
 	}
 
-	
+	/**
+	 * To see how often errors are thrown when collaboratively modifying the text.
+	 */
 	@Test
 	public void testTextEditPerformance() {
 		
@@ -145,12 +170,22 @@ public class CMSPerformanceTest {
 		System.out.println("Users: "+users+", Sleep: "+sleep+" : Bad Locations: "+badloc.get()+", Null Pointers: "+nullp.get()+", PDStoreException: "+pde.get()+", ConcurrentModeExcpetion: "+cmode.get()+", Other: "+othere.get()+", Success: % "+DP3.format(success));
 	}
 	
+	/**
+	 * Create only as many concurrent threads as can be supported by the host machine.
+	 */
 	private void initUserThreads(){
 		int limit = Runtime.getRuntime().availableProcessors();
 		users = users > limit ? limit : users;
 		exec = Executors.newFixedThreadPool(users);
 	}
 	
+	/**
+	 * The edit test.
+	 * Ideally should perform a random operation, but for now just does the replace operation with one char.
+	 * 
+	 * @author Sina Masoud-Ansari (s.ansari@auckland.ac.nz)
+	 *
+	 */
 	class TextEdit implements Runnable {
 
 		private final ContentManagementSystem cms;

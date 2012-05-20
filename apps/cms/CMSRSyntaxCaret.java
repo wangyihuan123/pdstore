@@ -5,7 +5,6 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import javax.swing.plaf.TextUI;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultCaret;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.Position;
 
@@ -13,9 +12,14 @@ import org.fife.ui.rtextarea.ConfigurableCaret;
 
 import pdstore.dal.PDWorkingCopy;
 
-import cms.PDStoreTextPane.UserCaret;
 import cms.dal.PDUser;
 
+/**
+ * An extension of the ConfigurableCaret to display multiple carets with information from PDStore.
+ * 
+ * @author Sina Masoud-Ansari (s.ansari@auckland.ac.nz)
+ *
+ */
 public class CMSRSyntaxCaret extends ConfigurableCaret {
 
 
@@ -28,7 +32,11 @@ public class CMSRSyntaxCaret extends ConfigurableCaret {
 	PDWorkingCopy wc;
 	PDUser user;
 
-
+	/**
+	 * 
+	 * @param wc the shared working copy.
+	 * @param user the local user.
+	 */
 	public CMSRSyntaxCaret(PDWorkingCopy wc, PDUser user)
 	{
 		super();
@@ -36,7 +44,12 @@ public class CMSRSyntaxCaret extends ConfigurableCaret {
 		this.wc = wc;
 		this.user = user;
 	}
-
+	
+	/**
+	 * 
+	 * @param height the caret height
+	 * @return the width given the height
+	 */
 	int getCaretWidth(int height) {
 		if (aspectRatio > -1) {
 			return (int) (aspectRatio * height) + 1;
@@ -49,6 +62,11 @@ public class CMSRSyntaxCaret extends ConfigurableCaret {
 		return 1;
 	}	
 
+	/**
+	 * Used to repaint when carets don't fit.
+	 * 
+	 * @param list the list of caret rectangles
+	 */	
 	protected synchronized void damage(ArrayList<Rectangle> list) {
 		for (Rectangle r : list){
 			if (r != null) {
@@ -112,6 +130,12 @@ public class CMSRSyntaxCaret extends ConfigurableCaret {
 
 	}
 
+	/**
+	 * Draws a given users caret.
+	 * 
+	 * @param g the Graphics object for the text area
+	 * @param uc the user caret information
+	 */	
 	private void paintUserCaret(Graphics g, cms.PDStoreRTextPane.UserCaret uc) {
 		Rectangle rect = uc.getRect();
 		g.setColor(uc.getColor());

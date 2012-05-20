@@ -21,6 +21,12 @@ import pdstore.generic.PDChange;
 import pdstore.generic.PDCoreI;
 import pdstore.notify.PDListener;
 
+/**
+ * Listen to changes in the history of a CMS and update the CMS as appropriate.
+ * 
+ * @author Sina Masoud-Ansari (s.ansari@auckland.ac.nz)
+ *
+ */
 public class PDCMSHistoryListener implements PDListener<GUID, Object, GUID> {
 
 	private ContentManagementSystem cms;
@@ -45,35 +51,25 @@ public class PDCMSHistoryListener implements PDListener<GUID, Object, GUID> {
 				
 				PDHistory history = PDHistory.load(cms.wc, (GUID)change.getInstance1());
 				if (history == null){
-					System.err.println("User: "+cms.user.getName()+" HistoryListener: history was null");
-					//return;
+					//System.err.println("User: "+cms.user.getName()+" HistoryListener: history was null");
+					return;
 				} else {
-					System.out.println("User: "+cms.user.getName()+" HistoryListener: history was recieved");
+					//System.out.println("User: "+cms.user.getName()+" HistoryListener: history was recieved");
 				}	
 				
 				PDCMSOperation op = history.getCMSOperation();
 				if (op == null){
-					System.err.println("User: "+cms.user.getName()+" HistoryListener: op was null");
-					//return;
+					//System.err.println("User: "+cms.user.getName()+" HistoryListener: op was null");
+					return;
 				} else {
-					System.out.println("User: "+cms.user.getName()+" HistoryListener: op was recieved");
+					//System.out.println("User: "+cms.user.getName()+" HistoryListener: op was recieved");
 				}
 				
 		    	synchronized (cms.opHistory) {
 		    		cms.updateDocument();
 		    		cms.refreshHistory();
 		    	}
-				/*
-		    	SwingUtilities.invokeLater(new Runnable (){
-
-					@Override
-					public void run() {
-						cms.refreshHistory();
-					}
-		    		
-		    	});	
-		    	*/			
-				
+						
 				// This is used for future user filtering / highlighting of other users operations
 				GUID typeID = op.getOpType().getId();
 				if (typeID.equals(PDDocumentOperation.typeId)) {
@@ -88,42 +84,7 @@ public class PDCMSHistoryListener implements PDListener<GUID, Object, GUID> {
 	}
 
 	
-    /** 
-     * This method takes the node string and 
-     * traverses the tree till it finds the node 
-     * matching the string. If the match is found  
-     * the node is returned else null is returned 
-     *  
-     * @param nodeStr node string to search for 
-     * @return tree node  
-     * @author Rahul Sapkal(rahul@javareference.com)
-     */ 
-    private DefaultMutableTreeNode searchNode(PDFileBrowser tree, String nodeStr) 
-    { 
-        DefaultMutableTreeNode node = null; 
-         
-        //Get the enumeration 
-        Enumeration en = ((DefaultMutableTreeNode)(tree.getModel().getRoot())).breadthFirstEnumeration(); 
-         
-        //iterate through the enumeration 
-        while(en.hasMoreElements()) 
-        { 
-            //get the node 
-            node = (DefaultMutableTreeNode)en.nextElement(); 
-             
-            //match the string with the user-object of the node 
-            if(nodeStr.equals(node.getUserObject().toString())) 
-            { 
-                //tree node with string found 
-                return node;                          
-            } 
-        } 
-         
-        //tree node with string node found return null 
-        return null; 
-    } 	
-
-	@Override
+    @Override
 	public Collection<PDChange<GUID, Object, GUID>> getMatchingTemplates() {
 		return null;
 	}

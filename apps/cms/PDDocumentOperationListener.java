@@ -16,7 +16,13 @@ import pdstore.dal.PDInstance;
 import pdstore.generic.PDChange;
 import pdstore.generic.PDCoreI;
 import pdstore.notify.PDListener;
-
+/**
+ * Used to perform synchronisation between collaborators on documents.
+ * Now replaced by PDSMSHistoryListener.
+ * 
+ * @author Sina Masoud-Ansari (s.ansari@auckland.ac.nz)
+ *
+ */
 @Deprecated
 public class PDDocumentOperationListener implements PDListener<GUID, Object, GUID> {
 

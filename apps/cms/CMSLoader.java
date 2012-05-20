@@ -15,6 +15,13 @@ import pdstore.dal.PDWorkingCopy;
 import cms.dal.PDDocument;
 import cms.dal.PDUser;
 
+/**
+ * 
+ * Used to create a group of Content Management Systems
+ * 
+ * @author Sina Masoud-Ansari (s.ansari@auckland.ac.nz)
+ *
+ */
 public class CMSLoader {
 
 	private static final String STORE_NAME = "ContentManagementSystem";
@@ -26,17 +33,25 @@ public class CMSLoader {
 	List<GUID> userIDs;
 	List<GUID> historyIDs;
 
+	/**
+	 * Note: not tested for network = true
+	 * 
+	 * @param network will the Content Management Systems be working together over a network?
+	 * @param instances the number of CMS instances to create
+	 * @param docRoot the document root for the CMS i.e where all the HTML files are.
+	 */
 	public CMSLoader(boolean network, int instances, String docRoot){
 
+		// clean out the DB
 		cleanDBFile();
-		
+
 		this.instances = instances;
 		this.DOCUMENT_ROOT = docRoot;
 
 		userIDs = GUIDGen.generateGUIDs(instances);
 		historyIDs = GUIDGen.generateGUIDs(instances);
 		cmsList = new ArrayList<ContentManagementSystem>(); 
-		
+
 		copies = new ArrayList<PDWorkingCopy>(instances);
 		if (network) {
 			store = PDStore.connectToServer(null);
@@ -56,9 +71,13 @@ public class CMSLoader {
 			}			
 		}	
 	}
-	
+
+	/**
+	 * Cleans out the DB file in case the model is redefined.
+	 * Avoids potential conflicts of using stale information.
+	 */
 	private void cleanDBFile(){
-		
+
 		File dbfile = new File(PDStore.DEFAULT_FILEPATH+STORE_NAME+PDStore.DEFAULT_EXTENSION);
 		if (dbfile.exists()){
 			if (!dbfile.delete()){
@@ -68,6 +87,9 @@ public class CMSLoader {
 		}		
 	}
 
+	/**
+	 * Initialise the CMSs
+	 */
 	public void init(){
 
 		for (int i = 0; i < instances; i++){
@@ -77,10 +99,14 @@ public class CMSLoader {
 		}
 	}
 
+	/**
+	 * Setup the users and their carets. Random colors assigned to carets.
+	 * Represents the existing files in the document root in PDStore.
+	 */
 	private void addData(){
 
 		GUID transaction = store.begin(); 
-		
+
 		// Create Users
 		for (int i = 0; i < instances; i++){
 			// General user properties
@@ -93,7 +119,7 @@ public class CMSLoader {
 			store.addLink(transaction, uID, PDUser.roleCaretColorBId, new Long((long)(Math.random()*255.0)));
 			// Assign default caret position
 			store.addLink(transaction, uID, PDUser.roleCaretPositionId, new Long(0));
-			
+
 		}
 
 		//Register files and documents
@@ -113,8 +139,7 @@ public class CMSLoader {
 			store.addLink(transaction, dID, PDDocument.roleDocumentFileNameId, f.getName());
 			store.addLink(transaction, dID, PDDocument.roleDocumentFileLocationId, fname.replace(DOCUMENT_ROOT, ""));
 		}
-		
-		
+
 		store.commit(transaction);
 	}	
 
@@ -136,13 +161,9 @@ public class CMSLoader {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}		
-		
-		//try {
-			CMSLoader cmsl = new CMSLoader(NETWORK_ACCESS, NUM_USERS, DOCUMENT_ROOT);
-			cmsl.init();
-		//} catch (Exception e) {
-		//	e.printStackTrace();
-		//}
+
+		CMSLoader cmsl = new CMSLoader(NETWORK_ACCESS, NUM_USERS, DOCUMENT_ROOT);
+		cmsl.init();
 
 	}
 }

@@ -23,6 +23,13 @@ import cms.dal.PDFileOperation;
 import cms.dal.PDHistory;
 import cms.dal.PDUser;
 
+/**
+ * Creates a view of the files in the doucment root of the CMS.
+ * 
+ * @author Sina Masoud-Ansari (s.ansari@auckland.ac.nz)
+ * @author David Chen
+ *
+ */
 public class PDFileBrowser extends JTree {
 
 	private static final long serialVersionUID = 8740726184571526994L;
@@ -40,6 +47,15 @@ public class PDFileBrowser extends JTree {
 	MOVE = 3,
 	SELECT = 4;
 
+	/**
+	 * 
+	 * @param node the root node of the tree
+	 * @param docRoot the document root of the cms
+	 * @param user the local user
+	 * @param history the shared history
+	 * @param wc the working copy of PDStore
+	 * @param cms the CMS
+	 */
 	protected PDFileBrowser(DefaultMutableTreeNode node, String docRoot, PDUser user, PDHistory history, PDWorkingCopy wc, ContentManagementSystem cms){
 		super(node);	
 		this.user = user;
@@ -48,6 +64,12 @@ public class PDFileBrowser extends JTree {
 		this.cms = cms;
 	}
 
+	/**
+	 * Adds a node to the tree
+	 * 
+	 * @param selNode the selected node
+	 * @param filename the name of the file to be added
+	 */
 	protected void addNodeToTree(DefaultMutableTreeNode selNode, String filename){
 		// refresh tree
 		DefaultTreeModel m_model = (DefaultTreeModel) (this.getModel()); 
@@ -95,7 +117,11 @@ public class PDFileBrowser extends JTree {
 
 	}
 
-
+	/**
+	 * Removes a node from the tree
+	 * 
+	 * @param selNode the selected node
+	 */
 	protected void deleteNodeFromTree(DefaultMutableTreeNode selNode){
 
 		// refresh the tree after deletion
@@ -157,6 +183,13 @@ public class PDFileBrowser extends JTree {
 
 	}
 
+	/**
+	 * Informs other users that the filesystem was changed by this user.
+	 * 
+	 * @param type the operation type
+	 * @param paramA the first parameter
+	 * @param paramB the second parameter
+	 */
 	protected void alertPDFileOperation(int type, String paramA, String paramB){
 		// Create file operation
 		PDFileOperation op = PDFileOperation.load(wc, GUIDGen.generateGUIDs(1).remove(0));
@@ -174,24 +207,14 @@ public class PDFileBrowser extends JTree {
 	    	synchronized (cms.opHistory){
 	    		cms.opHistory.add(cmso);
 	    	}
-    	}
-    	/*
-    	SwingUtilities.invokeLater(new Runnable (){
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				cms.opHistory.add(cmso);
-			}
-    		
-    	});
-    	*/
-    	//history.addCMSOperation(cmso);  
-		//history.addFileOperation(op); // needs to be some kind of linked list
-		// Commit
-		//wc.commit();		
+    	}	
 	}
 
+	/**
+	 * Creates a document for this user
+	 * 
+	 * @param fname document name
+	 */
 	protected void createPDDocument(String fname){
 		File newFile = new File(fname);
 		PDDocument pddoc = PDDocument.load(wc, GUIDGen.generateGUIDs(1).remove(0));
@@ -201,6 +224,11 @@ public class PDFileBrowser extends JTree {
 		//wc.commit();
 	}
 
+	/**
+	 * 
+	 * @param fname the filename
+	 * @return the extension of the file
+	 */
 	private String getExtension(String fname){
 		int last = fname.lastIndexOf('.');
 		return fname.substring(last);
